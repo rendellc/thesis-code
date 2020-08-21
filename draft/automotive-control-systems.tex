@@ -64,6 +64,11 @@ Wheel forces are the most important forces in creating a simulation model for a 
     \label{fig:wheel-model}
 \end{figure}
 
+
+
+
+
+
 \paragraph{Method 1: Transformation of CoG velocity}
 
 It is necessary to know the casters $n_L$ and $n_S$. These can be obtained from approximation formula citation 12 in \cite{kiencke}.
@@ -114,6 +119,38 @@ For a two-track vehicle the front wheels have the same steering angle $\delta_W$
 \end{align*}
 
 
+Also need to compute slip.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{draft/stolen-figures/wheel-slip-calculation.png}
+    \caption{Slip calculation}
+    \label{fig:wheel-sideslip-calculation}
+\end{figure}
+
+Calculate slip using the following expressions.
+
+When braking, i.e. $v_R \cos{\alpha} \leq v_W$, then 
+
+\begin{equation}
+  s_L = \frac{v_R \cos{\alpha} - v_W}{v_W}
+  \quad \text{and} \quad
+  s_S = \frac{v_R \sin{\alpha}}{v_W}
+\end{equation}
+
+When driving, i.e. $v_R \cos{\alpha} > v_W$, then 
+
+\begin{equation}
+  s_L = \frac{v_R \cos{\alpha} - v_W}{v_R \cos{\alpha}}
+  \quad \text{and} \quad
+  s_S = \tan{\alpha}
+\end{equation}
+
+In both cases the resulting slip $s_{Res}$ is computed 
+\begin{equation}
+  s_{Res} = \sqrt{s_L^2 + s_S^2}
+\end{equation}
+
 
 \subsection{Friction coefficient calculation}
 
@@ -125,5 +162,61 @@ Burckhardt approach.
 
 $s_{Res}$ is the resultant slip. Slip can occur in both longitudinal and lateral directions, so the friction $\mu_{Res}$ can be split into two parts.
 \begin{equation}
-   1 = 2 - 1
+  \mu_L = \mu_{Res}\frac{s_L}{S_{Res}} 
+  \quad \text{and} \quad
+  \mu_S = \mu_{Res}\frac{s_S}{S_{Res}} 
 \end{equation}
+
+Since wheels are threaded, the friction behaviour is direction dependent, which is modelled using an attenuation factor $k_S$ in the above equation.
+\begin{equation}
+  \mu_L = \mu_{Res}\frac{s_L}{S_{Res}} 
+  \quad \text{and} \quad
+  \mu_S = k_S \mu_{Res} \frac{s_S}{S_{Res}} 
+\end{equation}
+
+The Kamm circle describes the maximum force transmission to the road surface.
+
+\begin{equation}
+  \sqrt{F_{WLij}^2 + F_{WSij}^2} \leq \mu_{Res} F_{Zij}
+\end{equation}
+
+
+\subsection{Calculation of friction forces}
+
+Force of friction in the wheel velocity direction.
+\begin{align*}
+  F_{WL} &= \mu_L F_Z = \mu_{Res} \frac{s_L}{s_{Res}} F_Z \\ 
+  F_{WS} &= \mu_S F_Z = \mu_{Res} k_S \frac{s_S}{s_{Res}} F_Z
+\end{align*}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{draft/stolen-figures/direction-of-frictional-forces.png}
+    \caption{Direction of frictional forces}
+    \label{fig:friction-directions}
+\end{figure}
+
+
+
+\subsection{Wheel model}
+
+A simple first order dynamic model for a wheel is
+
+\begin{equation}
+  J_w \dot{\omega} = T_{Drive} - T_{Br} - r_{stat}F_L,
+\end{equation}
+where $J_W$ is the moment of inertia of the wheel $T_{Drive}$ is the driving torque, $T_{Br}$ is the braking torque and $r_{stat}$ is the static tire radius of the wheel, and $F_L$ is the tire friction force.
+
+The static tire radius is the distance from the center of the wheel to the ground, which will be less than the radius of the tire due to the weight of the vehicle.
+
+
+
+
+
+
+
+
+
+
+

@@ -4,7 +4,8 @@
 
 ```
 # make build folder, needs to be empty
-latexmk -pdf -jobname=build/main main.tex
+latexmk -pdf -quiet -jobname=build/main main.tex
 
-# add -pvc to preview and update continously
+# to update pdf continously 
+latexmk -pdf -quiet -pvc -view=none -jobname=build/main main.tex
 ```
