@@ -1,0 +1,40 @@
+
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{xargs}
+\usepackage[pdftex,dvipsnames]{xcolor}
+\usepackage{import}
+\usepackage{biblatex}
+\usepackage{amsmath}
+
+\renewcommand{\tan}[1]{%
+    \ensuremath{\text{tan}\left({#1}\right)}%
+}
+\renewcommand{\sin}[1]{%
+    \ensuremath{\text{sin}\left({#1}\right)}%
+}
+\renewcommand{\cos}[1]{%
+    \ensuremath{\text{cos}\left({#1}\right)}%
+}
+\renewcommand{\arctan}[1]{%
+    \ensuremath{\text{arctan}\left({#1}\right)}%
+}
+\renewcommand{\vector}[1]{%
+    \ensuremath{\underline{ {#1} }}%
+}
+\newcommand{\unitvector}[1]{%
+    \ensuremath{\overrightarrow{e_{#1}} }%
+}
+
+\usepackage{todonotes}
+% https://tex.stackexchange.com/questions/9796/how-to-add-todo-notes
+\newcommandx{\info}[2][1=]{%
+    \todo[linecolor=OliveGreen,backgroundcolor=OliveGreen!25,bordercolor=OliveGreen,#1]{#2}%
+}
+
+
+\usepackage{tabularx}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+
+
+\usepackage{cleveref}
