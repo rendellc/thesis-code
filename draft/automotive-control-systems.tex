@@ -99,6 +99,8 @@ Wheel ground contact velocities equation (8.4 from \cite{kiencke}).
 \subsection{Wheel slip and tire side slip angle}    
 
 
+\includepdf[pages=-,pagecommand={},width=\textwidth]{sideslip.pdf}
+
 Assuming the method above was used to calculate the wheel velocities, it is straight forward to compute wheel sideslip. Look at \cref{fig:wheel-sideslip}. 
 
 \begin{figure}
@@ -157,7 +159,7 @@ In both cases the resulting slip $s_{Res}$ is computed
 We want to model the friction force with slip. 
 Burckhardt approach.
 \begin{equation}
-    \mu(s_{Res}) = c_1 \left( 1 - e^{-c_2 s_{Res}} \right) - c_r s_{Res}
+    \mu(s_{Res}) = c_1 \left( 1 - e^{-c_2 s_{Res}} \right) - c_3 s_{Res}
 \end{equation}
 
 $s_{Res}$ is the resultant slip. Slip can occur in both longitudinal and lateral directions, so the friction $\mu_{Res}$ can be split into two parts.
@@ -261,6 +263,10 @@ Construct torque balance at the front left wheel ground contact point.
 \end{align}
 
 By similar constructions we can compute $F_{ZFL}$, $F_{ZRR}$, and $F_{ZRL}$. See equation $9.51$ to $9.54$ in \cite{kiencke}.
+
+
+
+
 
 
 
