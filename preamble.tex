@@ -26,6 +26,19 @@
 \newcommand{\unitvector}[1]{%
     \ensuremath{\overrightarrow{e_{#1}} }%
 }
+\newcommand{\matrix}[1]{%
+    \ensuremath{\mathbf{{#1}} }%
+}
+\newcommand{\homomatrix}[2]{%
+    \ensuremath{%
+      \begin{bmatrix}%
+        {#1} & {#2} \\%
+        \mathbf{0} & 1 %
+      \end{bmatrix}%
+    }
+}
+
+
 
 \usepackage{todonotes}
 % https://tex.stackexchange.com/questions/9796/how-to-add-todo-notes

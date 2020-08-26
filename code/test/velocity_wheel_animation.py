@@ -16,6 +16,7 @@ chassis = Rectangle(lower_left, Lr+Lf, Bf, fill=False, )
 
 
 cog_vel_arrow = FancyArrow(0,0,1,1)
+wheel_fr_arrow = FancyArrow(0,0,1,1)
 
 
 fig, ax = plt.subplots()
@@ -29,8 +30,9 @@ def init():
     ax.set_ylim(-10, 10)
     ax.add_patch(chassis)
     ax.add_patch(cog_vel_arrow)
+    ax.add_patch(wheel_fr_arrow)
 
-    return chassis, cog_vel_arrow
+    return chassis, cog_vel_arrow, wheel_fr_arrow
 
 
 
@@ -51,8 +53,27 @@ def update(frame):
     cog_vel_arrow = plt.Arrow(position_cog[0], position_cog[1], 5*velocity_cog[0], 5*velocity_cog[1])
     ax.add_patch(cog_vel_arrow)
 
+    global wheel_fr_arrow
+    ax.patches.remove(wheel_fr_arrow) 
+    distance_to_wheel = (Lf**2 + (Bf/2)**2)**0.5
 
-    return chassis, cog_vel_arrow
+    rotation_in_from_cog = np.array([
+        [np.cos(yaw), -np.sin(yaw)],
+        [np.sin(yaw), np.cos(yaw)]])
+    rotation_dot = np.array([
+        [-np.sin(yaw), -np.cos(yaw)],
+        [np.cos(yaw), -np.sin(yaw)]]) * yaw_rate
+    position_wheel_fr_from_cog = np.array([Lf, -Bf/2])
+    position_wheel_fr_from_in =  rotation_in_from_cog.dot(position_wheel_fr_from_cog)
+
+
+    velocity_wheel_fr = velocity_cog + rotation_dot.dot(position_wheel_fr_from_cog )
+    wheel_fr_arrow = plt.Arrow(position_wheel_fr_from_in[0], position_wheel_fr_from_in[1],
+            velocity_wheel_fr[0], velocity_wheel_fr[1])
+    ax.add_patch(wheel_fr_arrow)
+
+
+    return chassis, cog_vel_arrow, wheel_fr_arrow
 
 
 
@@ -62,20 +83,19 @@ def frame_generator():
     yaw, yaw_rate = 0, 0 # deg, deg/sec
 
     i = 0
-    direction = 1
 
     while True:
         yield position_cog, velocity_cog, yaw, yaw_rate
 
-        yaw_accel = 0.1*np.random.randn()
-        yaw_rate += yaw_accel
+        yaw_accel = 0 #0.1*np.random.randn()
+        yaw_rate = 0.1 # yaw_accel
         yaw += yaw_rate
 
-        velocity_cog[1] = 0.05*np.cos(0.02*i)
+        velocity_cog[1] = 0.0*np.cos(0.02*i)
         position_cog += velocity_cog
         i += 1
 
-        print(position_cog)
+        print(yaw)
 
 ani = animation.FuncAnimation(fig, update, frames=frame_generator(), init_func=init, interval=30)
 
