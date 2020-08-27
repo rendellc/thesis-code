@@ -52,10 +52,8 @@ To denote the position of the vehicle we will use $x,y,z$ which is the position 
   \end{bmatrix}
   =
   \begin{bmatrix}
-    ? & ? & ? & x \\
-    ? & ? & ? & y \\
-    ? & ? & ? & z \\
-    0 & 0 & 0 & 1
+    \mathbf{R}_x(-\phi)\mathbf{R}_y(-\theta)\mathbf{R}_z(-\psi) & \mathbf{o}_{CG}^{In} \\
+    \mathbf{0} & 1
   \end{bmatrix}
 \end{equation}
 
@@ -87,53 +85,73 @@ Let $L_f$ be the distance from CG to the front axle along the x-axis in $CG$, $r
 \begin{align}
   \mathbf{T}_{WFL}^{Un} &= 
   \begin{bmatrix}
-    \mathbf{R}_z(\pm \delta_{WFL}) & \mathbf{o}_{WFL}^{Un} \\
+    \mathbf{R}_z(-\delta_{WFL}) & \mathbf{o}_{WFL}^{Un} \\
     \mathbf{0} & 1
-  \end{bmatrix}
-  =
+  \end{bmatrix} \\
+  &=
   \begin{bmatrix}
-    ? & ? & 0 & L_r + L_f \\
-    ? & ? & 0 & B_f/2 \\
+    \cos{\delta_{WFL}} & \sin{\delta_{WFL}} & 0 & L_r + L_f \\
+    -\sin{\delta_{WFL}} & \cos{\delta_{WFL}} & 0 & B_f/2 \\
     0 & 0 & 1 & r_W \\
     0 & 0 & 0 & 1
   \end{bmatrix} \\
   \mathbf{T}_{WFR}^{Un} &= 
   \begin{bmatrix}
-    \mathbf{R}_z(\pm \delta_{WFR}) & \mathbf{o}_{WFR}^{Un} \\
+    \mathbf{R}_z(-\delta_{WFR}) & \mathbf{o}_{WFR}^{Un} \\
     \mathbf{0} & 1
-  \end{bmatrix}
-  =
-  \begin{bmatrix}
-    ? & ? & 0 & L_r + L_f \\
-    ? & ? & 0 & -B_f/2 \\
-    0 & 0 & 1 & r_W \\
-    0 & 0 & 0 & 1
   \end{bmatrix} \\
   \mathbf{T}_{WRL}^{Un} &= 
   \begin{bmatrix}
-    \mathbf{R}_z(\pm \delta_{WRL}) & \mathbf{o}_{WRL}^{Un} \\
+    \mathbf{R}_z(-\delta_{WRL}) & \mathbf{o}_{WRL}^{Un} \\
     \mathbf{0} & 1
-  \end{bmatrix}
-  =
-  \begin{bmatrix}
-    ? & ? & 0 & 0 \\
-    ? & ? & 0 & B_r/2 \\
-    0 & 0 & 1 & r_W \\
-    0 & 0 & 0 & 1
   \end{bmatrix} \\
   \mathbf{T}_{WRR}^{Un} &= 
   \begin{bmatrix}
-    \mathbf{R}_z(\pm \delta_{WRR}) & \mathbf{o}_{WRR}^{Un} \\
+    \mathbf{R}_z(-\delta_{WRR}) & \mathbf{o}_{WRR}^{Un} \\
     \mathbf{0} & 1
   \end{bmatrix}
-  =
-  \begin{bmatrix}
-    ? & ? & 0 & 0 \\
-    ? & ? & 0 & -B_r/2 \\
-    0 & 0 & 1 & r_W \\
-    0 & 0 & 0 & 1
-  \end{bmatrix} \\
 \end{align}
+
+
+\todo[inline]{create and use example environment for consistency}
+\paragraph{Example - position of wheels in inertial frame}
+
+Say we want to know the position of the front left wheel in the inertial frame. Then we need a transform between the front left wheel coordinate system and the inertial system. 
+
+\begin{equation}
+  \mathbf{T}_{WFL}^{In} =
+    \mathbf{T}_{CG}^{In} \mathbf{T}_{Un}^{CG} \mathbf{T}_{WFL}^{Un}
+\end{equation}
+
+Since the position of the wheel is the origin of the wheels coordinate system $\mathbf{p}^{WFL} = [0, 0, 0]^T$, the position of the wheel in the inertial frame is given by
+
+\begin{align}
+  \mathbf{p}^{In} &= \mathbf{T}_{WFL}^{In}\mathbf{p}^{WFL} \\
+  &= \mathbf{T}_{CG}^{In}\mathbf{T}_{Un}^{CG}\mathbf{T}_{WFL}^{Un}
+  \begin{bmatrix}
+    0 \\ 0 \\ 0
+  \end{bmatrix} \\
+  &= \mathbf{T}_{CG}^{In}\mathbf{T}_{Un}^{CG}
+  \begin{bmatrix}
+    L_r+L_f \\ B_f/2 \\ r_W
+  \end{bmatrix} \\
+  &= \mathbf{T}_{CG}^{In}
+  \begin{bmatrix}
+    L_f \\ B_f/2 \\ -h_{CG} + r_W
+  \end{bmatrix} \\
+  &=
+  \mathbf{R}_{CG}^{In}
+  \begin{bmatrix}
+    L_f \\ B_f/2 \\ -h_{CG} + r_W
+  \end{bmatrix}
+  +
+  \begin{bmatrix}
+    x \\ y \\ z
+  \end{bmatrix}
+\end{align}
+
+
+
 
 
 
