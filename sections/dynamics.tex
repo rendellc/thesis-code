@@ -2,7 +2,7 @@
 Describe the forces and torques acting on the dynamic parts of the vehicle.
 
 
-\subsection{Dynamic variables}
+\subsection{State variables}
 
 
 The position and orientation of the vehicle give 6 variables. In addition addition the each wheel is a dynamical system with an angular velocity and so with four wheels that gives 4 additional variables. 
@@ -48,11 +48,12 @@ Each wheel will generate some friction force which will affect the speed of the 
 
 \paragraph{Example - wheel velocity}
 
-Suppose the vehicle is on horizontal terrain with no velocity, but it is rotating around the z-axis with yaw rate $\dot{\psi} = 1$. What is the velocity of the rear right wheel? 
+Suppose the vehicle is on horizontal terrain with no velocity, but it is rotating around the z-axis with yaw rate $\dot{\psi}$. What is the velocity of the rear right wheel? 
 
-The velocity is given by \cref{eq:wheel-velocity}, with $\mathbf{v}_{CG}^{In} = 0$, \mathbf{p}_W^{CG} = \begin{bmatrix} -L_r \\ -B_r/2 \\ -h_{CG} + r_W \end{bmatrix}$. 
+The velocity is given by \cref{eq:wheel-velocity}, with $\mathbf{v}_{CG}^{In} = 0, \mathbf{p}_W^{CG} = \begin{bmatrix} -L_r \\ -B_r/2 \\ -h_{CG} + r_W \end{bmatrix}$. 
 
-From \cite{spong} we have 
+Computing the velocity, we get
+
 \begin{align}
 \mathbf{v}_W^{In} &= \dot{\mathbf{R}}_{CG}^{In} \mathbf{p}_W^{CG} \\ 
   &= \dot{\mathbf{R}}_z(-\psi) \mathbf{p}_W^{CG} \\
@@ -84,14 +85,31 @@ From \cite{spong} we have
 
 \subsection{Simulation model}
 
-The simulation model is the most detailed model that is practically implementable in a computer simulation. It will be detailed and highly nonlinear which may makes it unsuitable for control and optimization.
+The simulation model is the most detailed model that is practically implementable in a computer simulation. It will be detailed and highly nonlinear which may makes it unsuitable for control and optimization. 
+
+\todo[inline]{Assuming no roll and pitch, might be interesting to remove this assumption further down the road.}
+
+Assume the vehicle is level, so that $\phi=0$ and $\theta=0$. This is a reasonable assumption for this kind of vehicle and it makes the model drastically simpler. With this the kinematic equations are given by \cref{eq:simulation-kinematics}.
+
+\begin{equation} 
+  \label{eq:simulation-kinematics}
+  \dot{\mathbf{x}}_{CG}^{In} &= \mathbf{v}_{CG}^{In}
+\end{equation}
 
 
+For the dynamics we will first deal with rotation. Each wheel produce some torque $\mathbf{\tau}_W$ about the undercarriage origin. Denote the position of the wheels in the undercarriage system by $\mathbf{p}_{Wij}^{Un}$ and the force produced by the wheel as $\mathbf{F}_{Wij}$.
+\todo[inline]{The undercarriage coordinate system is not on the wheel center plane. We might need to move the undercarriage system up to be on the same height as the wheels. Want the z-component of the wheel positions to be zero in this computation.}
+The torque about the undercarriage origin produced by wheel $ij$ is given by
 
+\begin{equation}
+  \mathbf{\tau}_{Wij} = \mathbf{p}_{Wij}^{Un} \times \mathbf{F}_{Wij}^{Un}
+\end{equation}
 
+Let $J_z$ be the moment of inertia about the z-axis, and assume no other forces affect the yaw. Then the yaw dynamics are given by
 
-
-
+\begin{equation}
+  J_z \ddot{\psi} = \sum_{i,j} \tau_{Wij} = \sum_{i,j} \left( \mathbf{p}_{Wij}^{Un} \times \mathbf{F}_{Wij}^{Un} \right)
+\end{equation}
 
 
 
