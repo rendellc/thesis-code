@@ -162,6 +162,11 @@ Burckhardt approach.
     \mu(s_{Res}) = c_1 \left( 1 - e^{-c_2 s_{Res}} \right) - c_3 s_{Res}
 \end{equation}
 
+Can extend this with two more factors which reduce friction with speed or incorrect tire pressure.
+\begin{equation}
+  \mu(s_{Res}) = \left( c_1 \left( 1 - e^{-c_2 s_{Res}} \right) - c_3 s_{Res} \right) e^{-c_4 s_{Res} v_{CG}} (1 - c_5 F_z^2)
+\end{equation}
+
 $s_{Res}$ is the resultant slip. Slip can occur in both longitudinal and lateral directions, so the friction $\mu_{Res}$ can be split into two parts.
 \begin{equation}
   \mu_L = \mu_{Res}\frac{s_L}{S_{Res}} 
@@ -223,7 +228,7 @@ If the vehicle accelerates, then the inertia of the chassis will cause the chass
 \end{equation}
 
 
-First ignore roll effects and consider \cref{fig:axle-load-during-acceleration}. Construct a torque balance around the rear axle.
+First ignore roll effects and consider \cref{fig:axle-load-during-acceleration}. Construct a torque balance around the rear axle. 
 
 \begin{figure}
     \centering
@@ -264,6 +269,7 @@ Construct torque balance at the front left wheel ground contact point.
 
 By similar constructions we can compute $F_{ZFL}$, $F_{ZRR}$, and $F_{ZRL}$. See equation $9.51$ to $9.54$ in \cite{kiencke}.
 
+\improve[inline]{\Cref{fig:axle-load-during-acceleration} and \cref{fig:wheel-load-shifting-during-cornering} assume no roll and pitch. Probably suitable for control model, but should derive equations with roll and pitch for simulation}
 
 
 

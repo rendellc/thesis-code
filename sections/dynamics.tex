@@ -1,0 +1,102 @@
+\section{Dynamics}
+Describe the forces and torques acting on the dynamic parts of the vehicle.
+
+
+\subsection{Dynamic variables}
+
+
+The position and orientation of the vehicle give 6 variables. In addition addition the each wheel is a dynamical system with an angular velocity and so with four wheels that gives 4 additional variables. 
+\improve[inline]{The direction of the wheel should also be considered a variable, since the wheel direction isn't equal to $\delta_W$, but also a system affected by the caster and friction}
+
+
+Need equations to describe the following state variables.
+
+\begin{table}
+    \centering
+    \begin{tabularx}{\linewidth}{|l|L|}
+    \hline
+     $\mathbf{x}_{CG}$ & Position of CG \\
+     $\mathbf{v}_{CG}$ & Velocity of CG \\ 
+     $\phi, \theta, \psi$ & Roll-pitch-yaw angles \\ 
+     $\dot{\phi}, \dot{\theta}, \dot{\psi}$ & Roll-pitch-yaw angle rates \\ 
+     $\omega_{Wij}$ & Angular velocity of wheel $ij$ \\ 
+     $\delta_{Sij}$ & Steering angle for wheel $ij$ \todo[inline]{ignore steering angle for now, assume $\delta_{Sij} = \delta_{Wij}$} \\
+     \hline
+    \end{tabularx}
+    \label{tab:state-variables}
+    \caption{State variables}
+\end{table}
+
+
+The kinematics for position are simple to express in the inertial frame.
+
+\begin{equation}
+  \dot{\mathbf{x}}_{CG}^{In} = \mathbf{v}_{CG}^{In}
+\end{equation}
+
+
+Each wheel will generate some friction force which will affect the speed of the vehicle. This will depend on the speed of the wheel relative to the ground which can be found by differentiating the position of the wheel in the inertial frame.
+
+\begin{align}
+  \mathbf{v}_W^{In} &= \dot{\mathbf{p}}_W^{In} = \frac{d}{dt}\left( \mathbf{T}_W^{In} \mathbf{p}_W^{W} \right) \\
+    &= \frac{d}{dt}\left( \mathbf{T}_{CG}^{In}\right)\mathbf{T}_{Un}^{CG} \mathbf{T}_{W}^{Un} \mathbf{p}_W^{W}  \\
+    &= \frac{d}{dt}\left( \mathbf{T}_{CG}^{In}\right) \mathbf{p}_W^{CG} \\
+    &= \frac{d}{dt} \left( \mathbf{R}_{CG}^{In} \mathbf{p}_W^{CG}  + \mathbf{x}_{CG}^{In} \right) \\
+    &= \dot{\mathbf{R}}_{CG}^{In} \mathbf{p}_W^{CG}  + \mathbf{v}_{CG}^{In} \label{eq:wheel-velocity}
+\end{align}
+
+
+\paragraph{Example - wheel velocity}
+
+Suppose the vehicle is on horizontal terrain with no velocity, but it is rotating around the z-axis with yaw rate $\dot{\psi} = 1$. What is the velocity of the rear right wheel? 
+
+The velocity is given by \cref{eq:wheel-velocity}, with $\mathbf{v}_{CG}^{In} = 0$, \mathbf{p}_W^{CG} = \begin{bmatrix} -L_r \\ -B_r/2 \\ -h_{CG} + r_W \end{bmatrix}$. 
+
+From \cite{spong} we have 
+\begin{align}
+\mathbf{v}_W^{In} &= \dot{\mathbf{R}}_{CG}^{In} \mathbf{p}_W^{CG} \\ 
+  &= \dot{\mathbf{R}}_z(-\psi) \mathbf{p}_W^{CG} \\
+  &= -\frac{\partial \mathbf{R}_z}{\partial z} \dot{\psi} \mathbf{p}_W^{CG} \\
+  &= -\dot{\psi} 
+    \begin{bmatrix}
+      -\sin{\psi} & -\cos{\psi} & 0 \\
+      \cos{\psi} &  -\sin{\psi} &  0 \\
+      0 & 0 & 0 \\
+    \end{bmatrix} 
+    \begin{bmatrix}
+      -L_r \\
+      -B_r/2 \\
+      -h_{CG} + r_W 
+    \end{bmatrix} \\
+  &= \dot{\psi}
+    \begin{bmatrix}
+      -L_r \sin{\psi} - \frac{B_r}{2}\cos{\psi} \\
+      L_r \cos{\psi} - \frac{B_r}{2}\sin{\psi} \\
+      0
+    \end{bmatrix} \\
+\end{align} 
+
+
+
+
+
+
+
+\subsection{Simulation model}
+
+The simulation model is the most detailed model that is practically implementable in a computer simulation. It will be detailed and highly nonlinear which may makes it unsuitable for control and optimization.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
