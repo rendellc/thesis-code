@@ -1,25 +1,19 @@
-import numpy as np
-
-class Vehicle:
-    def __init__(self):
-        self.distance_front_axle = 1.0
-        self.distance_rear_axle = 2.0
-        self.width_front = 1.0
-        self.width_rear = 1.0
-
-        self.pos_cog = np.zeros((3,))
-        self.rpy_cog = np.zeros((3,))
-        self.vel_cog = np.zeros((3,))
-
-        print(self.pos_cog)
-        print(self.vel_cog)
+import vehicle
 
 
 
 def main():
-    vehicle = Vehicle()
+    config = {
+            "mass": 2.5e3,
+            "width_front": 2.0,
+            "width_rear": 2.0,
+            "length_front": 1.0,
+            "length_rear": 2.5,
+            "wheel_radius": 1.0,
+            "wheel_width": 0.4,
+            }
+    car = vehicle.Car2D(config)
 
-    print(vehicle)
 
 
 if __name__=="__main__":
