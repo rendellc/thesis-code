@@ -22,6 +22,26 @@
 \import{sections/}{rigid-body-kinematics.tex}
 \import{sections/}{dynamics.tex}
 
+
+\section{Outline}
+\subsection{Modelling}
+\subsubsection{Kinematics}
+Describe the coordinate frames and kinematic equations.
+\subsubsection{Dynamics}
+Describe forces and torques acting on the system.
+\paragraph{Friction}
+\paragraph{Load transfer}
+\subsubsection{Planar vehicle model}
+Create model which neglect roll, pitch, and altitude. Maybe also assume that CG is aligned with wheels.
+\subsection{Simulation}
+\subsubsection{Challenges}
+Load transfer makes friction force depend on acceleration, which mean we might have a differential algebraic equation.
+\subsubsection{Solution}
+Propose a simulation strategy given the challenges, and implement it (or find it in a package). 
+
+
+
+
 \printbibliography
 
 \end{document}
