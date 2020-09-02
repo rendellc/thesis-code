@@ -9,6 +9,8 @@ def main():
             "width_rear": 2.0,
             "length_front": 1.0,
             "length_rear": 2.5,
+            "height": 2.5,
+            "wheel_mass": 300.0,
             "wheel_radius": 1.0,
             "wheel_width": 0.4,
             }

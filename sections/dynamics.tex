@@ -98,7 +98,6 @@ Assume the vehicle is level, so that $\phi=0$ and $\theta=0$. This is a reasonab
 
 
 For the dynamics we will first deal with rotation. Each wheel produce some torque $\mathbf{\tau}_W$ about the undercarriage origin. Denote the position of the wheels in the undercarriage system by $\mathbf{p}_{Wij}^{Un}$ and the force produced by the wheel as $\mathbf{F}_{Wij}$.
-\todo[inline]{The undercarriage coordinate system is not on the wheel center plane. We might need to move the undercarriage system up to be on the same height as the wheels. Want the z-component of the wheel positions to be zero in this computation.}
 The torque about the undercarriage origin produced by wheel $ij$ is given by
 
 \begin{equation}
@@ -112,6 +111,7 @@ Let $J_z$ be the moment of inertia about the z-axis, and assume no other forces 
 \end{equation}
 
 
+\todo[inline]{The undercarriage coordinate system is not on the wheel center plane. We might need to move the undercarriage system up to be on the same height as the wheels. Want the z-component of the wheel positions to be zero in this computation.}
 
 
 
