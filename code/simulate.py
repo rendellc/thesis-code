@@ -1,37 +1,51 @@
+from dataclasses import dataclass
+from typing import Callable
+from numpy import ndarray
 
 
-class Simulatable:
-    """
-    Interface for simulatable objects.
+@dataclass
+class EulersMethod:
+    f: Callable[[ndarray, float], ndarray]
 
-    TODO: would be better to encapsulate state in a 
-    variable and then implement all simulation logic here.
-    """
-    def __init__(self):
-        pass
-
-    def compute_derivatives(self):
-        """
-        Compute derivatives and store them in object.
-        """
-        pass
-
-    def get_simulatable_children(self):
-        return []
-
-    def step_forward(self, stepsize):
-        """
-        Use the computed derivatives to step simulation forward.
-        """
-        pass
+    def step(self, x, t, h):
+        return x + h*self.f(x,t)
 
 
-def simulate_step_forward(model, stepsize):
-    model.compute_derivatives()
-    children = model.get_simulatable_children()
-    for child in children:
-        simulate_step_forward(child, stepsize)
-    model.step_forward(stepsize)
+@dataclass
+class ImprovedEulersMethod:
+    f: Callable[[ndarray, float], ndarray]
+
+    def step(self,x,t,h):
+        k1 = self.f(x,t)
+        k2 = self.f(x+h*k1, t+h)
+
+        return x + h/2*(k1 + k2)
+
+@dataclass
+class ModifiedEulersMethod:
+    f: Callable[[ndarray, float], ndarray]
+
+    def step(self,x,t,h):
+        k1 = self.f(x,t)
+        k2 = self.f(x+h/2*k1, t+h/2)
+
+        return x + h*k2
+
+
+if __name__=="__main__":
+    def f(x,t): return -x**3
+
+    em = EulersMethod(f)
+
+    xs = [1]
+    t, dt, tstop = 0, 0.01, 10
+    while t < tstop:
+        x = xs[~0]
+        x = em.step(x,t,dt)
+        xs.append(x)
+        t += dt
+
+    print(xs)
 
 
 
