@@ -13,8 +13,6 @@ start_time, time_step, stop_time = 0, 0.1, 30
 # Setup FMU
 model_description = read_model_description(fmu_filename)
 
-dump(fmu_filename)
-
 vrs = {}
 for variable in model_description.modelVariables:
     vrs[variable.name] = variable.valueReference
