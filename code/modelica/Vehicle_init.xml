@@ -1,0 +1,973 @@
+<?xml version = "1.0" encoding="UTF-8"?>
+
+<!-- description of the model interface using an extention of the FMI standard -->
+<fmiModelDescription
+  fmiVersion                          = "1.0"
+
+  modelName                           = "Vehicle"
+  modelIdentifier                     = "Vehicle"
+
+  OPENMODELICAHOME                    = "/usr"
+
+  guid                                = "{8deb15d6-e884-48ce-bfef-b490d4f8b7ec}"
+
+  description                         = "model of vehicle with four wheels"
+  generationTool                      = "OpenModelica Compiler OpenModelica 1.13.0"
+  generationDateAndTime               = "2020-09-15T13:06:42Z"
+
+  variableNamingConvention            = "structured"
+
+  numberOfEventIndicators             = "0"  cmt_numberOfEventIndicators             = "NG:       number of zero crossings,                           FMI"
+  numberOfTimeEvents                  = "0"  cmt_numberOfTimeEvents                  = "NG_SAM:   number of zero crossings that are samples,          OMC"
+
+  numberOfInputVariables              = "4"  cmt_numberOfInputVariables              = "NI:       number of inputvar on topmodel,                     OMC"
+  numberOfOutputVariables             = "8"  cmt_numberOfOutputVariables             = "NO:       number of outputvar on topmodel,                    OMC"
+
+  numberOfExternalObjects             = "0"  cmt_numberOfExternalObjects             = "NEXT:     number of external objects,                         OMC"
+  numberOfFunctions                   = "0"  cmt_numberOfFunctions                   = "NFUNC:    number of functions used by the simulation,         OMC"
+
+  numberOfContinuousStates            = "8"  cmt_numberOfContinuousStates            = "NX:       number of states,                                   FMI"
+  numberOfRealAlgebraicVariables      = "49"  cmt_numberOfRealAlgebraicVariables      = "NY:       number of real variables,                           OMC"
+  numberOfRealAlgebraicAliasVariables = "10"  cmt_numberOfRealAlgebraicAliasVariables = "NA:       number of alias variables,                          OMC"
+  numberOfRealParameters              = "4"  cmt_numberOfRealParameters              = "NP:       number of parameters,                               OMC"
+
+  numberOfIntegerAlgebraicVariables   = "0"  cmt_numberOfIntegerAlgebraicVariables   = "NYINT:    number of alg. int variables,                       OMC"
+  numberOfIntegerAliasVariables       = "0"  cmt_numberOfIntegerAliasVariables       = "NAINT:    number of alias int variables,                      OMC"
+  numberOfIntegerParameters           = "0"  cmt_numberOfIntegerParameters           = "NPINT:    number of int parameters,                           OMC"
+
+  numberOfStringAlgebraicVariables    = "0"  cmt_numberOfStringAlgebraicVariables    = "NYSTR:    number of alg. string variables,                    OMC"
+  numberOfStringAliasVariables        = "0"  cmt_numberOfStringAliasVariables        = "NASTR:    number of alias string variables,                   OMC"
+  numberOfStringParameters            = "0"  cmt_numberOfStringParameters            = "NPSTR:    number of string parameters,                        OMC"
+
+  numberOfBooleanAlgebraicVariables   = "0"  cmt_numberOfBooleanAlgebraicVariables   = "NYBOOL:   number of alg. bool variables,                      OMC"
+  numberOfBooleanAliasVariables       = "0"  cmt_numberOfBooleanAliasVariables       = "NABOOL:   number of alias bool variables,                     OMC"
+  numberOfBooleanParameters           = "0"  cmt_numberOfBooleanParameters           = "NPBOOL:   number of bool parameters,                          OMC" >
+
+
+  <!-- startTime, stopTime, tolerance are FMI specific, all others are OMC specific -->
+  <DefaultExperiment
+    startTime      = "0"
+    stopTime       = "1"
+    stepSize       = "0.002"
+    tolerance      = "1e-06"
+    solver        = "dassl"
+    outputFormat      = "mat"
+    variableFilter      = ".*" />
+
+  <!-- variables in the model -->
+  <ModelVariables>
+
+  <ScalarVariable
+    name = "pos_in[1]"
+    valueReference = "1000"
+    description = "position in inertial frame"
+    variability = "continuous" isDiscrete = "false"
+    causality = "output" isValueChangeable = "true"
+    alias = "noAlias"
+    classIndex = "0" classType = "rSta"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "5" startColumn = "3" endLine = "5" endColumn = "53" fileWritable = "true">
+    <Real fixed="false" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "pos_in[2]"
+    valueReference = "1001"
+    description = "position in inertial frame"
+    variability = "continuous" isDiscrete = "false"
+    causality = "output" isValueChangeable = "true"
+    alias = "noAlias"
+    classIndex = "1" classType = "rSta"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "5" startColumn = "3" endLine = "5" endColumn = "53" fileWritable = "true">
+    <Real fixed="false" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "pos_in[3]"
+    valueReference = "1002"
+    description = "position in inertial frame"
+    variability = "continuous" isDiscrete = "false"
+    causality = "output" isValueChangeable = "true"
+    alias = "noAlias"
+    classIndex = "2" classType = "rSta"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "5" startColumn = "3" endLine = "5" endColumn = "53" fileWritable = "true">
+    <Real fixed="false" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "vel_b[1]"
+    valueReference = "1003"
+    description = "velocity in body frame"
+    variability = "continuous" isDiscrete = "false"
+    causality = "output" isValueChangeable = "true"
+    alias = "noAlias"
+    classIndex = "3" classType = "rSta"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "6" startColumn = "3" endLine = "6" endColumn = "48" fileWritable = "true">
+    <Real fixed="false" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "vel_b[2]"
+    valueReference = "1004"
+    description = "velocity in body frame"
+    variability = "continuous" isDiscrete = "false"
+    causality = "output" isValueChangeable = "true"
+    alias = "noAlias"
+    classIndex = "4" classType = "rSta"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "6" startColumn = "3" endLine = "6" endColumn = "48" fileWritable = "true">
+    <Real fixed="false" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "vel_b[3]"
+    valueReference = "1005"
+    description = "velocity in body frame"
+    variability = "continuous" isDiscrete = "false"
+    causality = "output" isValueChangeable = "true"
+    alias = "noAlias"
+    classIndex = "5" classType = "rSta"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "6" startColumn = "3" endLine = "6" endColumn = "48" fileWritable = "true">
+    <Real fixed="false" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "yaw"
+    valueReference = "1006"
+    description = "yaw"
+    variability = "continuous" isDiscrete = "false"
+    causality = "output" isValueChangeable = "true"
+    alias = "noAlias"
+    classIndex = "6" classType = "rSta"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "7" startColumn = "3" endLine = "7" endColumn = "24" fileWritable = "true">
+    <Real fixed="false" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "yawrate"
+    valueReference = "1007"
+    description = "Yawrate"
+    variability = "continuous" isDiscrete = "false"
+    causality = "output" isValueChangeable = "true"
+    alias = "noAlias"
+    classIndex = "7" classType = "rSta"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "8" startColumn = "3" endLine = "8" endColumn = "32" fileWritable = "true">
+    <Real fixed="false" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "der(pos_in[1])"
+    valueReference = "1008"
+    description = "der(position in inertial frame)"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "0" classType = "rDer"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "5" startColumn = "3" endLine = "5" endColumn = "53" fileWritable = "true">
+    <Real fixed="false" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "der(pos_in[2])"
+    valueReference = "1009"
+    description = "der(position in inertial frame)"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "1" classType = "rDer"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "5" startColumn = "3" endLine = "5" endColumn = "53" fileWritable = "true">
+    <Real fixed="false" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "der(pos_in[3])"
+    valueReference = "1010"
+    description = "der(position in inertial frame)"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "2" classType = "rDer"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "5" startColumn = "3" endLine = "5" endColumn = "53" fileWritable = "true">
+    <Real fixed="false" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "der(vel_b[1])"
+    valueReference = "1011"
+    description = "der(velocity in body frame)"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "3" classType = "rDer"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "6" startColumn = "3" endLine = "6" endColumn = "48" fileWritable = "true">
+    <Real fixed="false" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "der(vel_b[2])"
+    valueReference = "1012"
+    description = "der(velocity in body frame)"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "4" classType = "rDer"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "6" startColumn = "3" endLine = "6" endColumn = "48" fileWritable = "true">
+    <Real fixed="false" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "der(vel_b[3])"
+    valueReference = "1013"
+    description = "der(velocity in body frame)"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "5" classType = "rDer"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "6" startColumn = "3" endLine = "6" endColumn = "48" fileWritable = "true">
+    <Real fixed="false" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "der(yaw)"
+    valueReference = "1014"
+    description = "der(yaw)"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "6" classType = "rDer"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "7" startColumn = "3" endLine = "7" endColumn = "24" fileWritable = "true">
+    <Real fixed="false" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "der(yawrate)"
+    valueReference = "1015"
+    description = "der(Yawrate)"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "7" classType = "rDer"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "8" startColumn = "3" endLine = "8" endColumn = "32" fileWritable = "true">
+    <Real fixed="false" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "$cse1"
+    valueReference = "1016"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "0" classType = "rAlg"
+    isProtected = "true" hideResult = "true"
+    fileName = "" startLine = "0" startColumn = "0" endLine = "0" endColumn = "0" fileWritable = "true">
+    <Real fixed="false" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "force_total[1]"
+    valueReference = "1017"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "1" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "22" startColumn = "3" endLine = "22" endColumn = "22" fileWritable = "true">
+    <Real fixed="false" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "force_total[2]"
+    valueReference = "1018"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "2" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "22" startColumn = "3" endLine = "22" endColumn = "22" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "force_total[3]"
+    valueReference = "1019"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "3" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "22" startColumn = "3" endLine = "22" endColumn = "22" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "force_vectors[1,2]"
+    valueReference = "1020"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "4" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "10" startColumn = "3" endLine = "10" endColumn = "26" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "force_vectors[1,3]"
+    valueReference = "1021"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "5" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "10" startColumn = "3" endLine = "10" endColumn = "26" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "force_vectors[2,2]"
+    valueReference = "1022"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "6" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "10" startColumn = "3" endLine = "10" endColumn = "26" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "force_vectors[2,3]"
+    valueReference = "1023"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "7" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "10" startColumn = "3" endLine = "10" endColumn = "26" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "force_vectors[3,2]"
+    valueReference = "1024"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "8" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "10" startColumn = "3" endLine = "10" endColumn = "26" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "force_vectors[3,3]"
+    valueReference = "1025"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "9" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "10" startColumn = "3" endLine = "10" endColumn = "26" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "force_vectors[4,2]"
+    valueReference = "1026"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "10" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "10" startColumn = "3" endLine = "10" endColumn = "26" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "force_vectors[4,3]"
+    valueReference = "1027"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "11" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "10" startColumn = "3" endLine = "10" endColumn = "26" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "forces[1]"
+    valueReference = "1028"
+    description = "force inputs. Order: fl, rl, rr, fr"
+    variability = "continuous" isDiscrete = "false"
+    causality = "input" isValueChangeable = "true"
+    inputIndex = "0"
+    alias = "noAlias"
+    classIndex = "12" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "3" startColumn = "3" endLine = "3" endColumn = "61" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "forces[2]"
+    valueReference = "1029"
+    description = "force inputs. Order: fl, rl, rr, fr"
+    variability = "continuous" isDiscrete = "false"
+    causality = "input" isValueChangeable = "true"
+    inputIndex = "1"
+    alias = "noAlias"
+    classIndex = "13" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "3" startColumn = "3" endLine = "3" endColumn = "61" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "forces[3]"
+    valueReference = "1030"
+    description = "force inputs. Order: fl, rl, rr, fr"
+    variability = "continuous" isDiscrete = "false"
+    causality = "input" isValueChangeable = "true"
+    inputIndex = "2"
+    alias = "noAlias"
+    classIndex = "14" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "3" startColumn = "3" endLine = "3" endColumn = "61" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "forces[4]"
+    valueReference = "1031"
+    description = "force inputs. Order: fl, rl, rr, fr"
+    variability = "continuous" isDiscrete = "false"
+    causality = "input" isValueChangeable = "true"
+    inputIndex = "3"
+    alias = "noAlias"
+    classIndex = "15" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "3" startColumn = "3" endLine = "3" endColumn = "61" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "inertia"
+    valueReference = "1032"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "16" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "18" startColumn = "3" endLine = "18" endColumn = "15" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "rot_z[1,3]"
+    valueReference = "1033"
+    description = "rotation matrix from body to inertial frame"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "17" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "21" startColumn = "3" endLine = "21" endColumn = "64" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "rot_z[2,1]"
+    valueReference = "1034"
+    description = "rotation matrix from body to inertial frame"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "18" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "21" startColumn = "3" endLine = "21" endColumn = "64" fileWritable = "true">
+    <Real fixed="false" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "rot_z[2,2]"
+    valueReference = "1035"
+    description = "rotation matrix from body to inertial frame"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "19" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "21" startColumn = "3" endLine = "21" endColumn = "64" fileWritable = "true">
+    <Real fixed="false" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "rot_z[2,3]"
+    valueReference = "1036"
+    description = "rotation matrix from body to inertial frame"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "20" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "21" startColumn = "3" endLine = "21" endColumn = "64" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "rot_z[3,1]"
+    valueReference = "1037"
+    description = "rotation matrix from body to inertial frame"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "21" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "21" startColumn = "3" endLine = "21" endColumn = "64" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "rot_z[3,2]"
+    valueReference = "1038"
+    description = "rotation matrix from body to inertial frame"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "22" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "21" startColumn = "3" endLine = "21" endColumn = "64" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "rot_z[3,3]"
+    valueReference = "1039"
+    description = "rotation matrix from body to inertial frame"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "23" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "21" startColumn = "3" endLine = "21" endColumn = "64" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "torque_total"
+    valueReference = "1040"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "24" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "23" startColumn = "3" endLine = "23" endColumn = "20" fileWritable = "true">
+    <Real fixed="false" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "torque_vectors[1,1]"
+    valueReference = "1041"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "25" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "11" startColumn = "3" endLine = "11" endColumn = "27" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "torque_vectors[1,2]"
+    valueReference = "1042"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "26" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "11" startColumn = "3" endLine = "11" endColumn = "27" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "torque_vectors[2,1]"
+    valueReference = "1043"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "27" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "11" startColumn = "3" endLine = "11" endColumn = "27" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "torque_vectors[2,2]"
+    valueReference = "1044"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "28" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "11" startColumn = "3" endLine = "11" endColumn = "27" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "torque_vectors[3,1]"
+    valueReference = "1045"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "29" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "11" startColumn = "3" endLine = "11" endColumn = "27" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "torque_vectors[3,2]"
+    valueReference = "1046"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "30" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "11" startColumn = "3" endLine = "11" endColumn = "27" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "torque_vectors[4,1]"
+    valueReference = "1047"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "31" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "11" startColumn = "3" endLine = "11" endColumn = "27" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "torque_vectors[4,2]"
+    valueReference = "1048"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "32" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "11" startColumn = "3" endLine = "11" endColumn = "27" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "torques[1]"
+    valueReference = "1049"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "33" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "12" startColumn = "3" endLine = "12" endColumn = "18" fileWritable = "true">
+    <Real fixed="false" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "torques[2]"
+    valueReference = "1050"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "34" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "12" startColumn = "3" endLine = "12" endColumn = "18" fileWritable = "true">
+    <Real fixed="false" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "torques[3]"
+    valueReference = "1051"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "35" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "12" startColumn = "3" endLine = "12" endColumn = "18" fileWritable = "true">
+    <Real fixed="false" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "torques[4]"
+    valueReference = "1052"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "36" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "12" startColumn = "3" endLine = "12" endColumn = "18" fileWritable = "true">
+    <Real fixed="false" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "wheel_positions[1,1]"
+    valueReference = "1053"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "37" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "19" startColumn = "3" endLine = "19" endColumn = "28" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "wheel_positions[1,2]"
+    valueReference = "1054"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "38" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "19" startColumn = "3" endLine = "19" endColumn = "28" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "wheel_positions[1,3]"
+    valueReference = "1055"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "39" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "19" startColumn = "3" endLine = "19" endColumn = "28" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "wheel_positions[2,1]"
+    valueReference = "1056"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "40" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "19" startColumn = "3" endLine = "19" endColumn = "28" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "wheel_positions[2,2]"
+    valueReference = "1057"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "41" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "19" startColumn = "3" endLine = "19" endColumn = "28" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "wheel_positions[2,3]"
+    valueReference = "1058"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "42" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "19" startColumn = "3" endLine = "19" endColumn = "28" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "wheel_positions[3,1]"
+    valueReference = "1059"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "43" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "19" startColumn = "3" endLine = "19" endColumn = "28" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "wheel_positions[3,2]"
+    valueReference = "1060"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "44" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "19" startColumn = "3" endLine = "19" endColumn = "28" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "wheel_positions[3,3]"
+    valueReference = "1061"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "45" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "19" startColumn = "3" endLine = "19" endColumn = "28" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "wheel_positions[4,1]"
+    valueReference = "1062"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "46" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "19" startColumn = "3" endLine = "19" endColumn = "28" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "wheel_positions[4,2]"
+    valueReference = "1063"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "47" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "19" startColumn = "3" endLine = "19" endColumn = "28" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "wheel_positions[4,3]"
+    valueReference = "1064"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "noAlias"
+    classIndex = "48" classType = "rAlg"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "19" startColumn = "3" endLine = "19" endColumn = "28" fileWritable = "true">
+    <Real fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "height"
+    valueReference = "1065"
+    description = "Height of vehicle"
+    variability = "parameter" isDiscrete = "true"
+    causality = "internal" isValueChangeable = "true"
+    alias = "noAlias"
+    classIndex = "0" classType = "rPar"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "16" startColumn = "3" endLine = "16" endColumn = "50" fileWritable = "true">
+    <Real start="2.0" fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "length"
+    valueReference = "1066"
+    description = "Length of vehicle"
+    variability = "parameter" isDiscrete = "true"
+    causality = "internal" isValueChangeable = "true"
+    alias = "noAlias"
+    classIndex = "1" classType = "rPar"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "15" startColumn = "3" endLine = "15" endColumn = "50" fileWritable = "true">
+    <Real start="4.0" fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "mass"
+    valueReference = "1067"
+    description = "Mass of vehicle"
+    variability = "parameter" isDiscrete = "true"
+    causality = "internal" isValueChangeable = "true"
+    alias = "noAlias"
+    classIndex = "2" classType = "rPar"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "17" startColumn = "3" endLine = "17" endColumn = "48" fileWritable = "true">
+    <Real start="100.0" fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "width"
+    valueReference = "1068"
+    description = "Width of vehicle"
+    variability = "parameter" isDiscrete = "true"
+    causality = "internal" isValueChangeable = "true"
+    alias = "noAlias"
+    classIndex = "3" classType = "rPar"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "14" startColumn = "3" endLine = "14" endColumn = "48" fileWritable = "true">
+    <Real start="2.0" fixed="true" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "force_vectors[1,1]"
+    valueReference = "1069"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "alias" aliasVariable="forces[1]"
+    classIndex = "0" classType = "rAli"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "10" startColumn = "3" endLine = "10" endColumn = "26" fileWritable = "true">
+    <Real fixed="false" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "force_vectors[2,1]"
+    valueReference = "1070"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "alias" aliasVariable="forces[2]"
+    classIndex = "1" classType = "rAli"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "10" startColumn = "3" endLine = "10" endColumn = "26" fileWritable = "true">
+    <Real fixed="false" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "force_vectors[3,1]"
+    valueReference = "1071"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "alias" aliasVariable="forces[3]"
+    classIndex = "2" classType = "rAli"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "10" startColumn = "3" endLine = "10" endColumn = "26" fileWritable = "true">
+    <Real fixed="false" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "force_vectors[4,1]"
+    valueReference = "1072"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "alias" aliasVariable="forces[4]"
+    classIndex = "3" classType = "rAli"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "10" startColumn = "3" endLine = "10" endColumn = "26" fileWritable = "true">
+    <Real fixed="false" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "rot_z[1,1]"
+    valueReference = "1073"
+    description = "rotation matrix from body to inertial frame"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "alias" aliasVariable="rot_z[2,2]"
+    classIndex = "4" classType = "rAli"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "21" startColumn = "3" endLine = "21" endColumn = "64" fileWritable = "true">
+    <Real fixed="false" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "rot_z[1,2]"
+    valueReference = "1074"
+    description = "rotation matrix from body to inertial frame"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "negatedAlias" aliasVariable="$cse1"
+    classIndex = "5" classType = "rAli"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "21" startColumn = "3" endLine = "21" endColumn = "64" fileWritable = "true">
+    <Real fixed="false" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "torque_vectors[1,3]"
+    valueReference = "1075"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "alias" aliasVariable="torques[1]"
+    classIndex = "6" classType = "rAli"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "11" startColumn = "3" endLine = "11" endColumn = "27" fileWritable = "true">
+    <Real fixed="false" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "torque_vectors[2,3]"
+    valueReference = "1076"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "alias" aliasVariable="torques[2]"
+    classIndex = "7" classType = "rAli"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "11" startColumn = "3" endLine = "11" endColumn = "27" fileWritable = "true">
+    <Real fixed="false" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "torque_vectors[3,3]"
+    valueReference = "1077"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "alias" aliasVariable="torques[3]"
+    classIndex = "8" classType = "rAli"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "11" startColumn = "3" endLine = "11" endColumn = "27" fileWritable = "true">
+    <Real fixed="false" useNominal="false" />
+  </ScalarVariable>
+  <ScalarVariable
+    name = "torque_vectors[4,3]"
+    valueReference = "1078"
+    variability = "continuous" isDiscrete = "false"
+    causality = "internal" isValueChangeable = "false"
+    alias = "alias" aliasVariable="torques[4]"
+    classIndex = "9" classType = "rAli"
+    isProtected = "false" hideResult = "false"
+    fileName = "/home/cale/Documents/Autoagri/code/modelica/Vehicle.mo" startLine = "11" startColumn = "3" endLine = "11" endColumn = "27" fileWritable = "true">
+    <Real fixed="false" useNominal="false" />
+  </ScalarVariable>
+
+
+
+  </ModelVariables>
+
+
+</fmiModelDescription>
+
