@@ -110,7 +110,8 @@ def vehiclemodel():
         yaw, = model.get(["yaw"])
         torque, = model.get(["torque_total"])
         x, y = pos_in[0], pos_in[1]
-        rows.append([t, x, y, yaw, torque])
+        rows.append([t, x, y, yaw, torque, *forces])
+
 
     
     result = np.array(rows)
@@ -119,6 +120,7 @@ def vehiclemodel():
     ys = result[:,2]
     yaws = result[:,3]
     torques = result[:,4]
+    us = result[:,5:]
 
     fig, axs = plt.subplots(2,2)
     axs[0,0].plot(xs,ys)
@@ -130,6 +132,73 @@ def vehiclemodel():
     axs[1,0].plot(ts,torques)
     axs[1,0].set_xlabel("t")
     axs[1,0].set_ylabel(r"$\tau$", rotation=0)
+    axs[1,1].plot(ts,us[:,0], label="$u_{fl}$")
+    axs[1,1].plot(ts,us[:,1], label="$u_{rl}$")
+    axs[1,1].plot(ts,us[:,2], label="$u_{rr}$")
+    axs[1,1].plot(ts,us[:,3], label="$u_{fr}$")
+    axs[1,1].set_xlabel("t")
+    axs[1,1].set_ylabel("$u$", rotation=0)
+    axs[1,1].legend()
+
+    fig.tight_layout()
+
+    plt.show()
+
+
+def linear2dmovement():
+    model = SimulatorModel(start_time=0, fmufilepath="modelica/build/Linear2DMovement.fmu")
+
+    x = model.getVec("x", 2)
+    vx = model.getVec("vx", 2)
+
+    print("x:", x)
+    print("vx:", vx)
+
+    mass, mu = model.get(["m","mu"])
+    print("mass:", mass)
+    print("friction:", mu)
+
+
+    t, dt, tstop = 0, 0.1, 40
+    rows = []
+    forces = [0,0]
+    while t < tstop:
+
+        # set input
+        if t< tstop/4:
+            u = np.array([1,0])
+        elif t < 2*tstop/4:
+            u = np.array([-0.5,0.1])
+        elif t < 3*tstop/4:
+            u = np.array([-0.1,-0.1])
+
+        model.setVec("u", u)
+        
+        # step simulation forward
+        model.step(t, dt)
+        t += dt
+
+        # store results
+        x = model.getVec("x", 2)
+        vx = model.getVec("vx", 2)
+        rows.append([t, *x, *u])
+
+    
+    result = np.array(rows)
+    ts = result[:,0]
+    xs = result[:,1]
+    ys = result[:,2]
+    us = result[:,3:]
+
+    fig, axs = plt.subplots(1,2)
+    axs[0].plot(xs,ys)
+    axs[0].set_xlabel("x")
+    axs[0].set_ylabel("y", rotation=0)
+    axs[1].plot(ts,us[:,0], label=r"$u_x$")
+    axs[1].plot(ts,us[:,1], label=r"$u_y$")
+    axs[1].set_xlabel("t")
+    axs[1].set_ylabel(r"$u$", rotation=0)
+    axs[1].legend()
 
     fig.tight_layout()
 
@@ -137,7 +206,7 @@ def vehiclemodel():
 
 
 
-
 if __name__=="__main__":
+    #linear2dmovement()
     vehiclemodel()
     #twotrackmodel()
