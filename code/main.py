@@ -2,6 +2,94 @@ from models import SimulatorModel
 
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib as mpl
+import liveplot
+
+
+def vehiclemodel():
+    model = SimulatorModel(start_time=0, fmufilepath="modelica/build/VehicleForceModel.fmu")
+
+    #model.set(["yaw"], [-1.57])
+    model.setVec("pos_in", [0, 0, 0])
+
+    pos_in = model.getVec("pos_in", 3)
+    vel_b = model.getVec("vel_b", 3)
+    yaw, = model.get(["yaw"])
+    length, width = model.get(["length", "width"])
+
+    print("pos_in:", pos_in)
+    print("vel_b:", vel_b)
+    print("yaw:", yaw)
+
+    
+    # real time plotting
+    doliveplot = True
+    if doliveplot:
+        animation = liveplot.VehicleAnimation(pos_in, length, width)
+
+    t, dt, tstop = 0, 0.1, 40
+    rows = []
+    forces = [0,0,0,0]
+    while t < tstop:
+        # set input
+        forces = np.array([0,20,15,0])/10
+
+        model.setVec("forces", forces)
+        
+        # step simulation forward
+        model.step(t, dt)
+        t += dt
+
+        # store results
+        pos_in = model.getVec("pos_in", 3)
+        vel_b = model.getVec("vel_b", 3)
+        yaw, = model.get(["yaw"])
+        torque, = model.get(["torque_total"])
+        x, y = pos_in[0], pos_in[1]
+        rows.append([t, x, y, yaw, torque, *forces])
+
+
+        # update live plot
+        if doliveplot:
+            total = np.sum(np.abs(forces))
+            forces_percentage = forces/(total+1e-8)
+
+            animation.update(pos_in, yaw, forces_percentage)
+
+    
+    result = np.array(rows)
+    ts = result[:,0]
+    xs = result[:,1]
+    ys = result[:,2]
+    yaws = result[:,3]
+    torques = result[:,4]
+    us = result[:,5:]
+
+    fig, axs = plt.subplots(2,2)
+    axs[0,0].plot(xs,ys)
+    axs[0,0].set_xlabel("x")
+    axs[0,0].set_ylabel("y", rotation=0)
+    axs[0,1].plot(ts,yaws)
+    axs[0,1].set_xlabel("t")
+    axs[0,1].set_ylabel(r"$\psi$", rotation=0)
+    axs[1,0].plot(ts,torques)
+    axs[1,0].set_xlabel("t")
+    axs[1,0].set_ylabel(r"$\tau$", rotation=0)
+    axs[1,1].plot(ts,us[:,0], label="$u_{fl}$")
+    axs[1,1].plot(ts,us[:,1], label="$u_{rl}$")
+    axs[1,1].plot(ts,us[:,2], label="$u_{rr}$")
+    axs[1,1].plot(ts,us[:,3], label="$u_{fr}$")
+    axs[1,1].set_xlabel("t")
+    axs[1,1].set_ylabel("$u$", rotation=0)
+    axs[1,1].legend()
+
+    fig.tight_layout()
+
+    plt.show()
+
+
+
+
 
 
 def twotrackmodel():
@@ -74,77 +162,6 @@ def twotrackmodel():
     plt.show()
 
 
-def vehiclemodel():
-    model = SimulatorModel(start_time=0, fmufilepath="modelica/build/Vehicle.fmu")
-
-    yaw, = model.get(["yaw"])
-    print("initial yaw:", yaw)
-    model.set(["yaw"], [0])
-    yaw, = model.get(["yaw"])
-    print("initial yaw:", yaw)
-
-    pos_in = model.getVec("pos_in", 3)
-    vel_b = model.getVec("vel_b", 3)
-
-    print("pos_in:", pos_in)
-    print("vel_b:", vel_b)
-
-
-    t, dt, tstop = 0, 0.1, 40
-    rows = []
-    forces = [0,0,0,0]
-    while t < tstop:
-
-        # set input
-        forces = np.array([t,0,0,20])/10
-
-        model.setVec("forces", forces)
-        
-        # step simulation forward
-        model.step(t, dt)
-        t += dt
-
-        # store results
-        pos_in = model.getVec("pos_in", 3)
-        vel_b = model.getVec("vel_b", 3)
-        yaw, = model.get(["yaw"])
-        torque, = model.get(["torque_total"])
-        x, y = pos_in[0], pos_in[1]
-        rows.append([t, x, y, yaw, torque, *forces])
-
-
-    
-    result = np.array(rows)
-    ts = result[:,0]
-    xs = result[:,1]
-    ys = result[:,2]
-    yaws = result[:,3]
-    torques = result[:,4]
-    us = result[:,5:]
-
-    fig, axs = plt.subplots(2,2)
-    axs[0,0].plot(xs,ys)
-    axs[0,0].set_xlabel("x")
-    axs[0,0].set_ylabel("y", rotation=0)
-    axs[0,1].plot(ts,yaws)
-    axs[0,1].set_xlabel("t")
-    axs[0,1].set_ylabel(r"$\psi$", rotation=0)
-    axs[1,0].plot(ts,torques)
-    axs[1,0].set_xlabel("t")
-    axs[1,0].set_ylabel(r"$\tau$", rotation=0)
-    axs[1,1].plot(ts,us[:,0], label="$u_{fl}$")
-    axs[1,1].plot(ts,us[:,1], label="$u_{rl}$")
-    axs[1,1].plot(ts,us[:,2], label="$u_{rr}$")
-    axs[1,1].plot(ts,us[:,3], label="$u_{fr}$")
-    axs[1,1].set_xlabel("t")
-    axs[1,1].set_ylabel("$u$", rotation=0)
-    axs[1,1].legend()
-
-    fig.tight_layout()
-
-    plt.show()
-
-
 def linear2dmovement():
     model = SimulatorModel(start_time=0, fmufilepath="modelica/build/Linear2DMovement.fmu")
 
@@ -190,7 +207,6 @@ def linear2dmovement():
     ys = result[:,2]
     us = result[:,3:]
 
-    fig, axs = plt.subplots(1,2)
     axs[0].plot(xs,ys)
     axs[0].set_xlabel("x")
     axs[0].set_ylabel("y", rotation=0)

@@ -1,5 +1,5 @@
 
-model Vehicle "model of vehicle with four wheels"
+model VehicleForceModel "model of vehicle with four wheels replaced by forces"
   input Real forces[4] "force inputs. Order: fl, rl, rr, fr";
 
   output Real pos_in[3] "position in inertial frame";
@@ -67,4 +67,4 @@ equation
   mass*der(vel_b) = force_total;
   inertia*der(yawrate) = torque_total;
 
-end Vehicle;
+end VehicleForceModel ;
