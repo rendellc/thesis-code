@@ -25,6 +25,7 @@ class VehicleAnimation:
         xr = x - length/2
         yr = y - width/2
         self.chassis = mpl.patches.Rectangle((xr, yr), length, width)
+
         self.ax.add_patch(self.chassis)
 
         # draw wheels
@@ -47,6 +48,9 @@ class VehicleAnimation:
         plt.show(block=False)
 
     def update(self, position, angle_rad, wheel_forces, dt=1e-10):
+        force_total = np.sum(np.abs(wheel_forces))
+        force_ratios = wheel_forces/(force_total+1e-8)
+
         angle_deg = 180/np.pi*angle_rad
 
         x, y = position[0], position[1]
@@ -61,13 +65,13 @@ class VehicleAnimation:
         self.chassis.set_transform(t_rect)
 
         c, s = np.cos(angle_rad), np.sin(angle_rad)
-        rot_z = np.array([
+        rot_chassis = np.array([
             [c, -s],
             [s, c]])
-        for corner, wheel, force in zip(self.corners, self.wheels, wheel_forces):
+        for corner, wheel, force in zip(self.corners, self.wheels, force_ratios):
             xc, yc = corner
 
-            wheel_vec = rot_z @ np.array([xc, yc])
+            wheel_vec = rot_chassis @ np.array([xc, yc])
             xw = x + wheel_vec[0]
             yw = y + wheel_vec[1]
             xr = xw - self.wheel_radius
@@ -79,9 +83,9 @@ class VehicleAnimation:
             wheel.set_transform(t_rect)
 
             if force > 0:
-                wheel.set_color((force, 0, 0, 1.0))
+                wheel.set_color((0, force, 0, 1.0))
             else:
-                wheel.set_color((0, abs(force), 0, 1.0))
+                wheel.set_color((abs(force), 0, 0, 1.0))
 
 
 

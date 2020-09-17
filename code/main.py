@@ -23,16 +23,27 @@ def vehiclemodel():
 
     
     # real time plotting
+    fig, ax_live = plt.subplots(1,1)
+    pos_ref = np.array([5.0, 13.0])
+    yaw_ref = 0.5
+    dx,dy = np.cos(yaw_ref), np.sin(yaw_ref)
+    ref_arrow = ax_live.arrow(0, 0, 2, 0, head_width=0.4, head_length=0.4)
+
+
     doliveplot = True
     if doliveplot:
-        animation = liveplot.VehicleAnimation(pos_in, length, width)
+        animation = liveplot.VehicleAnimation(pos_in, length, width, ax=ax_live)
 
     t, dt, tstop = 0, 0.1, 40
     rows = []
     forces = [0,0,0,0]
     while t < tstop:
         # set input
-        forces = np.array([0,20,15,0])/10
+        if t < 10:
+            forces = np.array([2,2,2,2])
+        elif t < 30:
+            forces = np.array([-2,0,0,-4])
+
 
         model.setVec("forces", forces)
         
@@ -48,13 +59,13 @@ def vehiclemodel():
         x, y = pos_in[0], pos_in[1]
         rows.append([t, x, y, yaw, torque, *forces])
 
-
         # update live plot
         if doliveplot:
-            total = np.sum(np.abs(forces))
-            forces_percentage = forces/(total+1e-8)
+            ref_trans = mpl.transforms.Affine2D().translate(pos_ref[0], pos_ref[1])
+            ref_rot = mpl.transforms.Affine2D().rotate(yaw_ref)
+            ref_arrow.set_transform(ref_rot + ref_trans + ax_live.transData)
 
-            animation.update(pos_in, yaw, forces_percentage)
+            animation.update(pos_in, yaw, forces)
 
     
     result = np.array(rows)
