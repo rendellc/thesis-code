@@ -10,10 +10,13 @@ def runcmds(cmds):
 
 
 
-def build(filepath, modelname):
-    cmds = [
-        f'loadFile("{filepath}")',
-        f'buildModelFMU({modelname}, fmuType="cs")']
+def build(modelname, filenames):
+    cmds = []
+    for filename in filenames:
+        cmds.append(f'loadFile("{filename}")')
+
+    # cmds.append('loadModel(Modelica)')
+    cmds.append(f'buildModelFMU({modelname}, fmuType="cs")')
 
     fmupath = runcmds(cmds)
     return fmupath
@@ -24,13 +27,19 @@ if __name__=="__main__":
     print(omc.sendExpression('getVersion()'))
     print(omc.sendExpression(f'cd("{build_dir}")'))
 
+    from collections import namedtuple
+    BuildSpec = namedtuple("BuildSpec", ["modelname", "filenames"])
 
-    import glob
-    model_files = glob.glob("*.mo")
-    for filename in model_files:
-        # assume model is same as filename without extension
-        modelname = filename[:~2]
-        build("../" + filename, modelname)
+    buildspecs = [
+            BuildSpec("AutoagriModel", ["AutoagriModel.mo", "Body.mo", "Wheel.mo"])
+    ]
+
+    # get out of build dir
+    for i, (modelname, filenames) in enumerate(buildspecs):
+        buildspecs[i] = BuildSpec(modelname, ["../" + fn for fn in filenames])
+
+    for bs in buildspecs:
+        build(bs.modelname, bs.filenames)
 
 
 

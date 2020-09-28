@@ -47,11 +47,9 @@ class VehicleAnimation:
 
         plt.show(block=False)
 
-    def update(self, position, angle_rad, wheel_forces, dt=1e-10):
-        force_total = np.sum(np.abs(wheel_forces))
-        force_ratios = wheel_forces/(force_total+1e-8)
-
-        angle_deg = 180/np.pi*angle_rad
+    def update(self, position, chassis_angle, wheel_angles, dt=1e-10):
+        # force_total = np.sum(np.abs(wheel_forces))
+        # force_ratios = wheel_forces/(force_total+1e-8)
 
         x, y = position[0], position[1]
         xr = x - self.length/2
@@ -60,15 +58,15 @@ class VehicleAnimation:
 
         # transformations
         self.chassis.set_xy((xr, yr))
-        t_rot = mpl.transforms.Affine2D().rotate_deg_around(x, y, angle_deg)
+        t_rot = mpl.transforms.Affine2D().rotate_around(x, y, chassis_angle)
         t_rect = t_rot + self.ax.transData
         self.chassis.set_transform(t_rect)
 
-        c, s = np.cos(angle_rad), np.sin(angle_rad)
+        c, s = np.cos(chassis_angle), np.sin(chassis_angle)
         rot_chassis = np.array([
             [c, -s],
             [s, c]])
-        for corner, wheel, force in zip(self.corners, self.wheels, force_ratios):
+        for corner, wheel, wheel_angle in zip(self.corners, self.wheels, wheel_angles):
             xc, yc = corner
 
             wheel_vec = rot_chassis @ np.array([xc, yc])
@@ -78,14 +76,14 @@ class VehicleAnimation:
             yr = yw - self.wheel_thickness/2
 
             wheel.set_xy((xr,yr))
-            t_rot = mpl.transforms.Affine2D().rotate_deg_around(xw, yw, angle_deg)
+            t_rot = mpl.transforms.Affine2D().rotate_deg_around(xw, yw, chassis_angle + wheel_angle)
             t_rect = t_rot + self.ax.transData
             wheel.set_transform(t_rect)
 
-            if force > 0:
-                wheel.set_color((0, force, 0, 1.0))
-            else:
-                wheel.set_color((abs(force), 0, 0, 1.0))
+            # if force > 0:
+            #     wheel.set_color((0, force, 0, 1.0))
+            # else:
+            #     wheel.set_color((abs(force), 0, 0, 1.0))
 
 
 

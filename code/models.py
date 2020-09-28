@@ -3,12 +3,14 @@ from fmpy.fmi2 import FMU2Slave
 import shutil
 
 class SimulatorModel:
-    def __init__(self, start_time, fmufilepath):
+    def __init__(self, start_time, fmufilepath, printVariableNames=False):
         self.fmu_filename = fmufilepath
 
         model_description = read_model_description(self.fmu_filename)
         self.vrs = {}
         for variable in model_description.modelVariables:
+            if printVariableNames:
+                print(variable.name)
             self.vrs[variable.name] = variable.valueReference
 
 
