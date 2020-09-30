@@ -16,10 +16,10 @@ initial equation
 
 equation
   // array operations possible?
-  w1.vel_cg = body.rot_in_to_body*(body.vel_in + der(body.rot_body_to_in)*w1.position);
-  w2.vel_cg = body.rot_in_to_body*(body.vel_in + der(body.rot_body_to_in)*w2.position);
-  w3.vel_cg = body.rot_in_to_body*(body.vel_in + der(body.rot_body_to_in)*w3.position);
-  w4.vel_cg = body.rot_in_to_body*(body.vel_in + der(body.rot_body_to_in)*w4.position);
+  w1.vel_w_body = body.rot_in_to_body*(body.vel_in + der(body.rot_body_to_in)*w1.position);
+  w2.vel_w_body = body.rot_in_to_body*(body.vel_in + der(body.rot_body_to_in)*w2.position);
+  w3.vel_w_body = body.rot_in_to_body*(body.vel_in + der(body.rot_body_to_in)*w3.position);
+  w4.vel_w_body = body.rot_in_to_body*(body.vel_in + der(body.rot_body_to_in)*w4.position);
 
   w1.drive_torque = drive_torques[1];
   w2.drive_torque = drive_torques[2];
@@ -36,7 +36,7 @@ equation
   w3.force_z = g*(body.mass/4 + w3.mass);
   w4.force_z = g*(body.mass/4 + w4.mass);
 
-  body.force_b = w1.force_cg + w2.force_cg + w3.force_cg + w4.force_cg;
-  body.torque = cross(w1.position,w1.force_cg) + cross(w2.position,w2.force_cg) + cross(w3.position,w3.force_cg) + cross(w4.position,w4.force_cg);
+  body.force_b = w1.force_b + w2.force_b + w3.force_b + w4.force_b;
+  body.torque = cross(w1.position,w1.force_b) + cross(w2.position,w2.force_b) + cross(w3.position,w3.force_b) + cross(w4.position,w4.force_b);
 
 end AutoagriModel;

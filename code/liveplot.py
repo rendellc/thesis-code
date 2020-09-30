@@ -3,7 +3,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 class VehicleAnimation:
-    def __init__(self, position, length, width, ax=None):
+    def __init__(self, position, length, width, size=30, ax=None):
         self.length = length
         self.width = width
         self.wheel_thickness = 0.4
@@ -14,9 +14,9 @@ class VehicleAnimation:
         self.ax = ax
         self.ax.set_aspect("equal")
         # automate this
-        self.ax.set_xlim(-30, 30)
-        self.ax.set_ylim(-30, 30)
-        self.ax.set_xlabel("x (m)")
+        self.ax.set_xlim(-size/2, size/2)
+        self.ax.set_ylim(-size/2, size/2)
+        self.ax.set_xlabel(r"$x (m)$")
         self.ax.set_ylabel("y (m)")
         self.ax.grid(True)
 
@@ -47,9 +47,11 @@ class VehicleAnimation:
 
         plt.show(block=False)
 
-    def update(self, position, chassis_angle, wheel_angles, dt=1e-10):
+    def update(self, t, position, chassis_angle, wheel_angles, dt=1e-10):
         # force_total = np.sum(np.abs(wheel_forces))
         # force_ratios = wheel_forces/(force_total+1e-8)
+
+        self.ax.set_title(f"time {t:.4f}")
 
         x, y = position[0], position[1]
         xr = x - self.length/2
@@ -76,7 +78,7 @@ class VehicleAnimation:
             yr = yw - self.wheel_thickness/2
 
             wheel.set_xy((xr,yr))
-            t_rot = mpl.transforms.Affine2D().rotate_deg_around(xw, yw, chassis_angle + wheel_angle)
+            t_rot = mpl.transforms.Affine2D().rotate_around(xw, yw, chassis_angle + wheel_angle)
             t_rect = t_rot + self.ax.transData
             wheel.set_transform(t_rect)
 

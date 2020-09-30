@@ -15,7 +15,7 @@ def build(modelname, filenames):
     for filename in filenames:
         cmds.append(f'loadFile("{filename}")')
 
-    # cmds.append('loadModel(Modelica)')
+    cmds.append('loadModel(Modelica)')
     cmds.append(f'buildModelFMU({modelname}, fmuType="cs")')
 
     fmupath = runcmds(cmds)

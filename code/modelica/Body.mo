@@ -7,12 +7,12 @@ model Body "Body kinematics and simple dynamics"
   Real vel_in[3] "Velocity in inertial frame";
   Real vel_b[3] "Velocity in body frame";
   
-  Real yaw;
-  Real yawrate;
+  Real yaw(start=0.0);
+  Real yawrate(start=0.0);
 
   parameter Real width = 2.0 "Width of vehicle";
   parameter Real length = 4.0 "Length of vehicle";
-  parameter Real mass = 200.0 "Mass of body";
+  parameter Real mass = 2500.0 "Mass of body";
 
   Real inertia_z;
   Real rot_body_to_in[3,3] "rotation matrix from body to inertial frame";
