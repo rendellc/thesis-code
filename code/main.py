@@ -1,4 +1,4 @@
-from models import SimulatorModel
+from fmuinterface import SimulatorModel
 
 import numpy as np
 import matplotlib.pyplot as plt
