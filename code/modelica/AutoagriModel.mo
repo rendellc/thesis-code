@@ -36,7 +36,7 @@ equation
   w3.force_z = g*(body.mass/4 + w3.mass);
   w4.force_z = g*(body.mass/4 + w4.mass);
 
-  body.force_b = w1.force_b + w2.force_b + w3.force_b + w4.force_b;
-  body.torque = cross(w1.position,w1.force_b) + cross(w2.position,w2.force_b) + cross(w3.position,w3.force_b) + cross(w4.position,w4.force_b);
+  body.force_b = w1.force_body + w2.force_body + w3.force_body + w4.force_body;
+  body.torque = cross(w1.position,w1.force_body) + cross(w2.position,w2.force_body) + cross(w3.position,w3.force_body) + cross(w4.position,w4.force_body);
 
 end AutoagriModel;
