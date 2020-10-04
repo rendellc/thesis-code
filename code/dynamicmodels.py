@@ -1,32 +1,28 @@
 import numpy as np
-from numpy import cos, sin
 import numpy.linalg as la
 import dataclasses
 
-from typing import List
+from typing import List, TypeVar
 from typing_extensions import Protocol, runtime
 
+import utils
 
-def skew(vector):
-    vx, vy, vz = vector
-    return np.array([
-        [0, -vz, vy],
-        [vz, 0, -vx],
-        [-vy,vx,0]])
 
-def rotz(angle):
-    return np.array([
-            [cos(angle), -sin(angle), 0],
-            [sin(angle),  cos(angle), 0],
-            [0, 0, 1]])
+def burckhardtfriction(slip_res, c1, c2, c3):
+    return c1*(1 - np.exp(-c2*slip_res)) - c3*slip_res
 
+
+S = TypeVar("S")
 
 @runtime
-class DynamicModel(Protocol):
+class DynamicModel(Protocol[S]):
     def states(self) -> np.ndarray:
         ...
 
     def derivatives(self, inputs: np.ndarray) -> np.ndarray:
+        ...
+
+    def from_states(self, states: np.ndarray) -> S:
         ...
 
 
@@ -59,10 +55,7 @@ class BodyState:
     def compute_derived_variables(self):
         self.inertia_z = 1/12 * self.mass * (self.length**2 + self.width**2)
 
-        self.rot_body_to_in = np.array([
-            [cos(self.yaw), -sin(self.yaw), 0],
-            [sin(self.yaw), cos(self.yaw), 0],
-            [0, 0, 1]])
+        self.rot_body_to_in = utils.rotz(self.yaw)
         self.vel_in = self.rot_body_to_in @ self.vel_b
 
 
@@ -77,6 +70,13 @@ class BodyState:
 
         return np.array([*self.vel_in, *acc_b, self.yawrate, yawacc])
 
+    def from_states(self, states):
+        pos_in = states[0:3]
+        vel_b = states[3:6]
+        yaw = states[6]
+        yawrate = states[7]
+        return dataclasses.replace(self, pos_in=pos_in, vel_b=vel_b, yaw=yaw, yawrate=yawrate)
+
 
 @dataclasses.dataclass
 class WheelState:
@@ -89,6 +89,7 @@ class WheelState:
     pos_b: np.ndarray
     vel_body_b: np.ndarray
     yawrate_body: float
+    load: float
 
     # Parameter
     time: float = 0
@@ -96,7 +97,7 @@ class WheelState:
     c2: float = 23.99
     c3: float = 0.52
     ks: float = 1.0
-    sideslip_smoothing: float = 0.05
+    slip_smoothing: float = 0.05
     #eps: float = 0.0001
     #B: float 0.05 "Slip r esponse parameter"
 
@@ -104,8 +105,8 @@ class WheelState:
     omega: float = 0
     steer_angle: float = 0
     steer_angle_dot: float = 0
-    sideslip_l: float = 0
-    sideslip_s: float = 0
+    slip_l: float = 0
+    slip_s: float = 0
 
     # Derived variables, computed by compute_derived_variables
     inertia_y: float = 0.0
@@ -116,10 +117,12 @@ class WheelState:
     rot_ls_to_wheel: np.ndarray = np.eye(3)
     vel_rot_w: np.ndarray = np.zeros(3)
     vel_rot_ls: np.ndarray = np.zeros(3)
+    slip_res: float = 0
+    mu_res: float = 0
     friction_force: float = 0 # friction force working against drive torque
-    friction_torque: float = 0
     force_on_body: np.ndarray = np.zeros(3)
     torque_on_body: np.ndarray = np.zeros(3)
+    wheel_state: str = ""
     
     alpha: float = 0
     beta: float = 0
@@ -134,20 +137,25 @@ class WheelState:
         self.inertia_y = 1/2 * m * r**2;
         self.inertia_z = 1/4 * m * r**2 + 1/12 * m * w**2;
 
-        self.rot_wheel_to_body = rotz(self.steer_angle)
+        self.rot_wheel_to_body = utils.rotz(self.steer_angle)
+
+        # TODO: this may be non-sensical, but it makes the simulator stable for now
+        self.slip_l = np.clip(self.slip_l, -1, 1)
+        self.slip_s = np.clip(self.slip_s, -1, 1)
 
         self.vel_b = self.vel_body_b + np.cross([0,0,self.yawrate_body],self.pos_b)
         self.beta = np.arctan2(self.vel_b[1], self.vel_b[0])
         self.alpha = self.steer_angle - self.beta # might be good to use smallest signed angle here
 
-        self.rot_ls_to_wheel = rotz(self.alpha)
+        self.rot_ls_to_wheel = utils.rotz(self.alpha)
         rot_body_to_wheel = self.rot_wheel_to_body.T
         rot_wheel_to_ls = self.rot_ls_to_wheel.T
         self.vel_b_ls = rot_wheel_to_ls @ rot_body_to_wheel @ self.vel_b
         # the way alpha is defined, the y- and z-component of the vel_b expressed in
         # LS frame should be zero. So norm(vel_b_ls) == vel_b_ls[0] upto numerical inaccuracy
         # Also norm(vel_b_ls) == norm(vel_b)
-        np.testing.assert_almost_equal(la.norm(self.vel_b), self.vel_b_ls[0],
+        np.testing.assert_almost_equal(
+                la.norm(self.vel_b), self.vel_b_ls[0],
                 err_msg="""
                 Expected longitudinal velocity component to be equal to the speed.
                 Check rotation matrices (especially LS to wheel).
@@ -156,26 +164,65 @@ class WheelState:
         self.vel_rot_w = [r*self.omega, 0, 0]
         self.vel_rot_ls = rot_wheel_to_ls @ self.vel_rot_w
 
-        self.force_on_body = np.array([1,0,0])
+        self.slip_res = (self.slip_l**2 + self.slip_s**2)**0.5
+        self.mu_res = burckhardtfriction(self.slip_res, self.c1, self.c2, self.c3)
+        if np.isclose(self.slip_res,0):
+            self.mu_l = 0
+            self.mu_s = 0
+        else:
+            self.mu_l = self.slip_l/self.slip_res*self.mu_res
+            self.mu_s = self.ks * self.slip_s/self.slip_res*self.mu_res
+
+        force_z = self.load + utils.weight(self.mass)
+        self.friction_force_ls = np.array([self.mu_l, self.mu_s,0]) * force_z
+        self.friction_force_w = self.rot_ls_to_wheel @ self.friction_force_ls
+
+        self.force_on_body = self.rot_wheel_to_body @ self.rot_ls_to_wheel @ self.friction_force_ls
         self.torque_on_body = np.cross(self.pos_b, self.force_on_body)
+
+        # Evaluate wheel state for debugging
+        vel_w = self.vel_b_ls[0]
+        vel_rot_l = self.vel_rot_ls[0]
+        if vel_rot_l > vel_w:
+            self.wheel_state = "Driving"
+        else:
+            self.wheel_state = "Braking"
+
 
 
 
     def states(self) -> np.ndarray:
-        return np.array([self.omega, self.steer_angle, self.steer_angle_dot, self.sideslip_l, self.sideslip_s])
+        return np.array([self.omega, self.steer_angle, self.steer_angle_dot, self.slip_l, self.slip_s])
 
     def derivatives(self, inputs: np.ndarray) -> np.ndarray:
         drive_torque, steer_torque = inputs
 
-        omega_dot = (drive_torque - self.friction_torque)/self.inertia_y
+        omega_dot = (drive_torque - self.radius*self.friction_force_w[0])/self.inertia_y
         steer_angle_ddot = steer_torque/self.inertia_z
 
-        B = self.sideslip_smoothing
-        # TODO: implement sideslip smoothing
-        sideslip_l_dot = 0/B
-        sideslip_s_dot = 0/B
+        B = self.slip_smoothing
+        # TODO: implement slip smoothing
+        vel_rot_l = self.vel_rot_ls[0]
+        vel_rot_s = self.vel_rot_ls[1]
+        vel_w = self.vel_b_ls[0]
+        vel_big = max(vel_rot_l, vel_w)
+        slip_l_dot = -abs(vel_big)*self.slip_l/B + (vel_rot_l - vel_w)*utils.sign(vel_big)/B
+        slip_s_dot = -abs(vel_big)*self.slip_s/B + vel_rot_s*utils.sign(vel_big)/B
 
-        return np.array([omega_dot, self.steer_angle_dot, steer_angle_ddot, sideslip_l_dot, sideslip_s_dot])
+        return np.array([omega_dot, self.steer_angle_dot, steer_angle_ddot, slip_l_dot, slip_s_dot])
+
+    def from_states(self, states):
+        """
+        Return new instance of dataclass. Do not modifify self.
+        """
+        omega = states[0]
+        steer_angle = states[1]
+        steer_angle_dot = states[2]
+        slip_l = states[3]
+        slip_s = states[4]
+        return dataclasses.replace(self, omega=omega, steer_angle=steer_angle,
+                steer_angle_dot=steer_angle_dot,
+                slip_l=slip_l, slip_s=slip_s)
 
 
 @dataclasses.dataclass(frozen=True)
@@ -222,6 +269,20 @@ class VehicleState:
 
 
         return np.array(derivatives)
+
+    def from_states(self, states):
+        """
+        Return new instance of dataclass. Do not modifify self.
+        """
+        bodystates = states[0:8]
+        wheelstatesall = states[8:]
+        wheelstates = utils.chunks(wheelstatesall, len(self.wss))
+
+        bs = self.bs.from_states(bodystates)
+        wss = [ws.from_states(wheelstate) for ws, wheelstate in zip(self.wss, wheelstates)]
+
+        return dataclasses.replace(self, bs=bs, wss=wss)
+
 
 
 
