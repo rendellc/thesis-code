@@ -24,7 +24,28 @@ class VehicleAnimation:
         x,y = position[0], position[1]
         xr = x - length/2
         yr = y - width/2
-        self.chassis = mpl.patches.Rectangle((xr, yr), length, width)
+        # self.chassis = mpl.patches.Rectangle((xr, yr), length, width)
+        L = self.length
+        B = self.width
+        D = 2*self.wheel_radius
+        xy = np.array([
+            [L/2,0],
+            [L/2,B/2],
+            [L/2-D,B/2],
+            [L/2-D,B/4],
+            [-L/2+D,B/2],
+            [-L/2,B/2],
+            [-L/2,B/4],
+            [-L/2+D,B/4],
+            [L/4,0],
+            [-L/2+D,-B/4],
+            [-L/2,-B/4],
+            [-L/2,-B/2],
+            [-L/2+D,-B/2],
+            [L/2-D,-B/4],
+            [L/2-D,-B/2],
+            [L/2,-B/2]])
+        self.chassis = mpl.patches.Polygon(xy)
 
         self.ax.add_patch(self.chassis)
 
@@ -56,13 +77,13 @@ class VehicleAnimation:
         x, y = position[0], position[1]
         xr = x - self.length/2
         yr = y - self.width/2
-        xy_rect = (xr, yr) # bottom left corner
+        # xy_rect = (xr, yr) # bottom left corner
 
         # transformations
-        self.chassis.set_xy((xr, yr))
-        t_rot = mpl.transforms.Affine2D().rotate_around(x, y, chassis_angle)
-        t_rect = t_rot + self.ax.transData
-        self.chassis.set_transform(t_rect)
+        t_trans = mpl.transforms.Affine2D().translate(x,y)
+        t_rot = mpl.transforms.Affine2D().rotate(chassis_angle)
+        t_chassis = t_rot + t_trans + self.ax.transData
+        self.chassis.set_transform(t_chassis)
 
         c, s = np.cos(chassis_angle), np.sin(chassis_angle)
         rot_chassis = np.array([

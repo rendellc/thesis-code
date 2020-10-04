@@ -21,17 +21,17 @@ vs = VehicleState(bs=bs, wss=wss)
 
 animation = liveplot.VehicleAnimation(bs.pos_in, bs.length, bs.width, size=50)
 
-t, dt, tstop = 0, 0.0025, 30
+t, dt, tstop = 0, 0.0025, 30 # slip clipping removed
 timenextliveplotupdate = t
 liveplotfps = 30
 while t < tstop:
     steer_torques = [0,0,0,0]
     if t < 5:
         drive_torques = np.array([1,1,1,1])*50
-        steer_torques = np.array([1,-1,-1,1])*1
+        steer_torques = np.array([1,-1,-1,1])*0
     elif t < 10:
-        drive_torques = np.array([0,0,0,0])
-        steer_torques = np.array([-1,1,1,-1])*1.2
+        drive_torques = np.array([-1,-1,0,0])*50
+        steer_torques = np.array([-1,1,1,-1])*0
     elif t < 15:
         pass
     else:
