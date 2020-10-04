@@ -12,27 +12,32 @@ wbase = WheelState(mass=189, radius=0.8, width=0.4, pos_b=np.array([0,0,0]),
         vel_body_b=bs.vel_b, yawrate_body=bs.yawrate,
         load=utils.weight(bs.mass)/4)
 wss = [
-        replace(wbase, pos_b=np.array([bs.length/2, bs.width/2,0]), steer_angle=np.pi/4),
+        replace(wbase, pos_b=np.array([bs.length/2, bs.width/2,0])),
         replace(wbase, pos_b=np.array([-bs.length/2, bs.width/2,0])),
         replace(wbase, pos_b=np.array([-bs.length/2, -bs.width/2,0])),
         replace(wbase, pos_b=np.array([bs.length/2, -bs.width/2,0])),
 ]
 vs = VehicleState(bs=bs, wss=wss)
 
-
-
-
-t, dt, tstop = 0, 0.01, 20
-
-
-doliveplot = True
-timenextliveplotupdate = 0.0
-liveplotfps = 30
 animation = liveplot.VehicleAnimation(bs.pos_in, bs.length, bs.width, size=50)
 
+t, dt, tstop = 0, 0.0025, 30
+timenextliveplotupdate = t
+liveplotfps = 30
 while t < tstop:
-    drive_torques = [10,0,0,0]
     steer_torques = [0,0,0,0]
+    if t < 5:
+        drive_torques = np.array([1,1,1,1])*50
+        steer_torques = np.array([1,-1,-1,1])*1
+    elif t < 10:
+        drive_torques = np.array([0,0,0,0])
+        steer_torques = np.array([-1,1,1,-1])*1.2
+    elif t < 15:
+        pass
+    else:
+        steer_torques = [0,0,0,0]
+        drive_torques = np.array([1,1,1,1])*50
+
 
     # inputs = [drive1,steer1,...,drive4,steer4]
     inputs = utils.interleave([drive_torques, steer_torques])
@@ -44,7 +49,8 @@ while t < tstop:
     wheel_states = [ws.wheel_state for ws in vs.wss]
     # print(wheel_states, slip_ls)
 
-    if doliveplot and t > timenextliveplotupdate:
+    if t > timenextliveplotupdate:
+        # print(wheel_states)
         steer_angles = [ws.steer_angle for ws in vs.wss]
         animation.update(t, vs.bs.pos_in, vs.bs.yaw, steer_angles)
         timenextliveplotupdate = t + 1/liveplotfps

@@ -140,8 +140,8 @@ class WheelState:
         self.rot_wheel_to_body = utils.rotz(self.steer_angle)
 
         # TODO: this may be non-sensical, but it makes the simulator stable for now
-        self.slip_l = np.clip(self.slip_l, -1, 1)
-        self.slip_s = np.clip(self.slip_s, -1, 1)
+        # self.slip_l = np.clip(self.slip_l, -1, 1)
+        # self.slip_s = np.clip(self.slip_s, -1, 1)
 
         self.vel_b = self.vel_body_b + np.cross([0,0,self.yawrate_body],self.pos_b)
         self.beta = np.arctan2(self.vel_b[1], self.vel_b[0])
