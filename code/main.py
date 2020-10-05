@@ -1,8 +1,7 @@
 import numpy as np
-from dataclasses import replace
 
 from dynamicmodels import BodyState, WheelState, VehicleState
-from simulator import DynSysSim
+import simulator
 import utils
 import liveplot
 
@@ -12,16 +11,17 @@ wbase = WheelState(mass=189, radius=0.8, width=0.4, pos_b=np.array([0,0,0]),
         vel_body_b=bs.vel_b, yawrate_body=bs.yawrate,
         load=utils.weight(bs.mass)/4)
 wss = [
-        replace(wbase, pos_b=np.array([bs.length/2, bs.width/2,0])),
-        replace(wbase, pos_b=np.array([-bs.length/2, bs.width/2,0])),
-        replace(wbase, pos_b=np.array([-bs.length/2, -bs.width/2,0])),
-        replace(wbase, pos_b=np.array([bs.length/2, -bs.width/2,0])),
+        wbase.from_changes(pos_b=np.array([bs.length/2, bs.width/2,0])),
+        wbase.from_changes(pos_b=np.array([-bs.length/2, bs.width/2,0])),
+        wbase.from_changes(pos_b=np.array([-bs.length/2, -bs.width/2,0])),
+        wbase.from_changes(pos_b=np.array([bs.length/2, -bs.width/2,0])),
 ]
 vs = VehicleState(bs=bs, wss=wss)
 
 animation = liveplot.VehicleAnimation(bs.pos_in, bs.length, bs.width, size=50)
+solver: simulator.Solver = simulator.ImprovedEuler()
 
-t, dt, tstop = 0, 0.0025, 30
+t, dt, tstop = 0, 0.005, 30
 timenextliveplotupdate = t
 liveplotfps = 30
 while t < tstop:
@@ -44,7 +44,7 @@ while t < tstop:
 
     # inputs = [drive1,steer1,...,drive4,steer4]
     inputs = utils.interleave([drive_torques, steer_torques])
-    vs = DynSysSim.step(vs, inputs, dt)
+    vs = solver.step(vs, inputs, dt)
     t += dt
 
     slip_ls = [ws.slip_l for ws in vs.wss]

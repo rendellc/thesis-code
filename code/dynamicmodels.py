@@ -12,7 +12,6 @@ import utils
 def burckhardtfriction(slip_res, c1, c2, c3):
     return c1*(1 - np.exp(-c2*slip_res)) - c3*slip_res
 
-
 S = TypeVar("S")
 
 @runtime
@@ -33,6 +32,12 @@ class DynamicModel(Protocol[S]):
         """
         Create a model with same parameters, but with state variables
         coming from states array.
+        """
+        ...
+
+    def from_changes(self, **changes) -> S:
+        """
+        Create new model with changes applied.
         """
         ...
 
@@ -87,6 +92,9 @@ class BodyState:
         yaw = states[6]
         yawrate = states[7]
         return dataclasses.replace(self, pos_in=pos_in, vel_b=vel_b, yaw=yaw, yawrate=yawrate)
+
+    def from_changes(self, **changes):
+        return dataclasses.replace(self, **changes)
 
 
 @dataclasses.dataclass
@@ -234,6 +242,9 @@ class WheelState:
                 steer_angle_dot=steer_angle_dot,
                 slip_l=slip_l, slip_s=slip_s)
 
+    def from_changes(self, **changes):
+        return dataclasses.replace(self, **changes)
+
 
 @dataclasses.dataclass(frozen=True)
 class VehicleState:
@@ -277,7 +288,6 @@ class VehicleState:
             wheel_inputs = np.array([drive_torques[i],steer_torques[i]])
             derivatives.extend(ws.derivatives(wheel_inputs))
 
-
         return np.array(derivatives)
 
     def from_states(self, states):
@@ -293,7 +303,9 @@ class VehicleState:
 
         return dataclasses.replace(self, bs=bs, wss=wss)
 
-
+    def from_changes(self, **changes):
+        return dataclasses.replace(self, **changes)
+        
 
 
 
