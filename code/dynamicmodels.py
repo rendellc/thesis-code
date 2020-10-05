@@ -1,6 +1,7 @@
 import numpy as np
 import numpy.linalg as la
 import dataclasses
+from dataclasses import field
 
 from typing import List, TypeVar
 from typing_extensions import Protocol, runtime
@@ -45,9 +46,9 @@ class BodyState:
     yawrate: float = 0
 
     # Derived variables, computed by compute_derived_variables
-    inertia_z: float = 1.0
-    vel_in: np.ndarray = np.zeros(3)
-    rot_body_to_in: np.ndarray = np.eye(3)
+    inertia_z: float = field(init=False,repr=False)
+    vel_in: np.ndarray = field(init=False,repr=False)
+    rot_body_to_in: np.ndarray = field(init=False,repr=False)
 
     def __post_init__(self):
         self.compute_derived_variables()
@@ -109,23 +110,22 @@ class WheelState:
     slip_s: float = 0
 
     # Derived variables, computed by compute_derived_variables
-    inertia_y: float = 0.0
-    inertia_z: float = 0.0
-    vel_b: np.ndarray = np.zeros(3)
-    vel_in: np.ndarray = np.zeros(3)
-    rot_wheel_to_body: np.ndarray = np.eye(3)
-    rot_ls_to_wheel: np.ndarray = np.eye(3)
-    vel_rot_w: np.ndarray = np.zeros(3)
-    vel_rot_ls: np.ndarray = np.zeros(3)
-    slip_res: float = 0
-    mu_res: float = 0
-    friction_force: float = 0 # friction force working against drive torque
-    force_on_body: np.ndarray = np.zeros(3)
-    torque_on_body: np.ndarray = np.zeros(3)
-    wheel_state: str = ""
-    
-    alpha: float = 0
-    beta: float = 0
+    inertia_y: float = field(init=False,repr=False)
+    inertia_z: float = field(init=False,repr=False)
+    vel_b: np.ndarray = field(init=False,repr=False)
+    vel_in: np.ndarray = field(init=False,repr=False)
+    rot_wheel_to_body: np.ndarray = field(init=False,repr=False)
+    rot_ls_to_wheel: np.ndarray = field(init=False,repr=False)
+    vel_rot_w: np.ndarray = field(init=False,repr=False)
+    vel_rot_ls: np.ndarray = field(init=False,repr=False)
+    slip_res: float = field(init=False,repr=False)
+    mu_res: float = field(init=False,repr=False)
+    friction_force: float = field(init=False,repr=False) # friction force working against drive torque
+    force_on_body: np.ndarray = field(init=False,repr=False)
+    torque_on_body: np.ndarray = field(init=False,repr=False)
+    wheel_state: str = field(init=False,repr=False)
+    alpha: float = field(init=False,repr=False)
+    beta: float = field(init=False,repr=False)
 
     def __post_init__(self):
         self.compute_derived_variables()
