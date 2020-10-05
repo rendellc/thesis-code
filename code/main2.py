@@ -7,7 +7,7 @@ import utils
 import liveplot
 
 
-bs = BodyState(mass=2500, width=3, length=4, yaw=3*np.pi/4, pos_in=np.array([0,0,0]), vel_b=np.array([0,0,0]))
+bs = BodyState(mass=2500, width=3, length=4, yaw=2*np.pi/4, pos_in=np.array([0,0,0]), vel_b=np.array([0,0,0]))
 wbase = WheelState(mass=189, radius=0.8, width=0.4, pos_b=np.array([0,0,0]),
         vel_body_b=bs.vel_b, yawrate_body=bs.yawrate,
         load=utils.weight(bs.mass)/4)
@@ -33,8 +33,8 @@ while t < tstop:
         steer_torques = 1*np.array([1,-1,-1,1])
     elif t < 10:
         drive_torques = np.array([-1,-1,0,0])*50
-        steer_torques = 1.3*np.array([-1,1,1,-1])
-        # steer_torques = 2*np.array([-1,1,1,-1]) # goes wild when wheels turn to 90 deg
+        # steer_torques = 1.3*np.array([-1,1,1,-1])
+        steer_torques = 2*np.array([-1,1,1,-1]) # goes wild when wheels turn to 90 deg
     elif t < 15:
         pass
     else:

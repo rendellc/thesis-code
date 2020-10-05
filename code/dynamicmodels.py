@@ -18,12 +18,22 @@ S = TypeVar("S")
 @runtime
 class DynamicModel(Protocol[S]):
     def states(self) -> np.ndarray:
+        """
+        Get dynamic state variables.
+        """
         ...
 
     def derivatives(self, inputs: np.ndarray) -> np.ndarray:
+        """
+        Get the derivative of the state variables.
+        """
         ...
 
     def from_states(self, states: np.ndarray) -> S:
+        """
+        Create a model with same parameters, but with state variables
+        coming from states array.
+        """
         ...
 
 
