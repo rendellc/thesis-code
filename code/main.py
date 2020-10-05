@@ -1,200 +1,61 @@
-from fmuinterface import SimulatorModel
-
 import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib as mpl
+from dataclasses import replace
+
+from dynamicmodels import BodyState, WheelState, VehicleState
+from simulator import DynSysSim
+import utils
 import liveplot
 
 
-def autoagrimodel():
-    model = SimulatorModel(start_time=0, fmufilepath="modelica/build/AutoagriModel.fmu", printVariableNames=False)
+bs = BodyState(mass=2500, width=3, length=4, yaw=2*np.pi/4, pos_in=np.array([0,0,0]), vel_b=np.array([0,0,0]))
+wbase = WheelState(mass=189, radius=0.8, width=0.4, pos_b=np.array([0,0,0]),
+        vel_body_b=bs.vel_b, yawrate_body=bs.yawrate,
+        load=utils.weight(bs.mass)/4)
+wss = [
+        replace(wbase, pos_b=np.array([bs.length/2, bs.width/2,0])),
+        replace(wbase, pos_b=np.array([-bs.length/2, bs.width/2,0])),
+        replace(wbase, pos_b=np.array([-bs.length/2, -bs.width/2,0])),
+        replace(wbase, pos_b=np.array([bs.length/2, -bs.width/2,0])),
+]
+vs = VehicleState(bs=bs, wss=wss)
 
-    pos_in = model.getVec("body.pos_in", 3)
-    vel_b = model.getVec("body.vel_b", 3)
-    yaw, = np.deg2rad(model.get(["body.yaw"]))
-    length, width = model.get(["body.length", "body.width"])
-    #model.set([f"w{n}.B" for n in "1234"], [0.05]*4)
-    inertia_steer, inertia_spin = model.get(["w1.inertia_steer", "w1.inertia_spin"])
+animation = liveplot.VehicleAnimation(bs.pos_in, bs.length, bs.width, size=50)
 
-    print(pos_in)
-    print(vel_b)
-    print(yaw)
-    print(inertia_steer, inertia_spin)
+t, dt, tstop = 0, 0.0025, 30
+timenextliveplotupdate = t
+liveplotfps = 30
+while t < tstop:
+    steer_torques = [0,0,0,0]
+    drive_torques = [0,0,0,0]
 
-    # real time plotting
-    fig, ax_live = plt.subplots(1,1)
-    pos_ref = np.array([5.0, 13.0])
-    yaw_ref = 0.5
-    ref_arrow = ax_live.arrow(0, 0, 2, 0, head_width=0.4, head_length=0.4)
-
-    doliveplot = True
-    timenextliveplotupdate = 0.0
-    liveplotfps = 30
-    animation = liveplot.VehicleAnimation(pos_in, length, width, size=50, ax=ax_live)
-
-    t, dt, tstop = 0, 0.01, 10
-    rows = []
-    while t < tstop:
-        # get data
-        # steer_angles = model.get([f"w{n}.steer_angle" for n in "1234"])
-
-        # set inputs
-        model.setVec("drive_torques", [0, 0, 0, 0])
-        model.setVec("steer_torques", [0, 0, 0, 0])
-        
-        # step simulation forward
-        model.step(t, dt)
-        t += dt
-
-        # store results
-        pos_in = model.getVec("body.pos_in", 3)
-        vel_b = model.getVec("body.vel_b", 3)
-        yaw, = np.deg2rad(model.get(["body.yaw"]))
-        torque, = model.get(["body.torque[3]"])
-        force = model.getVec("body.force_b", 3)
-        steer_angles = np.deg2rad(model.get([f"w{n}.steer_angle" for n in "1234"]))
-        wheel_alphas = np.deg2rad(model.get([f"w{n}.alpha" for n in "1234"]))
-        wheel_slipress = model.get([f"w{n}.slip_res" for n in "1234"])
-        wheel_slipls = model.get([f"w{n}.slip_l" for n in "1234"])
-        wheel_slipss = model.get([f"w{n}.slip_s" for n in "1234"])
-        wheel_slipl_ratios = model.get([f"w{n}.slip_l_ratio" for n in "1234"])
-        wheel_slips_ratios = model.get([f"w{n}.slip_s_ratio" for n in "1234"])
-        wheel_mures = model.get([f"w{n}.mu_res" for n in "1234"])
-        wheel_vel_diff_l = model.get([f"w{n}.vel_diff_l" for n in "1234"])
-        x, y = pos_in[0], pos_in[1]
-        rows.append([t, x, y, yaw, torque, 
-            *steer_angles, *wheel_alphas, *wheel_slipls, *wheel_slipss, *wheel_slipress, 
-            *wheel_mures, *wheel_vel_diff_l])
-
-
-        # debug
-        velbigs = model.get([f"w{n}.vel_big" for n in "1234"])
-        betas = model.get([f"w{n}.beta" for n in "1234"])
-        omegas = model.get([f"w{n}.omega" for n in "1234"])
-        w1_force_w_wheel = model.getVec("w1.force_w_wheel", 3)
-        w1_vel_diff_l, w1_vel_diff_s = model.get(["w1.vel_diff_l", "w1.vel_diff_s"])
-        driveStates = model.get([f"w{n}.driveState" for n in "1234"])
-        # print(driveStates)
-
-
-        # update live plot
-        if doliveplot and t > timenextliveplotupdate:
-            ref_trans = mpl.transforms.Affine2D().translate(pos_ref[0], pos_ref[1])
-            ref_rot = mpl.transforms.Affine2D().rotate(yaw_ref)
-            ref_arrow.set_transform(ref_rot + ref_trans + ax_live.transData)
-            animation.update(t, pos_in, yaw, steer_angles)
-            timenextliveplotupdate = t + 1/liveplotfps
-
-    # draw last frame
-    animation.update(tstop, pos_in, yaw, steer_angles)
-    
-    # results
-    result = np.array(rows)
-    ts = result[:,0]
-    xs = result[:,1]
-    ys = result[:,2]
-    yaws = result[:,3]
-    torques = result[:,4]
-    steer_angles = result[:,5:9]
-    wheel_alphas = result[:,9:13]
-    wheel_slipls = result[:,13:17]
-    wheel_slipss = result[:,17:21]
-    wheel_slipress = result[:,21:25]
-    wheel_mures = result[:,25:29]
-    wheel_vel_diff_ls = result[:,29:33]
-
-    fig1, axs = plt.subplots(2,2)
-    axs[0,0].plot(xs,ys)
-    axs[0,0].set_xlabel("x")
-    axs[0,0].set_ylabel("y", rotation=0)
-    axs[0,1].plot(ts,yaws)
-    axs[0,1].set_xlabel("t")
-    axs[0,1].set_ylabel(r"$\psi$", rotation=0)
-    axs[1,0].plot(ts, xs)
-    axs[1,0].set_xlabel("t")
-    axs[1,0].set_ylabel(r"$x$", rotation=0)
-    axs[1,1].plot(ts, ys)
-    axs[1,1].set_xlabel("t")
-    axs[1,1].set_ylabel(r"$y$", rotation=0)
-    fig1.tight_layout()
-
-    fig2, axs2 = plt.subplots(4,1, sharex=True)
-    axs2[0].plot(ts,steer_angles[:,0], label=r"$\delta_S$")
-    axs2[0].plot(ts,wheel_alphas[:,0], label=r"$\alpha_W$")
-    axs2[0].plot(ts,wheel_slipls[:,0], label=r"$s_{res}$")
-    axs2[0].plot(ts,wheel_mures[:,0], label=r"$\mu_{res}$")
-    axs2[0].set_ylabel("Wheel 1")
-    axs2[0].legend()
-    axs2[1].plot(ts,steer_angles[:,1], label=r"$\delta_S$")
-    axs2[1].plot(ts,wheel_alphas[:,1], label=r"$\alpha_W$")
-    axs2[1].plot(ts,wheel_slipls[:,1], label=r"$s_{res}$")
-    axs2[1].plot(ts,wheel_mures[:,1], label=r"$\mu_{res}$")
-    axs2[1].set_ylabel("Wheel 2")
-    axs2[1].legend()
-    axs2[2].plot(ts,steer_angles[:,2], label=r"$\delta_S$")
-    axs2[2].plot(ts,wheel_alphas[:,2], label=r"$\alpha_W$")
-    axs2[2].plot(ts,wheel_slipls[:,2], label=r"$s_{res}$")
-    axs2[2].plot(ts,wheel_mures[:,2], label=r"$\mu_{res}$")
-    axs2[2].set_ylabel("Wheel 3")
-    axs2[2].legend()
-    axs2[3].plot(ts,steer_angles[:,3], label=r"$\delta_S$")
-    axs2[3].plot(ts,wheel_alphas[:,3], label=r"$\alpha_W$")
-    axs2[3].plot(ts,wheel_slipls[:,3], label=r"$s_{res}$")
-    axs2[3].plot(ts,wheel_mures[:,3], label=r"$\mu_{res}$")
-    axs2[3].legend()
-    axs2[3].set_xlabel("t")
-    axs2[3].set_ylabel("Wheel 4")
-    fig2.tight_layout()
-
-    fig3, axs3 = plt.subplots(1,1, sharex=True)
-    axs3.plot(ts,wheel_vel_diff_ls[:,0], label=r"$\Delta v$")
-    axs3.plot(ts,wheel_slipls[:,0], label=r"$s_l$")
-    axs3.set_ylabel("Wheel 1")
-    axs3.legend()
-    # axs3[1].plot(ts,wheel_vel_diff_ls[:,1], label=r"$\Delta v$")
-    # axs3[1].plot(ts,wheel_slipls[:,1], label=r"$s_l$")
-    # axs3[1].set_ylabel("Wheel 2")
-    # axs3[1].legend()
-    # axs3[2].plot(ts,wheel_vel_diff_ls[:,2], label=r"$\Delta v$")
-    # axs3[2].plot(ts,wheel_slipls[:,2], label=r"$s_l$")
-    # axs3[2].set_ylabel("Wheel 3")
-    # axs3[2].legend()
-    # axs3[3].plot(ts,wheel_vel_diff_ls[:,3], label=r"$\Delta v$")
-    # axs3[3].plot(ts,wheel_slipls[:,3], label=r"$s_l$")
-    # axs3[3].legend()
-    # axs3[3].set_xlabel("t")
-    # axs3[3].set_ylabel("Wheel 4")
-    fig3.tight_layout()
-
-
-    plt.show()
-
-
-def should_rebuild(fmufile, mofiles):
-    import os
-    fmutime = os.path.getmtime(fmufile)
-    mofiletime = max(list(map(os.path.getmtime, mofiles)))
-    mofileisnewer = (mofiletime > fmutime)
-
-    return mofileisnewer
-
-
-if __name__=="__main__":
-    mofiles = [
-            "modelica/AutoagriModel.mo",
-            "modelica/Body.mo",
-            "modelica/Wheel.mo"]
-    fmufile = "modelica/build/AutoagriModel.fmu"
-
-    fmuready = False
-    if should_rebuild(fmufile, mofiles):
-        print("Model file updated, rebuilding FMU")
-        from fmubuilder import build_autoagri
-        fmuready = build_autoagri("modelica/build")
+    if t < 5:
+        drive_torques = np.array([1,1,1,1])*50
+        steer_torques = 1*np.array([1,-1,-1,1])
+    elif t < 10:
+        drive_torques = np.array([-1,-1,0,0])*50
+        # steer_torques = 1.3*np.array([-1,1,1,-1])
+        steer_torques = 2*np.array([-1,1,1,-1]) # goes wild when wheels turn to 90 deg
+    elif t < 15:
+        pass
     else:
-        fmuready = True
+        steer_torques = [0,0,0,0]
+        drive_torques = np.array([1,1,1,1])*50
 
-    if fmuready:
-        autoagrimodel()
-    else:
-        print("fmu is not ready")
+
+    # inputs = [drive1,steer1,...,drive4,steer4]
+    inputs = utils.interleave([drive_torques, steer_torques])
+    vs = DynSysSim.step(vs, inputs, dt)
+    t += dt
+
+    slip_ls = [ws.slip_l for ws in vs.wss]
+    omegas = [ws.omega for ws in vs.wss]
+    wheel_states = [ws.wheel_state for ws in vs.wss]
+    # print(wheel_states, slip_ls)
+
+    if t > timenextliveplotupdate:
+        # print(wheel_states)
+        steer_angles = [ws.steer_angle for ws in vs.wss]
+
+        animation.update(t, vs.bs.pos_in, vs.bs.yaw, steer_angles)
+        timenextliveplotupdate = t + 1/liveplotfps
+
