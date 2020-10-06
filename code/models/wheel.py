@@ -1,104 +1,16 @@
 import numpy as np
 import numpy.linalg as la
+
 import dataclasses
 from dataclasses import field
 
-from typing import List, TypeVar
-from typing_extensions import Protocol, runtime
-
 import utils
-
 
 def burckhardtfriction(slip_res, c1, c2, c3):
     return c1*(1 - np.exp(-c2*slip_res)) - c3*slip_res
 
-S = TypeVar("S")
-
-@runtime
-class DynamicModel(Protocol[S]):
-    def states(self) -> np.ndarray:
-        """
-        Get dynamic state variables.
-        """
-        ...
-
-    def derivatives(self, inputs: np.ndarray) -> np.ndarray:
-        """
-        Get the derivative of the state variables.
-        """
-        ...
-
-    def from_states(self, states: np.ndarray) -> S:
-        """
-        Create a model with same parameters, but with state variables
-        coming from states array.
-        """
-        ...
-
-    def from_changes(self, **changes) -> S:
-        """
-        Create new model with changes applied.
-        """
-        ...
-
-
-
 @dataclasses.dataclass
-class BodyState:
-    """
-    Representation of the state of the body at a particular time.
-    """
-    # Parameters
-    mass: float
-    width: float
-    length: float
-
-    # Dynamic variables
-    time: float = 0
-    pos_in: np.ndarray = np.zeros(3)
-    vel_b: np.ndarray = np.zeros(3)
-    yaw: float = 0
-    yawrate: float = 0
-
-    # Derived variables, computed by compute_derived_variables
-    inertia_z: float = field(init=False,repr=False)
-    vel_in: np.ndarray = field(init=False,repr=False)
-    rot_body_to_in: np.ndarray = field(init=False,repr=False)
-
-    def __post_init__(self):
-        self.compute_derived_variables()
-
-    def compute_derived_variables(self):
-        self.inertia_z = 1/12 * self.mass * (self.length**2 + self.width**2)
-
-        self.rot_body_to_in = utils.rotz(self.yaw)
-        self.vel_in = self.rot_body_to_in @ self.vel_b
-
-
-    def states(self) -> np.ndarray:
-        return np.array([*self.pos_in, *self.vel_b, self.yaw, self.yawrate])
-
-    def derivatives(self, inputs: np.ndarray) -> np.ndarray:
-        forces = inputs[0:3]
-        torques = inputs[3:6]
-        acc_b = forces/self.mass
-        yawacc = torques[2]/self.inertia_z
-
-        return np.array([*self.vel_in, *acc_b, self.yawrate, yawacc])
-
-    def from_states(self, states):
-        pos_in = states[0:3]
-        vel_b = states[3:6]
-        yaw = states[6]
-        yawrate = states[7]
-        return dataclasses.replace(self, pos_in=pos_in, vel_b=vel_b, yaw=yaw, yawrate=yawrate)
-
-    def from_changes(self, **changes):
-        return dataclasses.replace(self, **changes)
-
-
-@dataclasses.dataclass
-class WheelState:
+class WheelModel:
     """
     Representation of the state of the body at a particular time.
     """
@@ -244,68 +156,4 @@ class WheelState:
 
     def from_changes(self, **changes):
         return dataclasses.replace(self, **changes)
-
-
-@dataclasses.dataclass(frozen=True)
-class VehicleState:
-    bs: BodyState
-    wss: List[WheelState]
-
-
-    def states(self) -> np.ndarray:
-        states = []
-        states.extend(self.bs.states())
-        for ws in self.wss:
-            states.extend(ws.states())
-
-        return np.array(states)
-
-    def derivatives(self, inputs: np.ndarray) -> np.ndarray:
-        """
-        inputs = [drive1, steer1, drive2, steer2, ..., drive4, steer4]
-        """
-        drive_torques = inputs[0::2]
-        steer_torques = inputs[1::2]
-        derivatives = []
-
-        forces_on_body, torques_on_body = [], []
-        for ws in self.wss:
-            forces_on_body.append(ws.force_on_body)
-            torques_on_body.append(ws.torque_on_body)
-        forces_on_body = np.array(forces_on_body)
-        torques_on_body = np.array(torques_on_body)
-        assert forces_on_body.shape == (4,3)
-        assert torques_on_body.shape == (4,3)
-        force_on_body = np.sum(forces_on_body,axis=0)
-        torque_on_body = np.sum(torques_on_body,axis=0)
-        assert force_on_body.shape == (3,)
-        assert torque_on_body.shape == (3,)
-
-        body_inputs = np.array([*force_on_body, *torque_on_body])
-        derivatives.extend(self.bs.derivatives(body_inputs))
-
-        for i, ws in enumerate(self.wss):
-            wheel_inputs = np.array([drive_torques[i],steer_torques[i]])
-            derivatives.extend(ws.derivatives(wheel_inputs))
-
-        return np.array(derivatives)
-
-    def from_states(self, states):
-        """
-        Return new instance of dataclass. Do not modifify self.
-        """
-        bodystates = states[0:8]
-        wheelstatesall = states[8:]
-        wheelstates = utils.chunks(wheelstatesall, len(self.wss))
-
-        bs = self.bs.from_states(bodystates)
-        wss = [ws.from_states(wheelstate) for ws, wheelstate in zip(self.wss, wheelstates)]
-
-        return dataclasses.replace(self, bs=bs, wss=wss)
-
-    def from_changes(self, **changes):
-        return dataclasses.replace(self, **changes)
-        
-
-
 

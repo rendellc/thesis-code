@@ -1,61 +1,70 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
-from dynamicmodels import BodyState, WheelState, VehicleState
+from models.autoagri import createAutoagriModel
+
 import simulator
 import utils
-import liveplot
+import liveplots
 
 
-bs = BodyState(mass=2500, width=3, length=4, yaw=2*np.pi/4, pos_in=np.array([0,0,0]), vel_b=np.array([0,0,0]))
-wbase = WheelState(mass=189, radius=0.8, width=0.4, pos_b=np.array([0,0,0]),
-        vel_body_b=bs.vel_b, yawrate_body=bs.yawrate,
-        load=utils.weight(bs.mass)/4)
-wss = [
-        wbase.from_changes(pos_b=np.array([bs.length/2, bs.width/2,0])),
-        wbase.from_changes(pos_b=np.array([-bs.length/2, bs.width/2,0])),
-        wbase.from_changes(pos_b=np.array([-bs.length/2, -bs.width/2,0])),
-        wbase.from_changes(pos_b=np.array([bs.length/2, -bs.width/2,0])),
-]
-vs = VehicleState(bs=bs, wss=wss)
+model = createAutoagriModel(
+        pos_in=[0,0,0],
+        yaw=0,
+        vel_b=[0,0,0],
+        yawrate=0)
 
-animation = liveplot.VehicleAnimation(bs.pos_in, bs.length, bs.width, size=50)
+fig, axs = plt.subplots(1,2)
+animationXY = liveplots.VehicleAnimation(model.bs.pos_in, model.bs.length, model.bs.width, size=20, ax=axs[0])
+timeseriesOmega0 = liveplots.TimeSeries([],[], label=r"$\omega_0$", ax=axs[1])
+
+
+plt.show(block=False)
+
 solver: simulator.Solver = simulator.ImprovedEuler()
 
 t, dt, tstop = 0, 0.005, 30
-timenextliveplotupdate = t
+timenextliveupdate = t
 liveplotfps = 30
 while t < tstop:
+    omegas = np.array([ws.omega for ws in model.wss])
+
     steer_torques = [0,0,0,0]
     drive_torques = [0,0,0,0]
 
     if t < 5:
-        drive_torques = np.array([1,1,1,1])*50
-        steer_torques = 1*np.array([1,-1,-1,1])
+        drive_torques = np.array([1,1,1,1])*100
+        steer_torques = 2*np.array([1,-1,-1,1])
     elif t < 10:
-        drive_torques = np.array([-1,-1,0,0])*50
+        drive_torques = np.array([-1,-1,0,0])*100
         # steer_torques = 1.3*np.array([-1,1,1,-1])
-        steer_torques = 2*np.array([-1,1,1,-1]) # goes wild when wheels turn to 90 deg
+        steer_torques = 4*np.array([-1,1,1,-1]) # goes wild when wheels turn to 90 deg
     elif t < 15:
         pass
     else:
         steer_torques = [0,0,0,0]
-        drive_torques = np.array([1,1,1,1])*50
+        #drive_torques = np.array([1,1,1,1])*50
 
 
     # inputs = [drive1,steer1,...,drive4,steer4]
     inputs = utils.interleave([drive_torques, steer_torques])
-    vs = solver.step(vs, inputs, dt)
+    model = solver.step(model, inputs, dt)
     t += dt
 
-    slip_ls = [ws.slip_l for ws in vs.wss]
-    omegas = [ws.omega for ws in vs.wss]
-    wheel_states = [ws.wheel_state for ws in vs.wss]
+    slip_ls = [ws.slip_l for ws in model.wss]
+    omegas = [ws.omega for ws in model.wss]
+    wheel_states = [ws.wheel_state for ws in model.wss]
     # print(wheel_states, slip_ls)
 
-    if t > timenextliveplotupdate:
+    if t > timenextliveupdate:
         # print(wheel_states)
-        steer_angles = [ws.steer_angle for ws in vs.wss]
+        steer_angles = [ws.steer_angle for ws in model.wss]
 
-        animation.update(t, vs.bs.pos_in, vs.bs.yaw, steer_angles)
-        timenextliveplotupdate = t + 1/liveplotfps
+        animationXY.update(t, model.bs.pos_in, model.bs.yaw, steer_angles)
+        timeseriesOmega0.update(t, omegas[0])
+
+        plt.pause(dt) # TODO: blit for better FPS
+
+        timenextliveupdate = t + 1/liveplotfps
+
 
