@@ -10,14 +10,14 @@ import utils
 
 @dataclasses.dataclass
 class VehicleModel:
-    bs: BodyModel
-    wss: List[WheelModel]
+    body: BodyModel
+    wheels: List[WheelModel]
 
 
     def states(self) -> np.ndarray:
         states = []
-        states.extend(self.bs.states())
-        for ws in self.wss:
+        states.extend(self.body.states())
+        for ws in self.wheels:
             states.extend(ws.states())
 
         return np.array(states)
@@ -31,7 +31,7 @@ class VehicleModel:
         derivatives = []
 
         forces_on_body, torques_on_body = [], []
-        for ws in self.wss:
+        for ws in self.wheels:
             forces_on_body.append(ws.force_on_body)
             torques_on_body.append(ws.torque_on_body)
         forces_on_body = np.array(forces_on_body)
@@ -44,9 +44,9 @@ class VehicleModel:
         assert torque_on_body.shape == (3,)
 
         body_inputs = np.array([*force_on_body, *torque_on_body])
-        derivatives.extend(self.bs.derivatives(body_inputs))
+        derivatives.extend(self.body.derivatives(body_inputs))
 
-        for i, ws in enumerate(self.wss):
+        for i, ws in enumerate(self.wheels):
             wheel_inputs = np.array([drive_torques[i],steer_torques[i]])
             derivatives.extend(ws.derivatives(wheel_inputs))
 
@@ -58,12 +58,12 @@ class VehicleModel:
         """
         bodystates = states[0:8]
         wheelstatesall = states[8:]
-        wheelstates = utils.chunks(wheelstatesall, len(self.wss))
+        wheelstates = utils.chunks(wheelstatesall, len(self.wheels))
 
-        bs = self.bs.from_states(bodystates)
-        wss = [ws.from_states(wheelstate) for ws, wheelstate in zip(self.wss, wheelstates)]
+        body = self.body.from_states(bodystates)
+        wheels = [w.from_states(wheelstate) for w, wheelstate in zip(self.wheels, wheelstates)]
 
-        return dataclasses.replace(self, bs=bs, wss=wss)
+        return dataclasses.replace(self, body=body, wheels=wheels)
 
     def from_changes(self, **changes):
         return dataclasses.replace(self, **changes)

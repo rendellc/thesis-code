@@ -75,6 +75,33 @@ class RK4(Solver):
 
         return modelnew
 
+class BackwardEulerFsolve(Solver):
+    def step(self, model: Simulatable, inputs: List[float], step_size: float) -> Simulatable:
+        from scipy.optimize import fsolve
+        
+        x0 = model.states()
+        def func(xnext):
+            dxdt = model.from_states(xnext).derivatives(inputs)
+            return x0 + step_size*dxdt - xnext
+        
+        xnew, infodict, ier, mesg = fsolve(func, x0, full_output=True) # should probably give it a Jacobian as well
+        if ier != 1:
+            print(mesg)
+
+        modelnew = model.from_states(xnew)
+
+        return modelnew 
+
+
+
+
+
+
+
+
+
+
+
 
 
 

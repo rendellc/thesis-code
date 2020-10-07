@@ -9,6 +9,24 @@ import utils
 def burckhardtfriction(slip_res, c1, c2, c3):
     return c1*(1 - np.exp(-c2*slip_res)) - c3*slip_res
 
+def pacejka_magic(slip):
+    #https://se.mathworks.com/help/physmod/sdl/ref/tireroadinteractionmagicformula.html
+    # Parameters for dry tarmac
+    B,C,D,E = 10, 1.9, 1, 0.97
+    return D*np.sin(C*np.arctan(B*slip - E*(B*slip - np.arctan(B*slip))))
+
+def compute_slip(wheel_vel: float, ground_vel: float):
+    if np.all(np.isclose([wheel_vel, ground_vel], [0,0])):
+        return 0
+
+    vdiff = wheel_vel - ground_vel
+    vmax = max(abs(wheel_vel), abs(ground_vel))
+    return vdiff/vmax
+
+def dahl_friction_dot(dahl_friction, v, sigma, coulomb_friction):
+    return sigma*abs(v)/coulomb_friction*(coulomb_friction*np.sign(v) - dahl_friction)
+
+
 @dataclasses.dataclass
 class WheelModel:
     """
@@ -29,6 +47,7 @@ class WheelModel:
     c3: float = 0.52
     ks: float = 1.0
     slip_smoothing: float = 0.05
+    sigma_dahl: float = 4
     #eps: float = 0.0001
     #B: float 0.05 "Slip r esponse parameter"
 
@@ -38,6 +57,8 @@ class WheelModel:
     steer_angle_dot: float = 0
     slip_l: float = 0
     slip_s: float = 0
+    friction_dahl_l: float = 0
+    friction_dahl_s: float = 0
 
     # Derived variables, computed by compute_derived_variables
     inertia_y: float = field(init=False,repr=False)
@@ -94,17 +115,30 @@ class WheelModel:
         self.vel_rot_w = [r*self.omega, 0, 0]
         self.vel_rot_ls = rot_wheel_to_ls @ self.vel_rot_w
 
+        # test for small velocity values where slip 
+        # is zero but numerically infeasible to compute
+        # self.slip_l = compute_slip(self.vel_rot_ls[0], self.vel_b_ls[0])
+        # self.slip_s = compute_slip(self.vel_rot_ls[1], self.vel_b_ls[1])
         self.slip_res = (self.slip_l**2 + self.slip_s**2)**0.5
-        self.mu_res = burckhardtfriction(self.slip_res, self.c1, self.c2, self.c3)
-        if np.isclose(self.slip_res,0):
-            self.mu_l = 0
-            self.mu_s = 0
-        else:
-            self.mu_l = self.slip_l/self.slip_res*self.mu_res
-            self.mu_s = self.ks * self.slip_s/self.slip_res*self.mu_res
 
         force_z = self.load + utils.weight(self.mass)
-        self.friction_force_ls = np.array([self.mu_l, self.mu_s,0]) * force_z
+        friction_model = "dahl"
+        if friction_model == "burckhardt":
+            self.mu_res = burckhardtfriction(self.slip_res, self.c1, self.c2, self.c3)
+            if np.isclose(self.slip_res,0):
+                self.mu_l = 0
+                self.mu_s = 0
+            else:
+                self.mu_l = self.slip_l/self.slip_res*self.mu_res
+                self.mu_s = self.ks * self.slip_s/self.slip_res*self.mu_res
+        if friction_model == "magic":
+            self.mu_l = pacejka_magic(self.slip_l)
+            self.mu_s = pacejka_magic(self.slip_s)
+        if friction_model == "dahl":
+            self.mu_l = self.friction_dahl_l/force_z
+            self.mu_s = self.friction_dahl_s/force_z
+
+        self.friction_force_ls = np.array([self.mu_l, self.mu_s, 0]) * force_z
         self.friction_force_w = self.rot_ls_to_wheel @ self.friction_force_ls
 
         self.force_on_body = self.rot_wheel_to_body @ self.rot_ls_to_wheel @ self.friction_force_ls
@@ -122,7 +156,9 @@ class WheelModel:
 
 
     def states(self) -> np.ndarray:
-        return np.array([self.omega, self.steer_angle, self.steer_angle_dot, self.slip_l, self.slip_s])
+        return np.array([self.omega, self.steer_angle, self.steer_angle_dot, self.friction_dahl_l, self.friction_dahl_s])
+        # return np.array([self.omega, self.steer_angle, self.steer_angle_dot, self.slip_l, self.slip_s])
+        # return np.array([self.omega, self.steer_angle, self.steer_angle_dot])
 
     def derivatives(self, inputs: np.ndarray) -> np.ndarray:
         drive_torque, steer_torque = inputs
@@ -131,15 +167,22 @@ class WheelModel:
         steer_angle_ddot = steer_torque/self.inertia_z
 
         B = self.slip_smoothing
-        # TODO: implement slip smoothing
         vel_rot_l = self.vel_rot_ls[0]
         vel_rot_s = self.vel_rot_ls[1]
         vel_w = self.vel_b_ls[0]
-        vel_big = max(vel_rot_l, vel_w)
-        slip_l_dot = -abs(vel_big)*self.slip_l/B + (vel_rot_l - vel_w)*utils.sign(vel_big)/B
-        slip_s_dot = -abs(vel_big)*self.slip_s/B + vel_rot_s*utils.sign(vel_big)/B
+        vel_big = max(abs(vel_rot_l), abs(vel_w))
+        # slip_l_dot = -vel_big*self.slip_l/B + (vel_rot_l - vel_w)/B
+        # slip_s_dot = -vel_big*self.slip_s/B + vel_rot_s/B
 
-        return np.array([omega_dot, self.steer_angle_dot, steer_angle_ddot, slip_l_dot, slip_s_dot])
+        force_z = self.load + utils.weight(self.mass)
+        mu_k = 0.7 # kinetic friction between dry rubber and concrete
+        force_c = mu_k*force_z
+        friction_dahl_l_dot = dahl_friction_dot(self.friction_dahl_l, vel_rot_l - vel_w, self.sigma_dahl, force_c)
+        friction_dahl_s_dot = dahl_friction_dot(self.friction_dahl_s, vel_rot_s, self.sigma_dahl, force_c)
+
+        return np.array([omega_dot, self.steer_angle_dot, steer_angle_ddot, friction_dahl_l_dot, friction_dahl_s_dot])
+        #return np.array([omega_dot, self.steer_angle_dot, steer_angle_ddot, slip_l_dot, slip_s_dot])
+        # return np.array([omega_dot, self.steer_angle_dot, steer_angle_ddot])
 
     def from_states(self, states):
         """
@@ -148,11 +191,15 @@ class WheelModel:
         omega = states[0]
         steer_angle = states[1]
         steer_angle_dot = states[2]
-        slip_l = states[3]
-        slip_s = states[4]
+        # return dataclasses.replace(self, omega=omega, steer_angle=steer_angle,
+        #         steer_angle_dot=steer_angle_dot)
+        # slip_l = states[3]
+        # slip_s = states[4]
+        dahl_l = states[3]
+        dahl_s = states[4]
         return dataclasses.replace(self, omega=omega, steer_angle=steer_angle,
                 steer_angle_dot=steer_angle_dot,
-                slip_l=slip_l, slip_s=slip_s)
+                friction_dahl_l=dahl_l, friction_dahl_s=dahl_s)
 
     def from_changes(self, **changes):
         return dataclasses.replace(self, **changes)
