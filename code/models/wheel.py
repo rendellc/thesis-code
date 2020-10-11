@@ -122,7 +122,7 @@ class WheelModel:
         self.slip_res = (self.slip_l**2 + self.slip_s**2)**0.5
 
         force_z = self.load + utils.weight(self.mass)
-        friction_model = "dahl"
+        friction_model = "burckhardt"
         if friction_model == "burckhardt":
             self.mu_res = burckhardtfriction(self.slip_res, self.c1, self.c2, self.c3)
             if np.isclose(self.slip_res,0):
@@ -156,8 +156,8 @@ class WheelModel:
 
 
     def states(self) -> np.ndarray:
-        return np.array([self.omega, self.steer_angle, self.steer_angle_dot, self.friction_dahl_l, self.friction_dahl_s])
-        # return np.array([self.omega, self.steer_angle, self.steer_angle_dot, self.slip_l, self.slip_s])
+        #return np.array([self.omega, self.steer_angle, self.steer_angle_dot, self.friction_dahl_l, self.friction_dahl_s])
+        return np.array([self.omega, self.steer_angle, self.steer_angle_dot, self.slip_l, self.slip_s])
         # return np.array([self.omega, self.steer_angle, self.steer_angle_dot])
 
     def derivatives(self, inputs: np.ndarray) -> np.ndarray:
@@ -170,9 +170,9 @@ class WheelModel:
         vel_rot_l = self.vel_rot_ls[0]
         vel_rot_s = self.vel_rot_ls[1]
         vel_w = self.vel_b_ls[0]
-        vel_big = max(abs(vel_rot_l), abs(vel_w))
-        # slip_l_dot = -vel_big*self.slip_l/B + (vel_rot_l - vel_w)/B
-        # slip_s_dot = -vel_big*self.slip_s/B + vel_rot_s/B
+        vel_big = max(abs(vel_rot_l), abs(vel_rot_s), abs(vel_w)) # TODO: more velocities here
+        slip_l_dot = -vel_big*self.slip_l/B + (vel_rot_l - vel_w)/B
+        slip_s_dot = -vel_big*self.slip_s/B + vel_rot_s/B
 
         force_z = self.load + utils.weight(self.mass)
         mu_k = 0.7 # kinetic friction between dry rubber and concrete
@@ -180,8 +180,8 @@ class WheelModel:
         friction_dahl_l_dot = dahl_friction_dot(self.friction_dahl_l, vel_rot_l - vel_w, self.sigma_dahl, force_c)
         friction_dahl_s_dot = dahl_friction_dot(self.friction_dahl_s, vel_rot_s, self.sigma_dahl, force_c)
 
-        return np.array([omega_dot, self.steer_angle_dot, steer_angle_ddot, friction_dahl_l_dot, friction_dahl_s_dot])
-        #return np.array([omega_dot, self.steer_angle_dot, steer_angle_ddot, slip_l_dot, slip_s_dot])
+        #return np.array([omega_dot, self.steer_angle_dot, steer_angle_ddot, friction_dahl_l_dot, friction_dahl_s_dot])
+        return np.array([omega_dot, self.steer_angle_dot, steer_angle_ddot, slip_l_dot, slip_s_dot])
         # return np.array([omega_dot, self.steer_angle_dot, steer_angle_ddot])
 
     def from_states(self, states):
@@ -193,13 +193,16 @@ class WheelModel:
         steer_angle_dot = states[2]
         # return dataclasses.replace(self, omega=omega, steer_angle=steer_angle,
         #         steer_angle_dot=steer_angle_dot)
-        # slip_l = states[3]
-        # slip_s = states[4]
-        dahl_l = states[3]
-        dahl_s = states[4]
+        slip_l = states[3]
+        slip_s = states[4]
         return dataclasses.replace(self, omega=omega, steer_angle=steer_angle,
                 steer_angle_dot=steer_angle_dot,
-                friction_dahl_l=dahl_l, friction_dahl_s=dahl_s)
+                slip_l=slip_l, slip_s=slip_s)
+        #dahl_l = states[3]
+        #dahl_s = states[4]
+        #return dataclasses.replace(self, omega=omega, steer_angle=steer_angle,
+        #        steer_angle_dot=steer_angle_dot,
+        #        friction_dahl_l=dahl_l, friction_dahl_s=dahl_s)
 
     def from_changes(self, **changes):
         return dataclasses.replace(self, **changes)
