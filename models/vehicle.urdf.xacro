@@ -1,0 +1,154 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="vehicle">
+  <!-- Body properties -->
+  <xacro:property name="body_mass" value="2000.0"/>
+  <xacro:property name="body_length" value="1.0"/>
+  <xacro:property name="body_width" value="1.5"/>
+  <xacro:property name="body_height" value="1.5"/>
+
+  <!-- Wheel properties -->
+  <xacro:property name="wheel_mass" value="200"/>
+  <xacro:property name="wheel_radius" value="0.6"/>
+  <xacro:property name="wheel_width" value="0.4"/>
+  <xacro:property name="wheel_f_clear" value="0.1"/>
+  <xacro:property name="wheel_r_x" value="-4"/>
+
+  <xacro:macro name="inertia_box" params="mass lx ly lz">
+    <inertia
+      ixx="${1/12*mass*(ly**2 + lz**2)}" 
+      ixy="0" 
+      ixz="0" 
+      iyy="${1/12*mass*(lx**2 + lz**2)}" 
+      iyz="0" 
+      izz="${1/12*mass*(lx**2 + ly**2)}" 
+    />
+  </xacro:macro>
+  <xacro:macro name="inertia_cylinder" params="mass r l">
+    <inertia
+      ixx="${(1/12)*mass*(3*r**2 + l**2)}" 
+      ixy="0" 
+      ixz="0" 
+      iyy="${(1/12)*mass*(3*r**2 + l**2)}" 
+      iyz="0" 
+      izz="${(1/2)*mass*r**2}"
+    />
+  </xacro:macro>
+
+
+  <link name="body">
+    <inertial>
+      <mass value="${body_mass}"/>
+      <xacro:inertia_box mass="${body_mass}" lx="${body_length}" ly="${body_width}" lz="${body_height}"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <box size="${body_length} ${body_width} ${body_height}"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${body_length} ${body_width} ${body_height}"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="wheel_fl">
+    <inertial>
+      <mass value="${wheel_mass}"/>
+      <xacro:inertia_cylinder mass="${wheel_mass}" r="${wheel_radius}" l="${wheel_width}"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="-1.57 0 0"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="-1.57 0 0"/>
+    </collision>
+  </link>
+  <link name="wheel_rl">
+    <inertial>
+      <mass value="${wheel_mass}"/>
+      <xacro:inertia_cylinder mass="${wheel_mass}" r="${wheel_radius}" l="${wheel_width}"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="-1.57 0 0"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="-1.57 0 0"/>
+    </collision>
+  </link>
+  <link name="wheel_rr">
+    <inertial>
+      <mass value="${wheel_mass}"/>
+      <xacro:inertia_cylinder mass="${wheel_mass}" r="${wheel_radius}" l="${wheel_width}"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="1.57 0 0"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="1.57 0 0"/>
+    </collision>
+  </link>
+  <link name="wheel_fr">
+    <inertial>
+      <mass value="${wheel_mass}"/>
+      <xacro:inertia_cylinder mass="${wheel_mass}" r="${wheel_radius}" l="${wheel_width}"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="1.57 0 0"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="1.57 0 0"/>
+    </collision>
+  </link>
+
+
+  <joint name="body_to_wheel_fl" type="continuous">
+    <parent link="body"/>
+    <child link="wheel_fl"/>
+    <origin xyz="0 ${body_width/2 + wheel_width/2 + wheel_f_clear} ${-body_height/2}"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+  <joint name="body_to_wheel_rl" type="continuous">
+    <parent link="body"/>
+    <child link="wheel_rl"/>
+    <origin xyz="${wheel_r_x} ${body_width/2 + wheel_width/2 + wheel_f_clear} ${-body_height/2}"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+  <joint name="body_to_wheel_rr" type="continuous">
+    <parent link="body"/>
+    <child link="wheel_rr"/>
+    <origin xyz="${wheel_r_x} ${-body_width/2 - wheel_width/2 - wheel_f_clear} ${-body_height/2}"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+  <joint name="body_to_wheel_fr" type="continuous">
+    <parent link="body"/>
+    <child link="wheel_fr"/>
+    <origin xyz="0 ${-body_width/2 - wheel_width/2 - wheel_f_clear} ${-body_height/2}"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+</robot>

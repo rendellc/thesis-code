@@ -1,11 +1,8 @@
 
+# Build models
 
-## Compile
-
+Models are specified in `*.urdf.xacro` files in the model folder. Compile to urdf files by running
 ```
-# make build folder, needs to be empty
-latexmk -pdf -quiet -jobname=build/main main.tex
-
-# to update pdf continously 
-latexmk -pdf -quiet -pvc -view=none -jobname=build/main main.tex
+# pip install xacro 
+xacro -o models/model.urdf models/model.urdf.xacro
 ```
