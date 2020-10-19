@@ -13,11 +13,42 @@
       <geometry>
         <box size="1.0 1.5 1.5"/>
       </geometry>
-      <material name="blue"/>
     </visual>
     <collision>
       <geometry>
         <box size="1.0 1.5 1.5"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="beam_left">
+    <inertial>
+      <mass value="200.0"/>
+      <inertia ixx="2.9999999999999996" ixy="0" ixz="0" iyy="205.66666666666663" iyz="0" izz="205.66666666666663"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <box size="3.5 0.3 0.3"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="3.5 0.3 0.3"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="beam_right">
+    <inertial>
+      <mass value="200.0"/>
+      <inertia ixx="2.9999999999999996" ixy="0" ixz="0" iyy="205.66666666666663" iyz="0" izz="205.66666666666663"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <box size="3.5 0.3 0.3"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="3.5 0.3 0.3"/>
       </geometry>
     </collision>
   </link>
@@ -38,6 +69,14 @@
       </geometry>
       <origin rpy="-1.57 0 0" xyz="0 0 0"/>
     </collision>
+    <material name="tire">
+      <color rgba="0.2392 0.2157 0.1686 1"/>
+    </material>
+    <contact>
+      <!-- ground plane has friction value of 1, so use 
+        friction value for tire-groundtype that is found online. -->
+      <lateral_friction value="0.8"/>
+    </contact>
   </link>
   <link name="wheel_rl">
     <inertial>
@@ -56,6 +95,14 @@
       </geometry>
       <origin rpy="-1.57 0 0" xyz="0 0 0"/>
     </collision>
+    <material name="tire">
+      <color rgba="0.2392 0.2157 0.1686 1"/>
+    </material>
+    <contact>
+      <!-- ground plane has friction value of 1, so use 
+        friction value for tire-groundtype that is found online. -->
+      <lateral_friction value="0.8"/>
+    </contact>
   </link>
   <link name="wheel_rr">
     <inertial>
@@ -74,6 +121,14 @@
       </geometry>
       <origin rpy="1.57 0 0" xyz="0 0 0"/>
     </collision>
+    <material name="tire">
+      <color rgba="0.2392 0.2157 0.1686 1"/>
+    </material>
+    <contact>
+      <!-- ground plane has friction value of 1, so use 
+        friction value for tire-groundtype that is found online. -->
+      <lateral_friction value="0.8"/>
+    </contact>
   </link>
   <link name="wheel_fr">
     <inertial>
@@ -92,23 +147,43 @@
       </geometry>
       <origin rpy="1.57 0 0" xyz="0 0 0"/>
     </collision>
+    <material name="tire">
+      <color rgba="0.2392 0.2157 0.1686 1"/>
+    </material>
+    <contact>
+      <!-- ground plane has friction value of 1, so use 
+        friction value for tire-groundtype that is found online. -->
+      <lateral_friction value="0.8"/>
+    </contact>
   </link>
+  <!-- Beam joints -->
+  <joint name="body_to_beam_left" type="fixed">
+    <parent link="body"/>
+    <child link="beam_left"/>
+    <origin xyz="-1.25 0.6 0.9"/>
+  </joint>
+  <joint name="body_to_beam_right" type="fixed">
+    <parent link="body"/>
+    <child link="beam_right"/>
+    <origin xyz="-1.25 -0.6 0.9"/>
+  </joint>
   <joint name="body_to_wheel_fl" type="continuous">
     <parent link="body"/>
     <child link="wheel_fl"/>
     <origin xyz="0 1.05 -0.75"/>
     <axis xyz="0 1 0"/>
+    <lateral_friction value="0.8"/>
   </joint>
   <joint name="body_to_wheel_rl" type="continuous">
-    <parent link="body"/>
+    <parent link="beam_left"/>
     <child link="wheel_rl"/>
-    <origin xyz="-4 1.05 -0.75"/>
+    <origin xyz="-1.75 0.4 -1.65"/>
     <axis xyz="0 1 0"/>
   </joint>
   <joint name="body_to_wheel_rr" type="continuous">
-    <parent link="body"/>
+    <parent link="beam_right"/>
     <child link="wheel_rr"/>
-    <origin xyz="-4 -1.05 -0.75"/>
+    <origin xyz="-1.75 -0.4 -1.65"/>
     <axis xyz="0 1 0"/>
   </joint>
   <joint name="body_to_wheel_fr" type="continuous">

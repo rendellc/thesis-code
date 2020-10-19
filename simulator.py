@@ -1,108 +1,44 @@
+import pybullet as p
+import pybullet_data
 
-from typing import List, TypeVar
-from typing_extensions import Protocol, runtime
-from typing import List
-
-S = TypeVar("S")
-
-class Simulatable(Protocol[S]):
-    def states(self) -> List[float]:
-        """
-        Get dynamic state variables.
-        """
-        ...
-
-    def derivatives(self, inputs: List[float]) -> List[float]:
-        """
-        Get the derivative of the state variables.
-        """
-        ...
-
-    def from_states(self, states: List[float]) -> S:
-        """
-        Create a model with same parameters, but with state variables
-        coming from states array.
-        """
-        ...
-
-class Solver:
-    def step(self, model: Simulatable, inputs: List[float], step_size: float) -> Simulatable:
-        ...
-
-
-class ImprovedEuler(Solver):
-    def step(self, model: Simulatable, inputs: List[float], step_size: float) -> Simulatable:
-        """
-        Perform one step of simulation method. Return new state
-        """
-        x1 = model.states()
-        k1 = model.derivatives(inputs)
-
-        x2 = x1 + step_size*k1
-        k2 = model.from_states(x2).derivatives(inputs)
-
-        xnew = x1 + step_size/2 * (k1 + k2)
-        modelnew = model.from_states(xnew)
-        return modelnew
-
-
-class ForwardEuler(Solver):
-    def step(self, model: Simulatable, inputs: List[float], step_size: float) -> Simulatable:
-        x = model.states()
-        dxdt = model.derivatives(inputs)
-        xnew = x + step_size*dxdt
-        modelnew = model.from_states(xnew)
-
-        return modelnew
-
-class RK4(Solver):
-    def step(self, model: Simulatable, inputs: List[float], step_size: float) -> Simulatable:
-
-        x1 = model.states()
-        k1 = model.derivatives(inputs)
-
-        x2 = x1 + step_size/2*k1
-        k2 = model.from_states(x2).derivatives(inputs)
-
-        x3 = x1 + step_size/2*k2
-        k3 = model.from_states(x3).derivatives(inputs)
-
-        x4 = x1 + step_size*k3
-        k4 = model.from_states(x4).derivatives(inputs)
-
-        xnew = x1 + 1/6*step_size*(k1 + 2*k2 + 2*k3 + k4)
-        modelnew = model.from_states(xnew)
-
-        return modelnew
-
-class BackwardEulerFsolve(Solver):
-    def step(self, model: Simulatable, inputs: List[float], step_size: float) -> Simulatable:
-        from scipy.optimize import fsolve
+class Vehicle:
+    def __init__(self, startPos, startRPY, gui=True):
+        if gui:
+            self.pc = p.connect(p.GUI)
+        else:
+            raise NotImplementedError("Non-gui simulator not implemented")
         
-        x0 = model.states()
-        def func(xnext):
-            dxdt = model.from_states(xnext).derivatives(inputs)
-            return x0 + step_size*dxdt - xnext
-        
-        xnew, infodict, ier, mesg = fsolve(func, x0, full_output=True) # should probably give it a Jacobian as well
-        if ier != 1:
-            print(mesg)
+        # assert realtime, "Non-realtime simulation not implemented"
+        # p.setRealTimeSimulation(int(realtime))
 
-        modelnew = model.from_states(xnew)
+        p.setAdditionalSearchPath(pybullet_data.getDataPath())
+        p.setGravity(0,0,-9.8)
+        planeId = p.loadURDF("plane.urdf")
+        pos0 = startPos
+        orn0 = p.getQuaternionFromEuler(startRPY)
+        self.vehicleId = p.loadURDF("models/vehicle.urdf", pos0, orn0)
 
-        return modelnew 
+        self.wheelDriveJoints = []
+        numJoints = p.getNumJoints(self.vehicleId)
+        for i in range(numJoints):
+            info = p.getJointInfo(self.vehicleId, i)
+            jointIndex = info[0]
+            childName = info[12]
+            if b"wheel_" in childName:
+                self.wheelDriveJoints.append(jointIndex)
+
+    def getPositionAndOrientation(self):
+        pos, quat = p.getBasePositionAndOrientation(self.vehicleId)
+        rpy = p.getEulerFromQuaternion(quat)
+        return pos, rpy
+
+    def setTorques(self, driveTorques):
+        p.setJointMotorControlArray(self.vehicleId, self.wheelDriveJoints, p.TORQUE_CONTROL, forces=driveTorques)
+
+    def stepSimulation(self):
+        p.stepSimulation()
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+    def __del__(self):
+        p.disconnect()
 
