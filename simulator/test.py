@@ -46,6 +46,8 @@ from renderer import (
 import program
 import shader
 
+np.random.seed(1)
+
 window = window.Window("3D view", 500,400)
 renderer = RendererCollection(program.Program(shader.COLOR_SHADERS))
 
@@ -65,23 +67,25 @@ ground = Plane((0,0,1), 0, world, space)
 
 boxes = []
 box_renderers = []
-for i in range(2):
-    ls = np.random.uniform(0.1, 5, (3,))
-    pos = 5 * np.random.randn(3) + np.array([0,0,5])
+for i in range(30):
+    ls = np.random.uniform(0.1, 0.2, (3,))
+    pos = np.random.uniform([-10,-10,0.5],[10,10,1])
     rpy = np.random.uniform(-np.pi, np.pi, (3,))
     
-    b = Box(10, ls, pos, rpy, world, space)
+    b = Box(1, ls, pos, rpy, world, space)
     br = BoxRenderer(b)
     boxes.append(b)
     box_renderers.append(br)
 
 
-cylinders = []
-cylinder_renderers = []
-for i in range(5):
-    r = np.random.uniform(0.5, 5)
-    h = np.random.uniform(0.5, 5)
-    pos = 5 * np.random.randn(3) + np.array([0,0,5])
+cylinders = [
+        Cylinder(100, 0.4, 3, (15,0,1), (1.57,0,0), world, space)
+]
+cylinder_renderers = [CylinderRenderer(c) for c in cylinders]
+for i in range(0):
+    r = 1 #np.random.uniform(0.5, 5)
+    h = 3 # np.random.uniform(0.5, 5)
+    pos = 5 * np.random.randn(3) + np.array([0,0,15])
     rpy = np.random.uniform(-np.pi, np.pi, (3,))
     c = Cylinder(50, r, h, pos, rpy, world, space)
     cr = CylinderRenderer(c)
@@ -97,19 +101,22 @@ def near_callback(args, geom1, geom2):
     contacts = ode.collide(geom1, geom2)
     world, contactgroup = args
     for c in contacts:
-        c.setBounce(0.8)
-        c.setMu(1)
+        c.setBounce(0.2)
+        c.setMu(30)
         j = ode.ContactJoint(world, contactgroup, c)
         j.attach(geom1.getBody(), geom2.getBody())
 
 fps = 50
 t, dt, tstop = 0, 1/fps, float('inf')
 while t < tstop and not window.shouldClose():
-# setup drawing
+    # setup drawing
     window.clear()
 
     #pos_string = lambda p: f"{p[0]:.3f} {p[1]:.3f} {p[2]:.3f}"
     #print(pos_string(box1.body.getPosition()))
+    cylinders[0].body.addRelTorque((0,0,100))
+
+
 
     eye = glm.vec3(15,15,10)
     target = glm.vec3(0,0,0)
@@ -122,7 +129,7 @@ while t < tstop and not window.shouldClose():
     plane.draw(projview)
 
     # step simulation
-    substeps = 5
+    substeps = 2
     for i in range(substeps):
         space.collide((world, contactgroup), near_callback)
         world.step(dt/substeps)
@@ -132,5 +139,8 @@ while t < tstop and not window.shouldClose():
     window.swap()
     window.poll_events()
     time.sleep(dt)
+
+
+
 
 window.terminate()
