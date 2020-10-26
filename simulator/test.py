@@ -25,16 +25,32 @@ A typical simulation will proceed like this:
 
     Destroy the dynamics and collision worlds.
 """
+import glm
 
 import ode
 import time
 
 from box import Box
+from cylinder import Cylinder
 from plane import Plane
 
-from renderer import Renderer
+import numpy as np
 
-renderer = Renderer()
+import window
+from renderer import (
+        RendererCollection,
+        BoxRenderer,
+        CylinderRenderer,
+        HorizontalPlaneRenderer
+)
+import program
+import shader
+
+window = window.Window("3D view", 500,400)
+renderer = RendererCollection(program.Program(shader.COLOR_SHADERS))
+
+line_program = program.Program(shader.LINE_SHADERS)
+plane = HorizontalPlaneRenderer(12, line_program)
 
 # Setup world
 world = ode.World()
@@ -46,11 +62,33 @@ space = ode.Space()
 
 # Create objects and joints
 ground = Plane((0,0,1), 0, world, space)
-box1 = Box(1, (2,1,0.5), (0,0,10), (0.7,1.3,-1), world, space)
-box2 = Box(1, (2,1,0.5), (0,0,20), (0.7,1.3,-1), world, space)
 
-renderer.add(ground)
-#renderer.add(box1, box2)
+boxes = []
+box_renderers = []
+for i in range(2):
+    ls = np.random.uniform(0.1, 5, (3,))
+    pos = 5 * np.random.randn(3) + np.array([0,0,5])
+    rpy = np.random.uniform(-np.pi, np.pi, (3,))
+    
+    b = Box(10, ls, pos, rpy, world, space)
+    br = BoxRenderer(b)
+    boxes.append(b)
+    box_renderers.append(br)
+
+
+cylinders = []
+cylinder_renderers = []
+for i in range(5):
+    r = np.random.uniform(0.5, 5)
+    h = np.random.uniform(0.5, 5)
+    pos = 5 * np.random.randn(3) + np.array([0,0,5])
+    rpy = np.random.uniform(-np.pi, np.pi, (3,))
+    c = Cylinder(50, r, h, pos, rpy, world, space)
+    cr = CylinderRenderer(c)
+    cylinders.append(c)
+    cylinder_renderers.append(cr)
+
+renderer.add(*box_renderers, *cylinder_renderers)
 
 # setup for collision detection
 contactgroup = ode.JointGroup()
@@ -59,23 +97,40 @@ def near_callback(args, geom1, geom2):
     contacts = ode.collide(geom1, geom2)
     world, contactgroup = args
     for c in contacts:
-        c.setBounce(0.2)
+        c.setBounce(0.8)
         c.setMu(1)
         j = ode.ContactJoint(world, contactgroup, c)
         j.attach(geom1.getBody(), geom2.getBody())
 
 fps = 50
-t, dt, tstop = 0, 1/fps, 10
-while t < tstop:
-    pos_string = lambda p: f"{p[0]:.3f} {p[1]:.3f} {p[2]:.3f}"
+t, dt, tstop = 0, 1/fps, float('inf')
+while t < tstop and not window.shouldClose():
+# setup drawing
+    window.clear()
+
+    #pos_string = lambda p: f"{p[0]:.3f} {p[1]:.3f} {p[2]:.3f}"
     #print(pos_string(box1.body.getPosition()))
 
+    eye = glm.vec3(15,15,10)
+    target = glm.vec3(0,0,0)
+    view = glm.lookAt(eye, target, glm.vec3(0,0,1))
+    proj = glm.perspective(glm.radians(80), window.width/window.height, 0.01, 1000.0)
+    #proj = glm.ortho(-20, 20, -20, 20, 0.01, 100)
+    projview = proj*view
+
+    renderer.draw(projview)
+    plane.draw(projview)
+
     # step simulation
-    substeps = 2
+    substeps = 5
     for i in range(substeps):
         space.collide((world, contactgroup), near_callback)
         world.step(dt/substeps)
         contactgroup.empty()
     t += dt
 
-    #time.sleep(dt)
+    window.swap()
+    window.poll_events()
+    time.sleep(dt)
+
+window.terminate()

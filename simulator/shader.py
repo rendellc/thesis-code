@@ -47,7 +47,7 @@ SIMPLEFRAG = Shader("simplefrag", GL_FRAGMENT_SHADER, """\
         #version 330 core
         out vec3 color;
         void main(){
-            color = vec3(1.0,0,0);
+            color = vec3(1,1,1);
         }""")
 
 SIMPLE_SHADERS = [SIMPLEVERT, SIMPLEFRAG]
@@ -75,4 +75,17 @@ CFRAG = Shader("colorfrag", GL_FRAGMENT_SHADER, """\
         }""")
 
 COLOR_SHADERS = [CVERT, CFRAG]
+
+
+LINEVERT = Shader("linevert", GL_VERTEX_SHADER, """\
+        #version 330 core
+        layout(location = 0) in vec3 vertexPosition_modelSpace;
+
+        uniform mat4x4 mvp;
+
+        void main(){
+            gl_Position = mvp * vec4(vertexPosition_modelSpace, 1);
+        }""")
+
+LINE_SHADERS = [LINEVERT, SIMPLEFRAG]
 

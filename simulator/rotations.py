@@ -25,4 +25,11 @@ def rot_z(psi):
 def euler_to_matrix(rpy):
     return rot_z(rpy[2]) @  rot_y(rpy[1]) @ rot_x(rpy[0])
 
+def quaternion_to_rpy(quaternion):
+    qw,qx,qy,qz = quaternion
+    roll = np.arctan2(2*(qw*qx+qy*qz), 1 - 2*(qx**2 + qy**2))
+    qp = np.clip(2*(qw*qy - qz*qx), -1, 1)
+    pitch = np.arcsin(qp)
+    yaw = np.arctan2(2*(qw*qz+qx*qy), 1 - 2*(qy**2 + qz**2))
 
+    return roll, pitch, yaw

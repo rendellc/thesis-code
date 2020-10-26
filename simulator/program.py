@@ -5,7 +5,6 @@ class Program:
     def __init__(self, shaders):
         self._id = glCreateProgram()
         for s in shaders:
-            print("creating", s.name)
             s.compile()
             s.attach(self._id)
 
@@ -25,4 +24,13 @@ class Program:
         glUseProgram(self._id)
 
     @property
-    def id(self): return self._id
+    def id(self): 
+        return self._id
+
+
+    def __del__(self):
+        #TODO: proper cleanup
+        pass
+        #print(self)
+        #glDeleteProgram(self.id)
+        #glUseProgram(0)

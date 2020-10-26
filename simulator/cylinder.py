@@ -2,16 +2,17 @@ import ode
 
 import rotations
 
-class Box:
-    def __init__(self, mass, lengths, pos, rpy, world, space):
-        self.lengths = lengths
+class Cylinder:
+    def __init__(self, mass, radius, height, pos, rpy, world, space):
+        self.radius = radius
+        self.height = height
         
         self.body = ode.Body(world)
         self.mass = ode.Mass()
-        self.mass.setBoxTotal(mass, *lengths)
+        self.mass.setCylinderTotal(mass, 3, radius, height)
         self.body.setMass(self.mass)
 
-        self.geom = ode.GeomBox(space, self.lengths)
+        self.geom = ode.GeomCylinder(space, radius, height)
         self.geom.setBody(self.body)
 
         self.body.setPosition(pos)
@@ -34,19 +35,18 @@ if __name__=="__main__":
     world.setERP(0.8)
     world.setCFM(1E-5)
     space = ode.Space()
-    box1 = Box(1, (2,1,0.5), (0,0,10), (0.7,1.3,-1), world, space)
-    box2 = Box(1, (2,1,0.5), (0,0,10), (0.7,1.3,-1), world, space)
+    c1 = Cylinder(1, 2, 0.5, (0,0,10), (0.7,1.3,-1), world, space)
+    c2 = Cylinder(10, 0.5, 2, (0,0,10), (-0.7,-1.3,-1), world, space)
 
-
-    print(box1)
-    print(box2)
+    print(c1)
+    print(c1)
 
     settings = {
-            box1: "settings for box 1",
-            box2: "settings for box 2",
+            c1: "settings for cylinder 1",
+            c2: "settings for cylinder 2",
     }
 
-    print(settings[box1])
-    print(settings[box2])
+    print(settings[c1])
+    print(settings[c2])
 
 
