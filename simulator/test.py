@@ -65,23 +65,55 @@ space = ode.Space()
 # Create objects and joints
 ground = Plane((0,0,1), 0, world, space)
 
-boxes = []
-box_renderers = []
-for i in range(30):
+
+
+# create vehicle
+lx, ly, lz = 4, 2.5, 2
+chassis = Box(50, (lx,ly,lz), (0,0,1.5), (0,0,0), world, space)
+
+r, h, rpy = 0.5, 0.5, (np.pi/2, 0, 0)
+wheel_fl = Cylinder(50, r, h, (lx/2, ly/2+h/2+r, r), rpy, world, space)
+wheel_rl = Cylinder(50, r, h, (-lx/2, ly/2+h/2+r, r), rpy, world, space)
+wheel_rr = Cylinder(50, r, h, (-lx/2, -ly/2-h/2-r, r), rpy, world, space)
+wheel_fr = Cylinder(50, r, h, (lx/2, -ly/2-h/2-r, r), rpy, world, space)
+
+def connect_chassis_wheel(chassis, wheel, world):
+    joint = ode.UniversalJoint(world)
+    joint.setAxis1((0,0,1))
+    joint.setAxis2((0,1,0))
+    joint.attach(wheel.body, chassis.body)
+
+    body_pos_in_wheel = wheel.body.getPosRelPoint(chassis.position)
+    print(chassis.position, wheel.position, body_pos_in_wheel)
+
+    joint.setAnchor(body_pos_in_wheel)
+
+    return joint
+
+joint_fl = connect_chassis_wheel(chassis, wheel_fl, world)
+joint_rl = connect_chassis_wheel(chassis, wheel_rl, world)
+joint_rr = connect_chassis_wheel(chassis, wheel_rr, world)
+joint_fr = connect_chassis_wheel(chassis, wheel_fr, world)
+
+
+
+boxes = [
+    chassis
+]
+for i in range(0):
     ls = np.random.uniform(0.1, 0.2, (3,))
     pos = np.random.uniform([-10,-10,0.5],[10,10,1])
     rpy = np.random.uniform(-np.pi, np.pi, (3,))
     
-    b = Box(1, ls, pos, rpy, world, space)
+    b = Box(0, ls, pos, rpy, world, space)
     br = BoxRenderer(b)
     boxes.append(b)
-    box_renderers.append(br)
 
 
 cylinders = [
-        Cylinder(100, 0.4, 3, (15,0,1), (1.57,0,0), world, space)
+        #Cylinder(200, 0.4, 3, (15,0,1), (1.57,0,0), world, space)
+        wheel_fl, wheel_rl, wheel_rr, wheel_fr
 ]
-cylinder_renderers = [CylinderRenderer(c) for c in cylinders]
 for i in range(0):
     r = 1 #np.random.uniform(0.5, 5)
     h = 3 # np.random.uniform(0.5, 5)
@@ -90,8 +122,9 @@ for i in range(0):
     c = Cylinder(50, r, h, pos, rpy, world, space)
     cr = CylinderRenderer(c)
     cylinders.append(c)
-    cylinder_renderers.append(cr)
 
+box_renderers = [BoxRenderer(b) for b in boxes]
+cylinder_renderers = [CylinderRenderer(c) for c in cylinders]
 renderer.add(*box_renderers, *cylinder_renderers)
 
 # setup for collision detection
@@ -102,7 +135,7 @@ def near_callback(args, geom1, geom2):
     world, contactgroup = args
     for c in contacts:
         c.setBounce(0.2)
-        c.setMu(30)
+        c.setMu(0.8)
         j = ode.ContactJoint(world, contactgroup, c)
         j.attach(geom1.getBody(), geom2.getBody())
 
@@ -114,11 +147,16 @@ while t < tstop and not window.shouldClose():
 
     #pos_string = lambda p: f"{p[0]:.3f} {p[1]:.3f} {p[2]:.3f}"
     #print(pos_string(box1.body.getPosition()))
-    cylinders[0].body.addRelTorque((0,0,100))
+    #chassis.body.addRelForce((1000,0,0))
+    joint_fl.addTorques(300,0)
+    joint_rl.addTorques(300,0)
+    joint_rr.addTorques(300,0)
+    joint_fr.addTorques(300,0)
 
-
-
-    eye = glm.vec3(15,15,10)
+    rc = 15
+    cx = rc*np.cos(0.1*t + np.pi/4)
+    cy = rc*np.sin(0.1*t + np.pi/4)
+    eye = glm.vec3(cx,cy,rc/2)
     target = glm.vec3(0,0,0)
     view = glm.lookAt(eye, target, glm.vec3(0,0,1))
     proj = glm.perspective(glm.radians(80), window.width/window.height, 0.01, 1000.0)
