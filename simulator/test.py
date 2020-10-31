@@ -45,6 +45,8 @@ from renderer import (
 )
 import program
 import shader
+import rotations as R
+from pid import PID
 
 np.random.seed(1)
 g = -10
@@ -53,7 +55,7 @@ window = window.Window("3D view", 1000,800)
 renderer = RendererCollection(program.Program(shader.COLOR_SHADERS))
 
 line_program = program.Program(shader.LINE_SHADERS)
-plane = HorizontalPlaneRenderer(12, line_program)
+plane = HorizontalPlaneRenderer(25, line_program)
 
 # Setup world
 world = ode.World()
@@ -70,62 +72,42 @@ ground = Plane((0,0,1), 0, world, space)
 # wide wheeled motorcycle (so balance isn't an issue)
 lx, ly, lz = 4.110, 2.440, 1
 wheel_clearing = 1
-r, h = 0.4, 2
-mcchassis = Box(50, (lx,ly,lz), (0,0, lz/2 + r + wheel_clearing), (0,0,0), world, space)
+r, h = 0.4, 0.7
+height_above_ground = 0.2
+zc = height_above_ground + lz/2 + r + wheel_clearing
+chassis = Box(50, (lx,ly,lz), (0,0,zc), (0,0,0), world, space)
 
 k = 0.0
-wheel_front = Cylinder(50, r, h, (lx/2, 0, r), (-np.pi/2,0, k*np.pi), world, space)
-wheel_rear = Cylinder(50, r, h, (-lx/2, 0, r), (-np.pi/2,0,-k*np.pi), world, space)
+zw = height_above_ground + r
+rpy = (-np.pi/2,0,0)
+wheel_front_left = Cylinder(50, r, h, (lx/2, ly/2, zw), rpy, world, space)
+wheel_front_right = Cylinder(50, r, h, (lx/2, -ly/2, zw), rpy, world, space)
+wheel_rear_left = Cylinder(50, r, h, (-lx/2, ly/2, zw), rpy, world, space)
+wheel_rear_right = Cylinder(50, r, h, (-lx/2, -ly/2, zw), rpy, world, space)
  
 def connect_wheel_to_chassis(wheel, chassis, world):
-    base = ode.Body(world)
-    base.setPosition(wheel.position)
-    base_joint = ode.FixedJoint(world)
-    base_joint.attach(chassis.body, base)
-    base_joint.setFixed()
-
     joint = ode.Hinge2Joint(world)
-    joint.attach(wheel.body, chassis.body)
+    joint.attach(chassis.body, wheel.body)
     joint.setAnchor(wheel.position)
     joint.setAxis1((0,0,1)) # axis 1 is specified relative to body 1
     joint.setAxis2((0,1,0)) # axis 2 is specified relative to body 2
+    return joint
 
-    return base, joint
+joint_front_left = connect_wheel_to_chassis(wheel_front_left, chassis, world)
+joint_front_right = connect_wheel_to_chassis(wheel_front_right, chassis, world)
+joint_rear_left = connect_wheel_to_chassis(wheel_rear_left, chassis, world)
+joint_rear_right = connect_wheel_to_chassis(wheel_rear_right, chassis, world)
 
-joint_front_base, joint_front = connect_wheel_to_chassis(wheel_front, mcchassis, world)
-joint_front_base, joint_rear = connect_wheel_to_chassis(wheel_rear, mcchassis, world)
 
-
-#joint_back = connect_chassis_wheel(mcchassis, wheel_rear, world)
-
-vehicle_mass = mcchassis.mass.mass + wheel_front.mass.mass + wheel_rear.mass.mass
+vehicle_mass = chassis.mass.mass + 2*wheel_front_left.mass.mass + 2*wheel_rear_left.mass.mass
 mu_ground = 0.8
 friction_force_limit = abs(mu_ground*vehicle_mass*g)
-
-# # create vehicle
-# lx, ly, lz = 4, 2.5, 2
-# chassis = Box(50, (lx,ly,lz), (0,0,1.5), (0,0,0), world, space)
-# 
-# r, h, rpy = 0.5, 0.5, (np.pi/2, 0, 0)
-# wheel_fl = Cylinder(50, r, h, (lx/2, ly/2+h/2+r, r), rpy, world, space)
-# wheel_rl = Cylinder(50, r, h, (-lx/2, ly/2+h/2+r, r), rpy, world, space)
-# wheel_rr = Cylinder(50, r, h, (-lx/2, -ly/2-h/2-r, r), rpy, world, space)
-# wheel_fr = Cylinder(50, r, h, (lx/2, -ly/2-h/2-r, r), rpy, world, space)
-# 
-# vehicle_mass = chassis.mass.mass + 4*wheel_fl.mass.mass
-# mu_ground = 0.8
-# friction_force_limit = abs(mu_ground*vehicle_mass*g)
-
-# joint_fl = connect_chassis_wheel(chassis, wheel_fl, world)
-# joint_rl = connect_chassis_wheel(chassis, wheel_rl, world)
-# joint_rr = connect_chassis_wheel(chassis, wheel_rr, world)
-# joint_fr = connect_chassis_wheel(chassis, wheel_fr, world)
 
 print("friction_force_limit", friction_force_limit)
 
 
 boxes = [
-    mcchassis
+    chassis
 ]
 for i in range(0):
     ls = np.random.uniform(0.1, 0.2, (3,))
@@ -133,14 +115,14 @@ for i in range(0):
     rpy = np.random.uniform(-np.pi, np.pi, (3,))
     
     b = Box(0, ls, pos, rpy, world, space)
-    br = BoxRenderer(b)
     boxes.append(b)
 
 
 cylinders = [
-        #Cylinder(200, 0.4, 3, (15,0,1), (1.57,0,0), world, space)
-        #wheel_fl, wheel_rl, wheel_rr, wheel_fr
-        wheel_front, wheel_rear,
+        wheel_front_left,
+        wheel_front_right,
+        wheel_rear_left,
+        wheel_rear_right,
 ]
 for i in range(0):
     r = 1 #np.random.uniform(0.5, 5)
@@ -174,16 +156,17 @@ def near_callback(args, geom1, geom2):
         # that you can chose based on experimentation.
         #c.setFDir1(
 
-
-
-
-
         # note: mu is a force limit and not the Coulomb friction coefficient
         # http://ode.org/wiki/index.php?title=Manual#Contact
         c.setMu(friction_force_limit) 
         c.setMu2(friction_force_limit) # 
         j = ode.ContactJoint(world, contactgroup, c)
         j.attach(geom1.getBody(), geom2.getBody())
+
+drive_fl_pid = PID(20,0,5)
+drive_fr_pid = PID(20,0,5)
+steer_fl_pid = PID(20,10,5)
+steer_fr_pid = PID(20,10,5)
 
 fps = 50
 t, dt, tstop = 0, 1/fps, float('inf')
@@ -192,37 +175,41 @@ while t < tstop and not window.shouldClose():
     window.clear()
 
     vec_string = lambda p: f"{p[0]:.3f} {p[1]:.3f} {p[2]:.3f}"
-    #print(pos_string(box1.body.getPosition()))
-    #chassis.body.addRelForce((1000,0,0))
-    #joint_fl.addTorques(0,0)
-    #joint_rl.addTorques(0,0)
-    #joint_rr.addTorques(0,0)
-    #joint_fr.addTorques(0,0)
-    #mcchassis.body.addRelForce((200,0,0))
-    joint_front.addTorques(0,200)
-    joint_rear.addTorques(0,200)
-    #joint_front.addTorques(0,2000)
-    #joint_rear.addTorques(0,2000)
 
-    wheel_front_R = np.reshape(wheel_front.body.getRotation(), (3,3))
-    wheel_front_unit_x = wheel_front_R[:,0]
-    omega_front = joint_front.getAngle2Rate()
-    # print(vec_string(mcchassis.position), vec_string(wheel_front_unit_x), omega_front)
+    omega_fl = joint_front_left.getAngle2Rate()
+    steer_fl, steerrate_fl = joint_front_left.getAngle1(), joint_front_left.getAngle1Rate()
+    omega_fr = joint_front_right.getAngle2Rate()
+    steer_fr, steerrate_fr = joint_front_right.getAngle1(), joint_front_right.getAngle1Rate()
+
+    angle_f = 2
+    omega_fd = 2
+    drive_fl = drive_fl_pid(dt, omega_fd - omega_fl)
+    drive_fr = drive_fr_pid(dt, omega_fd - omega_fr)
+    tz_fl = steer_fl_pid(dt, angle_f - steer_fl, -steerrate_fl)
+    tz_fr = steer_fr_pid(dt, angle_f - steer_fr, -steerrate_fr)
+
+    fx = 0
+    joint_front_left.addTorques(tz_fl,drive_fl)
+    joint_front_right.addTorques(tz_fr,fx)
+    joint_rear_left.addTorques(0,fx)
+    joint_rear_right.addTorques(0,fx)
+
+    posx,posy,posz = chassis.position
+    print(posx, posy, omega_fl)
 
     rc = 15
-    cx = rc*np.cos(0.3*t - np.pi/2)
-    cy = rc*np.sin(0.3*t - np.pi/2)
-    eye = glm.vec3(cx,cy,rc/2)
-    target = glm.vec3(0,0,0)
+    cx = rc*np.cos(0.15*t)
+    cy = rc*np.sin(0.14*t)
+    eye = glm.vec3(posx+cx,posy+cy,rc/2)
+    target = glm.vec3(posx,posy,posz)
     view = glm.lookAt(eye, target, glm.vec3(0,0,1))
     proj = glm.perspective(glm.radians(80), window.width/window.height, 0.01, 1000.0)
     # proj = glm.ortho(-20, 20, -20, 20, 0.01, 100)
     projview = proj*view
-
     renderer.draw(projview)
     plane.draw(projview)
 
-    # step simulation
+    # step simulation with substepping
     substeps = 2
     for i in range(substeps):
         space.collide((world, contactgroup), near_callback)
