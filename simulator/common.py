@@ -1,5 +1,5 @@
-
 from dataclasses import dataclass
+import numpy as np
 
 @dataclass
 class PID:
@@ -28,4 +28,11 @@ class PID:
     def reset(self):
         self.integral = 0
 
+
+def ssa(angle):
+    """
+    angle: float or [float]
+    return smallest signed equivalent angle(s)
+    """
+    return np.arctan2(np.sin(angle), np.cos(angle))
 
