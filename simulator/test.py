@@ -119,26 +119,25 @@ friction_force_limit = abs(mu_ground*vehicle_mass*g/4)
 
 print("friction_force_limit", friction_force_limit)
 
-
 boxes = [
     chassis,
     beam_left,
     beam_right,
 ]
 for i in range(0):
-    ls = np.random.uniform(0.1, 0.2, (3,))
+    ls = np.random.uniform(0.02, 0.03, (3,))
     pos = np.random.uniform([-10,-10,0.5],[10,10,1])
     rpy = np.random.uniform(-np.pi, np.pi, (3,))
     
-    b = Box(0, ls, pos, rpy, world, space)
+    b = Box(1, ls, pos, rpy, world, space)
     boxes.append(b)
 
 
 cylinders = [
-        wheel_front_left,
-        wheel_front_right,
-        wheel_rear_left,
-        wheel_rear_right,
+    wheel_front_left,
+    wheel_front_right,
+    wheel_rear_left,
+    wheel_rear_right,
 ]
 for i in range(0):
     r = 1 #np.random.uniform(0.5, 5)
@@ -208,21 +207,24 @@ while t < tstop and not window.shouldClose():
     steer_fr, steerrate_fr = joint_front_right.getAngle1(), joint_front_right.getAngle1Rate()
 
     if t < 10: 
+        omega_ref_left = -2
+        omega_ref_right = -2
         sr = 0
     else:
-        sr = -0.5
+        omega_ref_left = 2
+        omega_ref_right = 2
+        sr = 0
     steer_ref_front = sr
     steer_ref_rear = -sr
 
-    omega_ref = -2
 
-    drive_fl = drive_fl_pid(dt, omega_ref - omega_fl)
+    drive_fl = drive_fl_pid(dt, omega_ref_left - omega_fl)
     steer_fl = steer_fl_pid(dt, ssa(steer_ref_front - steer_fl), -steerrate_fl)
-    drive_rl = drive_rl_pid(dt, omega_ref - omega_rl)
+    drive_rl = drive_rl_pid(dt, omega_ref_left - omega_rl)
     steer_rl = steer_rl_pid(dt, ssa(steer_ref_rear - steer_rl), -steerrate_rl)
-    drive_rr = drive_rr_pid(dt, omega_ref - omega_rr)
+    drive_rr = drive_rr_pid(dt, omega_ref_right - omega_rr)
     steer_rr = steer_rr_pid(dt, ssa(steer_ref_rear - steer_rr), -steerrate_rr)
-    drive_fr = drive_fr_pid(dt, omega_ref - omega_fr)
+    drive_fr = drive_fr_pid(dt, omega_ref_right - omega_fr)
     steer_fr = steer_fr_pid(dt, ssa(steer_ref_front - steer_fr), -steerrate_fr)
 
     joint_front_left.addTorques(steer_fl, drive_fl)
@@ -254,7 +256,7 @@ while t < tstop and not window.shouldClose():
 
     window.swap()
     window.poll_events()
-    #time.sleep(dt)
+    time.sleep(dt)
 
 
 
