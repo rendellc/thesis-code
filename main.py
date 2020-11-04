@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 from simulator import VehicleSim
+from simulator.common import PID
+
 
 
 # vehicle parameters
@@ -31,6 +33,10 @@ t, dt, tstop = 0, 1/fps, float('inf')
 shouldStop = False
 while t < tstop and not shouldStop:
 
+    steer_torques = [0,0,0,0]
+    drive_torques = [0,0,0,0]
+
+    sim.setTorques(steer_torques, drive_torques)
 
     shouldStop = sim.step(t, dt)
     t += dt

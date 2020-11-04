@@ -81,7 +81,7 @@ class VehicleSim:
         self.beam_l = Box(beam_mass, (bx,by,bz), (beam_xc,  beam_yc, beam_zc), (0,0,0), self.world, self.space)
         self.beam_r = Box(beam_mass, (bx,by,bz), (beam_xc, -beam_yc, beam_zc), (0,0,0), self.world, self.space)
 
-        rpy = (-np.pi/2,0,0)
+        rpy = (np.pi/2,0,0)
         yw = fy/2 + wr
         xwr = beam_xc - bx/2 + wr
         self.wheel_fl = Cylinder(wheel_mass, wr, ww, (0,  yw, zw), rpy, self.world, self.space)
@@ -96,6 +96,14 @@ class VehicleSim:
         self.joint_wheel_fr = connect_wheel_to_body(self.wheel_fr, self.front, self.world)
         self.joint_wheel_rl = connect_wheel_to_body(self.wheel_rl, self.beam_l, self.world)
         self.joint_wheel_rr = connect_wheel_to_body(self.wheel_rr, self.beam_r, self.world)
+        # store wheel joints in order fl, rl, rr, fr
+        self.joint_wheels = [
+                self.joint_wheel_fl,
+                self.joint_wheel_rl,
+                self.joint_wheel_rr,
+                self.joint_wheel_fr
+        ]
+        assert self.joint_wheel_fl is self.joint_wheels[0]
 
         # setup rendering
         if self.do3Dview:
@@ -143,6 +151,13 @@ class VehicleSim:
             c.setMu2(self.frictionLimit2)
             j = ode.ContactJoint(world, contactgroup, c)
             j.attach(geom1.getBody(), geom2.getBody())
+
+    def setTorques(self, steer_torques, drive_torques):
+        """
+        set angular drives on fl, rl, rr, fr
+        """
+        for i in range(len(self.joint_wheels)):
+            self.joint_wheels[i].addTorques(steer_torques[i], drive_torques[i])
 
 
     def step(self, t, dt):
