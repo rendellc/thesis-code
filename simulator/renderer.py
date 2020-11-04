@@ -27,29 +27,57 @@ class BoxRenderer:
         lx,ly,lz = box.lengths
         
         data = np.array([
-            # pos color
-            [[-lx/2,-ly/2,-lz/2], random_color()],
-            [[-lx/2,-ly/2, lz/2], random_color()],
-            [[-lx/2, ly/2,-lz/2], random_color()],
-            [[-lx/2, ly/2, lz/2], random_color()],
-            [[lx/2,-ly/2,-lz/2],  random_color()],
-            [[lx/2,-ly/2, lz/2],  random_color()],
-            [[lx/2, ly/2,-lz/2],  random_color()],
-            [[lx/2, ly/2, lz/2],  random_color()]
+            # pos normal color
+            # bottom face vertices (-z)
+            [[-lx/2,-ly/2,-lz/2], [0,0,-1], random_color()],
+            [[-lx/2, ly/2,-lz/2], [0,0,-1], random_color()],
+            [[ lx/2, ly/2,-lz/2], [0,0,-1], random_color()],
+            [[ lx/2,-ly/2,-lz/2], [0,0,-1], random_color()],
+            # top face vertices (+z)
+            [[-lx/2,-ly/2, lz/2], [0,0,1], random_color()],
+            [[ lx/2,-ly/2, lz/2], [0,0,1], random_color()],
+            [[ lx/2, ly/2, lz/2], [0,0,1], random_color()],
+            [[-lx/2, ly/2, lz/2], [0,0,1], random_color()],
+            # left face vertices (-y)
+            [[-lx/2,-ly/2,-lz/2], [0,-1,0], random_color()],
+            [[ lx/2,-ly/2,-lz/2], [0,-1,0], random_color()],
+            [[ lx/2,-ly/2, lz/2], [0,-1,0], random_color()],
+            [[-lx/2,-ly/2, lz/2], [0,-1,0], random_color()],
+            # right face vertices (+y)
+            [[-lx/2, ly/2,-lz/2], [0,1,0], random_color()],
+            [[-lx/2, ly/2, lz/2], [0,1,0], random_color()],
+            [[ lx/2, ly/2, lz/2], [0,1,0], random_color()],
+            [[ lx/2, ly/2,-lz/2], [0,1,0], random_color()],
+            # front face vertices (+x)
+            [[ lx/2,-ly/2,-lz/2], [1,0,0], random_color()],
+            [[ lx/2, ly/2,-lz/2], [1,0,0], random_color()],
+            [[ lx/2, ly/2, lz/2], [1,0,0], random_color()],
+            [[ lx/2,-ly/2, lz/2], [1,0,0], random_color()],
+            # rear face vertices (-x)
+            [[-lx/2,-ly/2,-lz/2], [-1,0,0], random_color()],
+            [[-lx/2,-ly/2, lz/2], [-1,0,0], random_color()],
+            [[-lx/2, ly/2, lz/2], [-1,0,0], random_color()],
+            [[-lx/2, ly/2,-lz/2], [-1,0,0], random_color()],
         ], dtype=np.float32)
         indices = np.array([
-            [0,1,3],
-            [0,2,6],
-            [0,3,2],
-            [0,4,1],
-            [0,6,4],
-            [1,4,5],
-            [1,5,7],
-            [1,7,3],
-            [2,3,7],
-            [2,7,6],
+            # bottom faces
+            [0,1,2],
+            [0,2,3],
+            # top faces
+            [4,5,6],
             [4,6,7],
-            [4,7,5]
+            # left faces
+            [8,9,10],
+            [8,10,11],
+            # right faces
+            [12,13,14],
+            [12,14,15],
+            # front faces
+            [16,17,18],
+            [16,18,19],
+            # back faces
+            [20,21,22],
+            [20,22,23],
         ], dtype=np.uint32)
         self.indices_size = indices.size
 
@@ -58,10 +86,12 @@ class BoxRenderer:
         self.vbo = glGenBuffers(1)
         glBindBuffer(GL_ARRAY_BUFFER, self.vbo)
 
-        glVertexAttribPointer(0, data[0,0].size, GL_FLOAT, GL_FALSE, data[0].nbytes, c_void_p(0))
+        glVertexAttribPointer(0, data[0,0].size, GL_FLOAT, GL_FALSE, data[0].nbytes, c_void_p(data[0,:0].nbytes))
         glEnableVertexAttribArray(0)
-        glVertexAttribPointer(1, data[0,1].size, GL_FLOAT, GL_FALSE, data[0].nbytes, c_void_p(data[0,0].nbytes))
+        glVertexAttribPointer(1, data[0,1].size, GL_FLOAT, GL_FALSE, data[0].nbytes, c_void_p(data[0,:1].nbytes))
         glEnableVertexAttribArray(1)
+        glVertexAttribPointer(2, data[0,2].size, GL_FLOAT, GL_FALSE, data[0].nbytes, c_void_p(data[0,:2].nbytes))
+        glEnableVertexAttribArray(2)
 
         glBufferData(GL_ARRAY_BUFFER, data.nbytes, data.flatten(), GL_STATIC_DRAW)
 
@@ -153,10 +183,10 @@ class CylinderRenderer:
         vertices = []
         for px, py in zip(pxs, pys):
             vertices.append([
-                [px, py, -h/2], random_color(),
+                [px, py, -h/2], [0,0,1], random_color(),
             ])
             vertices.append([
-                [px, py, h/2], random_color(),
+                [px, py, h/2], [0,0,1], random_color(),
             ])
 
         vertices = np.array(vertices, dtype=np.float32)
@@ -182,10 +212,12 @@ class CylinderRenderer:
         self.vbo = glGenBuffers(1)
         glBindBuffer(GL_ARRAY_BUFFER, self.vbo)
 
-        glVertexAttribPointer(0, vertices[0,0].size, GL_FLOAT, GL_FALSE, vertices[0].nbytes, c_void_p(0))
+        glVertexAttribPointer(0, vertices[0,0].size, GL_FLOAT, GL_FALSE, vertices[0].nbytes, c_void_p(vertices[0,:0].nbytes))
         glEnableVertexAttribArray(0)
-        glVertexAttribPointer(1, vertices[0,1].size, GL_FLOAT, GL_FALSE, vertices[0].nbytes, c_void_p(vertices[0,0].nbytes))
+        glVertexAttribPointer(1, vertices[0,1].size, GL_FLOAT, GL_FALSE, vertices[0].nbytes, c_void_p(vertices[0,:1].nbytes))
         glEnableVertexAttribArray(1)
+        glVertexAttribPointer(2, vertices[0,2].size, GL_FLOAT, GL_FALSE, vertices[0].nbytes, c_void_p(vertices[0,:2].nbytes))
+        glEnableVertexAttribArray(2)
 
         glBufferData(GL_ARRAY_BUFFER, vertices.nbytes, vertices.flatten(), GL_STATIC_DRAW)
 

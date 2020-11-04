@@ -206,13 +206,13 @@ while t < tstop and not window.shouldClose():
     omega_fr = joint_front_right.getAngle2Rate()
     steer_fr, steerrate_fr = joint_front_right.getAngle1(), joint_front_right.getAngle1Rate()
 
-    if t < 10: 
-        omega_ref_left = -2
-        omega_ref_right = -2
-        sr = 0
+    if t < 20: 
+        omega_ref_left = -3
+        omega_ref_right = -3
+        sr = 0 #np.pi/10
     else:
-        omega_ref_left = 2
-        omega_ref_right = 2
+        omega_ref_left = 3
+        omega_ref_right = 3
         sr = 0
     steer_ref_front = sr
     steer_ref_rear = -sr
@@ -256,7 +256,7 @@ while t < tstop and not window.shouldClose():
 
     window.swap()
     window.poll_events()
-    time.sleep(dt)
+    #time.sleep(dt)
 
 
 

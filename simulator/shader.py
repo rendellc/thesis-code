@@ -9,6 +9,12 @@ class Shader:
         self._type = shader_type
         self._src = shader_src
 
+    @classmethod
+    def from_filename(cls, name, shader_type, filename):
+        with open(filename, "r") as f:
+            src = f.read()
+            return cls(name, shader_type, src)
+
     def compile(self):
         self._id = glCreateShader(self._type)
         glShaderSource(self._id, self._src)
@@ -53,26 +59,8 @@ SIMPLEFRAG = Shader("simplefrag", GL_FRAGMENT_SHADER, """\
 SIMPLE_SHADERS = [SIMPLEVERT, SIMPLEFRAG]
 
 
-CVERT = Shader("colorvert", GL_VERTEX_SHADER, """\
-        #version 330 core
-        layout(location = 0) in vec3 vertexPosition_modelSpace;
-        layout(location = 1) in vec3 vertexColor;
-        out vec3 fragmentColor;
-
-        uniform mat4x4 mvp;
-
-        void main(){
-            gl_Position = mvp * vec4(vertexPosition_modelSpace, 1);
-            fragmentColor = vertexColor;
-        }""")
-
-CFRAG = Shader("colorfrag", GL_FRAGMENT_SHADER, """\
-        #version 330 core
-        in vec3 fragmentColor;
-        out vec3 color;
-        void main(){
-            color = fragmentColor;
-        }""")
+CVERT = Shader.from_filename("colorvert", GL_VERTEX_SHADER, "shaders/color.vert")
+CFRAG = Shader.from_filename("colorfrag", GL_FRAGMENT_SHADER, "shaders/color.frag")
 
 COLOR_SHADERS = [CVERT, CFRAG]
 
