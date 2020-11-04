@@ -1,7 +1,4 @@
-
 from OpenGL.GL import *
-
-import sys
 
 class Shader:
     def __init__(self, name, shader_type, shader_src):
@@ -24,8 +21,7 @@ class Shader:
         success = glGetShaderiv(self._id, GL_COMPILE_STATUS)
         if not success: 
             msg = glGetShaderInfoLog(self._id)
-            print(msg)
-            sys.exit(10)
+            raise RuntimeError(msg)
 
     def attach(self, program_id):
         glAttachShader(program_id, self._id)
@@ -59,8 +55,8 @@ SIMPLEFRAG = Shader("simplefrag", GL_FRAGMENT_SHADER, """\
 SIMPLE_SHADERS = [SIMPLEVERT, SIMPLEFRAG]
 
 
-CVERT = Shader.from_filename("colorvert", GL_VERTEX_SHADER, "shaders/color.vert")
-CFRAG = Shader.from_filename("colorfrag", GL_FRAGMENT_SHADER, "shaders/color.frag")
+CVERT = Shader.from_filename("colorvert", GL_VERTEX_SHADER, "simulator/shaders/color.vert")
+CFRAG = Shader.from_filename("colorfrag", GL_FRAGMENT_SHADER, "simulator/shaders/color.frag")
 
 COLOR_SHADERS = [CVERT, CFRAG]
 
