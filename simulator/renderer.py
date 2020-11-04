@@ -22,42 +22,45 @@ def random_color():
     return np.random.uniform(0,1,3)
 
 class BoxRenderer:
-    def __init__(self, box):
+    def __init__(self, box, color=None):
         self.box = box
         lx,ly,lz = box.lengths
+
+        if color is None:
+            color = random_color()
         
         data = np.array([
             # pos normal color
             # bottom face vertices (-z)
-            [[-lx/2,-ly/2,-lz/2], [0,0,-1], random_color()],
-            [[-lx/2, ly/2,-lz/2], [0,0,-1], random_color()],
-            [[ lx/2, ly/2,-lz/2], [0,0,-1], random_color()],
-            [[ lx/2,-ly/2,-lz/2], [0,0,-1], random_color()],
+            [[-lx/2,-ly/2,-lz/2], [0,0,-1], color],
+            [[-lx/2, ly/2,-lz/2], [0,0,-1], color],
+            [[ lx/2, ly/2,-lz/2], [0,0,-1], color],
+            [[ lx/2,-ly/2,-lz/2], [0,0,-1], color],
             # top face vertices (+z)
-            [[-lx/2,-ly/2, lz/2], [0,0,1], random_color()],
-            [[ lx/2,-ly/2, lz/2], [0,0,1], random_color()],
-            [[ lx/2, ly/2, lz/2], [0,0,1], random_color()],
-            [[-lx/2, ly/2, lz/2], [0,0,1], random_color()],
+            [[-lx/2,-ly/2, lz/2], [0,0,1], color],
+            [[ lx/2,-ly/2, lz/2], [0,0,1], color],
+            [[ lx/2, ly/2, lz/2], [0,0,1], color],
+            [[-lx/2, ly/2, lz/2], [0,0,1], color],
             # left face vertices (-y)
-            [[-lx/2,-ly/2,-lz/2], [0,-1,0], random_color()],
-            [[ lx/2,-ly/2,-lz/2], [0,-1,0], random_color()],
-            [[ lx/2,-ly/2, lz/2], [0,-1,0], random_color()],
-            [[-lx/2,-ly/2, lz/2], [0,-1,0], random_color()],
+            [[-lx/2,-ly/2,-lz/2], [0,-1,0], color],
+            [[ lx/2,-ly/2,-lz/2], [0,-1,0], color],
+            [[ lx/2,-ly/2, lz/2], [0,-1,0], color],
+            [[-lx/2,-ly/2, lz/2], [0,-1,0], color],
             # right face vertices (+y)
-            [[-lx/2, ly/2,-lz/2], [0,1,0], random_color()],
-            [[-lx/2, ly/2, lz/2], [0,1,0], random_color()],
-            [[ lx/2, ly/2, lz/2], [0,1,0], random_color()],
-            [[ lx/2, ly/2,-lz/2], [0,1,0], random_color()],
+            [[-lx/2, ly/2,-lz/2], [0,1,0], color],
+            [[-lx/2, ly/2, lz/2], [0,1,0], color],
+            [[ lx/2, ly/2, lz/2], [0,1,0], color],
+            [[ lx/2, ly/2,-lz/2], [0,1,0], color],
             # front face vertices (+x)
-            [[ lx/2,-ly/2,-lz/2], [1,0,0], random_color()],
-            [[ lx/2, ly/2,-lz/2], [1,0,0], random_color()],
-            [[ lx/2, ly/2, lz/2], [1,0,0], random_color()],
-            [[ lx/2,-ly/2, lz/2], [1,0,0], random_color()],
+            [[ lx/2,-ly/2,-lz/2], [1,0,0], color],
+            [[ lx/2, ly/2,-lz/2], [1,0,0], color],
+            [[ lx/2, ly/2, lz/2], [1,0,0], color],
+            [[ lx/2,-ly/2, lz/2], [1,0,0], color],
             # rear face vertices (-x)
-            [[-lx/2,-ly/2,-lz/2], [-1,0,0], random_color()],
-            [[-lx/2,-ly/2, lz/2], [-1,0,0], random_color()],
-            [[-lx/2, ly/2, lz/2], [-1,0,0], random_color()],
-            [[-lx/2, ly/2,-lz/2], [-1,0,0], random_color()],
+            [[-lx/2,-ly/2,-lz/2], [-1,0,0], color],
+            [[-lx/2,-ly/2, lz/2], [-1,0,0], color],
+            [[-lx/2, ly/2, lz/2], [-1,0,0], color],
+            [[-lx/2, ly/2,-lz/2], [-1,0,0], color],
         ], dtype=np.float32)
         indices = np.array([
             # bottom faces
@@ -163,8 +166,11 @@ class HorizontalPlaneRenderer:
         glDrawArrays(GL_LINES, 0, self.n_points)
 
 class CylinderRenderer:
-    def __init__(self, cylinder, sectors=8):
+    def __init__(self, cylinder, *, color=None, sectors=8):
         self.cylinder = cylinder
+
+        if color is None:
+            color = random_color()
 
         # generate vertex data
         h = cylinder.height
@@ -181,10 +187,10 @@ class CylinderRenderer:
         vertices = []
         for px, py, nx, ny in zip(pxs, pys, nxs, nys):
             vertices.append([
-                [px, py, -h/2], [nx, ny, 0], random_color(),
+                [px, py, -h/2], [nx, ny, 0], color,
             ])
             vertices.append([
-                [px, py,  h/2], [nx, ny, 0], random_color(),
+                [px, py,  h/2], [nx, ny, 0], color,
             ])
 
         vertices = np.array(vertices, dtype=np.float32)
