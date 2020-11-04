@@ -243,8 +243,8 @@ while t < tstop and not window.shouldClose():
     proj = glm.perspective(glm.radians(80), window.width/window.height, 0.01, 1000.0)
     # proj = glm.ortho(-20, 20, -20, 20, 0.01, 100)
     projview = proj*view
-    renderer.draw(projview)
-    plane.draw(projview)
+    renderer.draw(eye, projview)
+    plane.draw(eye, projview)
 
     # step simulation with substepping
     substeps = 2

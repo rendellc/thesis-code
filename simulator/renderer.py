@@ -99,7 +99,7 @@ class BoxRenderer:
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.ebo)
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.nbytes, indices.flatten(), GL_STATIC_DRAW)
     
-    def draw(self, prog, projview):
+    def draw(self, prog, viewPos, projview):
         pos = self.box.position
         rpy = self.box.rpy
 
@@ -113,16 +113,12 @@ class BoxRenderer:
         glBindBuffer(GL_ARRAY_BUFFER, self.vbo)
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.ebo)
 
-        loc = glGetUniformLocation(prog.id, "mvp")
-        glUniformMatrix4fv(loc, 1, GL_FALSE, glm.value_ptr(mvp))
+        prog.setUniform4x4("mvp", glm.value_ptr(mvp))
+        prog.setUniform4x4("model", glm.value_ptr(model))
+        prog.setUniformVec3("viewPos", viewPos)
+
         glDrawElements(GL_TRIANGLES, self.indices_size, GL_UNSIGNED_INT, c_void_p(0))
 
-    def __del__(self):
-        # TODO: need to do proper cleanup
-        pass
-        # glDeleteBuffers(1, [self.ebo])
-        # glDeleteBuffers(1, [self.vbo])
-        # glDeleteVertexArrays(1, [self.vao])
 
 class HorizontalPlaneRenderer:
     def __init__(self, grid_size, prog):
@@ -155,7 +151,7 @@ class HorizontalPlaneRenderer:
         # glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.ebo)
 
 
-    def draw(self, projview):
+    def draw(self, viewPos, projview):
         self.program.use()
         mvp = projview # no model matrix
 
@@ -177,16 +173,18 @@ class CylinderRenderer:
         N = 2*sectors # two points per sector (low z and high z)
         thetas = np.linspace(0, 2*np.pi, sectors)
 
-        pxs = r*np.cos(thetas)
-        pys = r*np.sin(thetas)
+        nxs = np.cos(thetas)
+        nys = np.sin(thetas)
+        pxs = r*nxs
+        pys = r*nys
 
         vertices = []
-        for px, py in zip(pxs, pys):
+        for px, py, nx, ny in zip(pxs, pys, nxs, nys):
             vertices.append([
-                [px, py, -h/2], [0,0,1], random_color(),
+                [px, py, -h/2], [nx, ny, 0], random_color(),
             ])
             vertices.append([
-                [px, py, h/2], [0,0,1], random_color(),
+                [px, py,  h/2], [nx, ny, 0], random_color(),
             ])
 
         vertices = np.array(vertices, dtype=np.float32)
@@ -227,7 +225,7 @@ class CylinderRenderer:
 
 
 
-    def draw(self, prog, projview):
+    def draw(self, prog, viewPos, projview):
         pos = self.cylinder.position
         rpy = self.cylinder.rpy
 
@@ -241,8 +239,10 @@ class CylinderRenderer:
         glBindBuffer(GL_ARRAY_BUFFER, self.vbo)
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.ebo)
 
-        loc = glGetUniformLocation(prog.id, "mvp")
-        glUniformMatrix4fv(loc, 1, GL_FALSE, glm.value_ptr(mvp))
+        prog.setUniform4x4("model", glm.value_ptr(model))
+        prog.setUniform4x4("mvp", glm.value_ptr(mvp))
+        prog.setUniformVec3("viewPos", viewPos)
+
         glDrawElements(GL_TRIANGLES, self.indices_size, GL_UNSIGNED_INT, c_void_p(0))
 
 
@@ -258,11 +258,11 @@ class RendererCollection:
     def add(self, obj, *objs):
         self.objects.extend([obj, *objs])
 
-    def draw(self, projview):
+    def draw(self, viewPos, projview):
         self.prog.use()
 
         for obj in self.objects:
-            obj.draw(self.prog, projview)
+            obj.draw(self.prog, viewPos, projview)
 
 
 class DuckBox:
@@ -322,9 +322,9 @@ if __name__=="__main__":
         projview = proj*view
 
         # draw 
-        boxes.draw(projview)
-        cylinders.draw(projview)
-        plane.draw(projview)
+        boxes.draw(eye, projview)
+        cylinders.draw(eye, projview)
+        plane.draw(eye, projview)
 
         # update window
         w.swap()

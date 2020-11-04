@@ -23,14 +23,15 @@ class Program:
     def use(self):
         glUseProgram(self._id)
 
+    def setUniform4x4(self, name, value_ptr):
+        loc = glGetUniformLocation(self.id, name)
+        glUniformMatrix4fv(loc, 1, GL_FALSE, value_ptr)
+
+    def setUniformVec3(self, name, vec):
+        loc = glGetUniformLocation(self.id, name)
+        glUniform3f(loc, vec[0],vec[1],vec[2])
+
     @property
     def id(self): 
         return self._id
 
-
-    def __del__(self):
-        #TODO: proper cleanup
-        pass
-        #print(self)
-        #glDeleteProgram(self.id)
-        #glUseProgram(0)
