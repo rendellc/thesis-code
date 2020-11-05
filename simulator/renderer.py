@@ -28,7 +28,7 @@ class BoxRenderer:
 
         if color is None:
             color = random_color()
-        
+
         data = np.array([
             # pos normal color
             # bottom face vertices (-z)

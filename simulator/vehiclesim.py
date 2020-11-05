@@ -51,11 +51,26 @@ class VehicleSim:
         gridsize = sim_params.get("gridsize", 20)
 
         vp = vehicle_params
-        front_mass, beam_mass, wheel_mass = vp["front_mass"], vp["beam_mass"], vp["wheel_mass"]
+        front_mass = vp.get("front_mass", 0)
+        beam_mass =  vp.get("beam_mass", 0)
+        wheel_mass = vp["wheel_mass"]
         fx, fy, fz = vp["front_length"], vp["front_width"], vp["front_height"]
         bx, by, bz = vp["beam_length"], vp["beam_width"], vp["beam_height"]
         wheel_clearing = vp["wheel_clearing_z"]
         wr, ww = vp["wheel_radius"], vp["wheel_width"]
+
+        if vp.get("use_body_mass", True):
+            body_mass = vp["body_mass"]
+            front_volume = fx*fy*fz
+            beam_volume = bx*by*bz
+            body_volume = front_volume + 2*beam_volume
+            density = body_mass/body_volume
+            front_mass = front_volume*density
+            beam_mass = beam_volume*density
+
+        assert front_mass != 0 and beam_mass != 0
+
+
 
         self.mu1, self.mu2 = vp["mu1"], vp["mu2"]
         self.frictionLimit1 = self.mu1 * (front_mass + 2*beam_mass + 4*wheel_mass)/4 * abs(g)
@@ -123,8 +138,11 @@ class VehicleSim:
                     self.wheel_fr,
             ]
 
-            box_renderers = [BoxRenderer(b) for b in boxes]
-            cylinder_renderers = [CylinderRenderer(c) for c in cylinders]
+            body_color = np.array([0.91,0.96,0.95])
+            wheel_color = np.array([0.1,0.1,0.1])
+
+            box_renderers = [BoxRenderer(b, color=body_color) for b in boxes]
+            cylinder_renderers = [CylinderRenderer(c, color=wheel_color) for c in cylinders]
             self.renderer.add(*box_renderers, *cylinder_renderers)
 
         
@@ -159,6 +177,24 @@ class VehicleSim:
         for i in range(len(self.joint_wheels)):
             self.joint_wheels[i].addTorques(steer_torques[i], drive_torques[i])
 
+    def getPosition(self):
+        """
+        Return position of front box.
+        """
+        return self.front.position
+
+    def getRPY(self):
+        return self.front.rpy
+
+    def getWheelDriveRates(self):
+        return [joint.getAngle2Rate() for joint in self.joint_wheels]
+
+    def getWheelSteerAngles(self):
+        return [joint.getAngle1() for joint in self.joint_wheels]
+
+    def getWheelSteerRates(self):
+        return [joint.getAngle1Rate() for joint in self.joint_wheels]
+
 
     def step(self, t, dt):
         steps = self.sim_params.get("substeps", 2)
@@ -180,8 +216,8 @@ class VehicleSim:
             # camera
             posx,posy,posz = self.front.position
             rc, zc = 10, 5
-            cx = rc*np.cos(0.1*t)
-            cy = rc*np.sin(0.1*t)
+            cx = rc*np.cos(0.05*t)
+            cy = rc*np.sin(0.05*t)
             eye = glm.vec3(posx+cx,posy+cy,posz+zc)
             target = glm.vec3(posx,posy,posz)
             view = glm.lookAt(eye, target, glm.vec3(0,0,1))

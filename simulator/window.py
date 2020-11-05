@@ -21,7 +21,7 @@ class Window:
 
         glfw.set_input_mode(self.window, glfw.STICKY_KEYS, True)
 
-        glClearColor(0.7, 0.7, 0.7, 0)
+        glClearColor(0.4, 0.4, 0.4, 0)
         glEnable(GL_DEPTH_TEST)
         glDepthFunc(GL_LESS)
 
