@@ -1,4 +1,4 @@
-
+import glfw
 import ode
 import glm
 import numpy as np
@@ -50,6 +50,10 @@ class VehicleSim:
         self.substeps = sim_params.get("substeps", 2)
         gridsize = sim_params.get("gridsize", 20)
 
+        body_color = np.array(sim_params.get("body_color", [0.91,0.96,0.95]))
+        wheel_color = np.array(sim_params.get("wheel_color", [0.1,0.1,0.1]))
+
+
         vp = vehicle_params
         front_mass = vp.get("front_mass", 0)
         beam_mass =  vp.get("beam_mass", 0)
@@ -91,7 +95,7 @@ class VehicleSim:
         zc = zw + wheel_clearing + fz/2
         self.front = Box(front_mass, (fx,fy,fz), (0,0,zc), (0,0,0), self.world, self.space)
         beam_xc = fx/2 - bx/2
-        beam_yc = fy/2 -by/2
+        beam_yc = fy/2 - by
         beam_zc = zc + fz/2 + bz/2
         self.beam_l = Box(beam_mass, (bx,by,bz), (beam_xc,  beam_yc, beam_zc), (0,0,0), self.world, self.space)
         self.beam_r = Box(beam_mass, (bx,by,bz), (beam_xc, -beam_yc, beam_zc), (0,0,0), self.world, self.space)
@@ -138,12 +142,10 @@ class VehicleSim:
                     self.wheel_fr,
             ]
 
-            body_color = np.array([0.91,0.96,0.95])
-            wheel_color = np.array([0.1,0.1,0.1])
-
             box_renderers = [BoxRenderer(b, color=body_color) for b in boxes]
             cylinder_renderers = [CylinderRenderer(c, color=wheel_color) for c in cylinders]
             self.renderer.add(*box_renderers, *cylinder_renderers)
+            self.angle_camera = 0
 
         
     def _near_callback(self, args, geom1, geom2):
@@ -214,10 +216,16 @@ class VehicleSim:
             self.window.clear()
 
             # camera
+            step_angle_camera = 0.01
+            if glfw.get_key(self.window.window, glfw.KEY_A) == glfw.PRESS:
+                self.angle_camera += step_angle_camera 
+            if glfw.get_key(self.window.window, glfw.KEY_D) == glfw.PRESS:
+                self.angle_camera -= step_angle_camera
+
             posx,posy,posz = self.front.position
             rc, zc = 10, 5
-            cx = rc*np.cos(0.05*t)
-            cy = rc*np.sin(0.05*t)
+            cx = rc*np.cos(self.angle_camera + 0.0001*t)
+            cy = rc*np.sin(self.angle_camera + 0.0001*t)
             eye = glm.vec3(posx+cx,posy+cy,posz+zc)
             target = glm.vec3(posx,posy,posz)
             view = glm.lookAt(eye, target, glm.vec3(0,0,1))

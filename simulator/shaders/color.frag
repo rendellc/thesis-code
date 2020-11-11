@@ -17,7 +17,7 @@ void main(){
   vec3 reflectDir = reflect(-lightDir, norm);
 
   // ambient
-  float ambientStrength = 0.5;
+  float ambientStrength = 0.8;
   vec3 ambient = ambientStrength * fragmentColor;
 
   // diffuse
@@ -26,7 +26,7 @@ void main(){
 
   // specular
   float specStrength = pow(max(dot(viewDir, reflectDir),0), 32);
-  vec3 specular = 0.5 * specStrength * lightColor;
+  vec3 specular = 0.05 * specStrength * lightColor;
 
 
   FragColor = ambient + diffuse + specular;

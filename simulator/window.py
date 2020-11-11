@@ -21,17 +21,22 @@ class Window:
 
         glfw.set_input_mode(self.window, glfw.STICKY_KEYS, True)
 
-        glClearColor(0.4, 0.4, 0.4, 0)
+        glClearColor(0.3, 0.3, 0.3, 0)
         glEnable(GL_DEPTH_TEST)
         glDepthFunc(GL_LESS)
+
+        self.left_arrow_pressed = False
+        self.right_arrow_pressed = False
 
 
     def _glfw_window_size_callback(self, window, width, height):
         self.width, self.height = width, height
         glViewport(0,0,self.width,self.height)
 
+
     def _glfw_error_callback(self, errorint, errorstr):
         print("ERROR:", errorint, errorstr)
+
 
     def clear(self):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -41,6 +46,7 @@ class Window:
 
     def poll_events(self):
         glfw.poll_events()
+
 
     def shouldClose(self):
         if glfw.get_key(self.window, glfw.KEY_ESCAPE) == glfw.PRESS or glfw.window_should_close(self.window):

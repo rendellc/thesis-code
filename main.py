@@ -5,14 +5,31 @@ import numpy as np
 from simulator import VehicleSim
 from simulator.common import PID
 
+"""
+Lengde: 4110 mm
+Lengde mellom akslinger 2830 mm.
+Hjuldiameter er 1010 mm.
+Det gjør at fronten er 270 mm foran framhjulene eller 775 mm foran framaksel.
+
+Bredde er på 2400 mm i ytterkant av hjulene og det er 2000 mm mellom senter av hjulene så da tolker jeg at hjulene er 400 mm brede.
+
+Vekt er 2380 kg uten nyttelast. Opp mot 2000 kg ekstra med nyttelast. Maks vekt altså ~4400 kg
+"""
+axle_to_axle = 2.830
+wheel_diameter = 1.010
+total_length = 4.110
+front_axle_to_front = 0.775
+wheel_width = 0.400
+total_width = 2.400
+
+wheel_radius = wheel_diameter/2
+
 # vehicle parameters
 vp = dict(
         body_mass=1580,
-        #front_mass=250,
-        #beam_mass=100,
         wheel_mass=200,
         front_length=1,
-        front_width=2.830,
+        front_width=total_width - wheel_width - wheel_radius,
         front_height=1,
         beam_length=4.110,
         beam_width=0.3,
@@ -27,7 +44,10 @@ vp = dict(
 
 
 # simulator parameters
-sp = dict()
+sp = dict(
+        body_color=[0.7,0.7,0.7],
+	do3Dview=True,
+)
 
 sim = VehicleSim(vp, sp)
 
@@ -52,7 +72,7 @@ while t < tstop and not shouldStop:
     steers = np.array(sim.getWheelSteerAngles())
     steerrates = np.array(sim.getWheelSteerRates())
 
-    print(np.round(np.rad2deg(steers), 2))
+    #print(np.round(np.rad2deg(steers), 2))
 
     # Controllers
     omega_refs = -np.array([1,1,1,1])
