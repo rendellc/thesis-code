@@ -224,8 +224,8 @@ class VehicleSim:
 
             posx,posy,posz = self.front.position
             rc, zc = 10, 5
-            cx = rc*np.cos(self.angle_camera + 0.0001*t)
-            cy = rc*np.sin(self.angle_camera + 0.0001*t)
+            cx = rc*np.cos(self.angle_camera + 0.01*t)
+            cy = rc*np.sin(self.angle_camera + 0.01*t)
             eye = glm.vec3(posx+cx,posy+cy,posz+zc)
             target = glm.vec3(posx,posy,posz)
             view = glm.lookAt(eye, target, glm.vec3(0,0,1))

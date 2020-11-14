@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 
 from matplotlib.transforms import Affine2D
 
+"""
 from models.vehicle import VehicleModel
-
 class VehicleAnimation:
     def __init__(self, v: VehicleModel, size=30, ax=None):
         self.width = v.body.width
@@ -115,7 +115,7 @@ class VehicleAnimation:
             t_wheel = Affine2D().translate(xc,yc).rotate_around(xw, yw, w.steer_angle)
 
             patch.set_transform(t_chassis + t_wheel + self.ax.transData)
-
+"""
 
 
 class Plot:
@@ -139,6 +139,22 @@ class Plot:
         if self.rescale:
             self.ax.relim()
             self.ax.autoscale_view()
+
+
+class Marker:
+    def __init__(self, x0, y0, ax=None, **kwargs):
+        self.rescale = kwargs.pop("rescale", True)
+        if ax is None:
+            fig, ax = plt.subplots(1,1)
+
+        self.ax = ax
+        self.scat = self.ax.scatter(0,0, **kwargs)
+
+        self.update(x0,y0)
+
+    def update(self, x,y):
+        self.scat.set_offsets((x,y))
+
 
 
 
