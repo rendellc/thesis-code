@@ -122,23 +122,37 @@ class Plot:
     def __init__(self, xs0, ys0, ax=None, **kwargs):
         self.xs = xs0
         self.ys = ys0
-        self.rescale = kwargs.pop("rescale", True)
+        self.rescale = kwargs.pop("rescale", False)
+        self.xlim = kwargs.pop("xlim", [-1, 1])
+        self.ylim = kwargs.pop("ylim", [-1, 1])
 
         if ax is None:
             fig, ax = plt.subplots(1,1)
 
         self.ax = ax
-        self.line, = self.ax.plot(self.xs, self.ys, **kwargs)
+        self.line, = self.ax.plot(self.xs, self.ys, animated=True, **kwargs)
 
 
     def update(self, x, y):
         self.xs.append(x)
         self.ys.append(y)
+
+        # Compute new limits here to avoid computing max/min of entire array
+        # which will grow over time
+        self.xlim[0] = min(self.xlim[0], x)
+        self.xlim[1] = max(self.xlim[1], x)
+        self.ylim[0] = min(self.ylim[0], y)
+        self.ylim[1] = max(self.ylim[1], y)
+
         self.line.set_data(self.xs, self.ys)
+        self.ax.draw_artist(self.line)
 
         if self.rescale:
-            self.ax.relim()
-            self.ax.autoscale_view()
+            self.ax.set_xlim(*self.xlim)
+            self.ax.set_ylim(*self.ylim)
+            #self.ax.relim()
+            #self.ax.autoscale_view()
+        
 
 
 class Marker:

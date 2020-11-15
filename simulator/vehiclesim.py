@@ -167,8 +167,8 @@ class VehicleSim:
 
             # note: mu is a force limit and not the Coulomb friction coefficient
             # http://ode.org/wiki/index.php?title=Manual#Contact
-            c.setMu(self.frictionLimit1) 
-            c.setMu2(self.frictionLimit2)
+            c.setMu(self.frictionLimit1/100) 
+            c.setMu2(self.frictionLimit2/100)
             j = ode.ContactJoint(world, contactgroup, c)
             j.attach(geom1.getBody(), geom2.getBody())
 
