@@ -169,7 +169,9 @@ class VehicleSim:
                 )
 
             self.renderer.add(*box_renderers, *cylinder_renderers)
-            self.angle_camera = 0
+            self.angle_camera = np.pi
+            self.radius_camera = 6
+            self.height_camera = 3
 
         
     def _near_callback(self, args, geom1, geom2):
@@ -240,16 +242,25 @@ class VehicleSim:
             self.window.clear()
 
             # camera
-            step_angle_camera = 0.01
+            step_angle_camera, step_radius_camera, step_height_camera = 0.01, 0.99, 0.1
             if glfw.get_key(self.window.window, glfw.KEY_A) == glfw.PRESS:
                 self.angle_camera += step_angle_camera 
             if glfw.get_key(self.window.window, glfw.KEY_D) == glfw.PRESS:
                 self.angle_camera -= step_angle_camera
+            if glfw.get_key(self.window.window, glfw.KEY_Z) == glfw.PRESS:
+                self.radius_camera *= step_radius_camera
+            if glfw.get_key(self.window.window, glfw.KEY_X) == glfw.PRESS:
+                self.radius_camera *= 1 + (1 - step_radius_camera)
+            if glfw.get_key(self.window.window, glfw.KEY_S) == glfw.PRESS:
+                self.height_camera -= step_height_camera
+            if glfw.get_key(self.window.window, glfw.KEY_W) == glfw.PRESS:
+                self.height_camera += step_height_camera
 
             posx,posy,posz = self.front.position
-            rc, zc = 10, 5
-            cx = rc*np.cos(self.angle_camera + 0.01*t)
-            cy = rc*np.sin(self.angle_camera + 0.01*t)
+            _,_,yaw = self.front.rpy
+            zc = self.height_camera
+            cx = self.radius_camera*np.cos(yaw+self.angle_camera + 0.0*t)
+            cy = self.radius_camera*np.sin(yaw+self.angle_camera + 0.0*t)
             eye = glm.vec3(posx+cx,posy+cy,posz+zc)
             target = glm.vec3(posx,posy,posz)
             view = glm.lookAt(eye, target, glm.vec3(0,0,1))

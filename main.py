@@ -54,7 +54,7 @@ sp = dict(
 
 sim = VehicleSim(vp, sp)
 
-doLivePlots = False
+doLivePlots = True
 if doLivePlots:
     # Plot setup
     figOmegas, axOmegas = plt.subplots(2,2, num="Angular velocity")
