@@ -3,7 +3,7 @@ import ode
 import rotations
 
 class Box:
-    def __init__(self, mass, lengths, pos, rpy, world, space):
+    def __init__(self, mass, lengths, pos, rpy, world, space, doCollide=True):
         self.lengths = lengths
         
         self.body = ode.Body(world)
@@ -11,8 +11,9 @@ class Box:
         self.mass.setBoxTotal(mass, *lengths)
         self.body.setMass(self.mass)
 
-        self.geom = ode.GeomBox(space, self.lengths)
-        self.geom.setBody(self.body)
+        if doCollide:
+            self.geom = ode.GeomBox(space, self.lengths)
+            self.geom.setBody(self.body)
 
         self.body.setPosition(pos)
         R = rotations.euler_to_matrix(rpy).flatten()

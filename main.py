@@ -32,11 +32,13 @@ vp = dict(
         wheel_mass_inner=100,
         wheel_mass_tire=100,
         front_length=1,
-        front_width=total_width - wheel_width - wheel_radius,
+        front_width=total_width - wheel_width - wheel_radius - 0.3,
         front_height=1,
+        front_track=total_width - wheel_width, # distance between front wheel centers
+        rear_track=total_width - wheel_width, # distance between rear wheel centers
         beam_length=4.110,
-        beam_width=0.3,
-        beam_height=0.15,
+        beam_width=0.2,
+        beam_height=0.3,
         wheel_clearing_z=0.1,
         wheel_radius=1.010/2,
         wheel_width=0.4,
@@ -54,7 +56,7 @@ sp = dict(
 
 sim = VehicleSim(vp, sp)
 
-doLivePlots = True
+doLivePlots = False
 if doLivePlots:
     # Plot setup
     figOmegas, axOmegas = plt.subplots(2,2, num="Angular velocity")

@@ -64,6 +64,8 @@ class VehicleSim:
         bx, by, bz = vp["beam_length"], vp["beam_width"], vp["beam_height"]
         wheel_clearing = vp["wheel_clearing_z"]
         wr, ww = vp["wheel_radius"], vp["wheel_width"]
+        front_track = vp["front_track"]
+        rear_track = vp["rear_track"]
 
         wheel_mass = wheel_mass_inner + tire_mass
 
@@ -98,23 +100,25 @@ class VehicleSim:
         zw = 0.1 + wr
         zc = zw + wheel_clearing + fz/2
         self.front = Box(front_mass, (fx,fy,fz), (0,0,zc), (0,0,0), self.world, self.space)
-        beam_xc = fx/2 - bx/2
-        beam_yc = fy/2 - by
-        beam_zc = zc + fz/2 + bz/2
-        self.beam_l = Box(beam_mass, (bx,by,bz), (beam_xc,  beam_yc, beam_zc), (0,0,0), self.world, self.space)
-        self.beam_r = Box(beam_mass, (bx,by,bz), (beam_xc, -beam_yc, beam_zc), (0,0,0), self.world, self.space)
+        beam_xc = fx/2 - bx/2 - 0.1
+        beam_yc = fy/2 
+        beam_zc = zc + fz/2 
+        self.beam_l = Box(beam_mass, (bx,by,bz), (beam_xc,  beam_yc, beam_zc), (0,0,0), self.world, self.space, doCollide=False)
+        self.beam_r = Box(beam_mass, (bx,by,bz), (beam_xc, -beam_yc, beam_zc), (0,0,0), self.world, self.space, doCollide=False)
 
         rpy = (np.pi/2,0,0)
-        yw = fy/2 + wr
+        #yw = fy/2 + wr
+        yw_front = front_track/2
+        yw_rear = rear_track/2
         xwr = beam_xc - bx/2 + wr
         self.wheel_fl = Wheel(wheel_mass_inner, 0.6*wr, tire_mass, wr,
-                ww, (0,  yw, zw), rpy, self.world, self.space)
+                ww, (0,  yw_front, zw), rpy, self.world, self.space)
         self.wheel_fr = Wheel(wheel_mass_inner, 0.6*wr, tire_mass, wr,
-                ww, (0, -yw, zw), rpy, self.world, self.space)
+                ww, (0, -yw_front, zw), rpy, self.world, self.space)
         self.wheel_rl = Wheel(wheel_mass_inner, 0.6*wr, tire_mass, wr,
-                ww, (xwr,  yw, zw), rpy, self.world, self.space)
+                ww, (xwr, yw_rear, zw), rpy, self.world, self.space)
         self.wheel_rr = Wheel(wheel_mass_inner, 0.6*wr, tire_mass, wr,
-                ww, (xwr, -yw, zw), rpy, self.world, self.space)
+                ww, (xwr, -yw_rear, zw), rpy, self.world, self.space)
 
         # connect bodies
         self.joint_front_beam_l = connect_fixed(self.front, self.beam_l, self.world)
@@ -193,8 +197,8 @@ class VehicleSim:
 
             # note: mu is a force limit and not the Coulomb friction coefficient
             # http://ode.org/wiki/index.php?title=Manual#Contact
-            c.setMu(self.frictionLimit1/100) 
-            c.setMu2(self.frictionLimit2/100)
+            c.setMu(self.frictionLimit1) 
+            c.setMu2(self.frictionLimit2)
             j = ode.ContactJoint(world, contactgroup, c)
             j.attach(geom1.getBody(), geom2.getBody())
 
