@@ -166,8 +166,9 @@ class HorizontalPlaneRenderer:
         glDrawArrays(GL_LINES, 0, self.n_points)
 
 class CylinderRenderer:
-    def __init__(self, cylinder, *, color=None, sectors=8):
+    def __init__(self, cylinder, *, color=None, sectors=8, closed=False):
         self.cylinder = cylinder
+        self.closed = closed
 
         if color is None:
             color = random_color()
@@ -192,6 +193,12 @@ class CylinderRenderer:
             vertices.append([
                 [px, py,  h/2], [nx, ny, 0], color,
             ])
+        vertices.append([
+            [0, 0, -h/2], [0, 0, -1], color,
+        ])
+        vertices.append([
+            [0, 0, h/2], [0, 0, 1], color,
+        ])
 
         vertices = np.array(vertices, dtype=np.float32)
 
@@ -205,11 +212,28 @@ class CylinderRenderer:
                 odd%N, (odd+1)%N, (odd+2)%N
             ])
 
-        indices = np.array(indices, dtype=np.uint32)
+        Nv = len(vertices)
+        dtype = np.dtype(np.uint32)
+        indices = np.asarray(indices)
+        indices = np.hstack([
+            indices.flatten(),
+            # top indices, will be drawn as triangle fan
+            [~0 % Nv, *list(range(N-1,-1,-2))],
+            # bottom indices, will be drawn as triangle fan
+            [~1 % Nv, *list(range(N-2,-1,-2))]
+        ]).astype(dtype)
 
-        self.indices_size = indices.size
-        
-        # TODO: top and bottom not created above
+        indices = np.array(indices, dtype=dtype).flatten()
+        isize = indices[0].nbytes
+
+        # store slices for drawing later as (startbyte, count)
+        self.side_slice = (0, 3*2*sectors)
+        self.top_slice = (
+                self.side_slice[0] + self.side_slice[1]*isize,
+                sectors+1)
+        self.bottom_slice = (
+                self.top_slice[0] + self.top_slice[1]*isize,
+                sectors+1)
 
         self.vao = glGenVertexArrays(1)
         glBindVertexArray(self.vao)
@@ -249,7 +273,13 @@ class CylinderRenderer:
         prog.setUniform4x4("mvp", glm.value_ptr(mvp))
         prog.setUniformVec3("viewPos", viewPos)
 
-        glDrawElements(GL_TRIANGLES, self.indices_size, GL_UNSIGNED_INT, c_void_p(0))
+        glDrawElements(GL_TRIANGLES, self.side_slice[1],
+                GL_UNSIGNED_INT, c_void_p(self.side_slice[0]))
+        if self.closed:
+            glDrawElements(GL_TRIANGLE_FAN, self.top_slice[1],
+                    GL_UNSIGNED_INT, c_void_p(self.top_slice[0]))
+            glDrawElements(GL_TRIANGLE_FAN, self.bottom_slice[1],
+                    GL_UNSIGNED_INT, c_void_p(self.bottom_slice[0]))
 
 
 

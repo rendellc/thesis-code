@@ -29,7 +29,8 @@ wheel_radius = wheel_diameter/2
 # vehicle parameters
 vp = dict(
         body_mass=1580,
-        wheel_mass=200,
+        wheel_mass_inner=100,
+        wheel_mass_tire=100,
         front_length=1,
         front_width=total_width - wheel_width - wheel_radius,
         front_height=1,
@@ -53,77 +54,49 @@ sp = dict(
 
 sim = VehicleSim(vp, sp)
 
+doLivePlots = False
+if doLivePlots:
+    # Plot setup
+    figOmegas, axOmegas = plt.subplots(2,2, num="Angular velocity")
+    omega_fl, = axOmegas[0,0].plot([],[], animated=True, label=r"$\omega_\text{fl}$")
+    omega_fl_ref, = axOmegas[0,0].plot([],[], animated=True, label=r"$\omega_\text{fl}^r$", ls="--")
+    omega_rl, = axOmegas[1,0].plot([],[], animated=True, label=r"$\omega_\text{rl}$")
+    omega_rl_ref, = axOmegas[1,0].plot([],[], animated=True, label=r"$\omega_\text{rl}^r$", ls="--")
+    omega_rr, = axOmegas[1,1].plot([],[], animated=True, label=r"$\omega_\text{rr}$")
+    omega_rr_ref, = axOmegas[1,1].plot([],[], animated=True, label=r"$\omega_\text{rr}^r$", ls="--")
+    omega_fr, = axOmegas[0,1].plot([],[], animated=True, label=r"$\omega_\text{fr}$")
+    omega_fr_ref, = axOmegas[0,1].plot([],[], animated=True, label=r"$\omega_\text{fr}^r$", ls="--")
+    omega_axes = [axOmegas[0,0],axOmegas[1,0],axOmegas[1,1],axOmegas[0,1]]
+    omega_lines = [omega_fl, omega_rl, omega_rr, omega_fr]
+    omega_ref_lines = [omega_fl_ref, omega_rl_ref, omega_rr_ref, omega_fr_ref]
 
-# Plot setup
-figOmegas, axOmegas = plt.subplots(2,2, num="Angular velocity")
-omega_fl, = axOmegas[0,0].plot([],[], animated=True, label=r"$\omega_\text{fl}$")
-omega_fl_ref, = axOmegas[0,0].plot([],[], animated=True, label=r"$\omega_\text{fl}^r$", ls="--")
-omega_rl, = axOmegas[1,0].plot([],[], animated=True, label=r"$\omega_\text{rl}$")
-omega_rl_ref, = axOmegas[1,0].plot([],[], animated=True, label=r"$\omega_\text{rl}^r$", ls="--")
-omega_rr, = axOmegas[1,1].plot([],[], animated=True, label=r"$\omega_\text{rr}$")
-omega_rr_ref, = axOmegas[1,1].plot([],[], animated=True, label=r"$\omega_\text{rr}^r$", ls="--")
-omega_fr, = axOmegas[0,1].plot([],[], animated=True, label=r"$\omega_\text{fr}$")
-omega_fr_ref, = axOmegas[0,1].plot([],[], animated=True, label=r"$\omega_\text{fr}^r$", ls="--")
-omega_axes = [axOmegas[0,0],axOmegas[1,0],axOmegas[1,1],axOmegas[0,1]]
-omega_lines = [omega_fl, omega_rl, omega_rr, omega_fr]
-omega_ref_lines = [omega_fl_ref, omega_rl_ref, omega_rr_ref, omega_fr_ref]
+    figSteers, axSteers = plt.subplots(2,2, num="Steering angle")
+    steer_fl, = axOmegas[0,0].plot([],[], animated=True, label=r"$\delta_\text{fl}$")
+    steer_fl_ref, = axOmegas[0,0].plot([],[], animated=True, label=r"$\delta_\text{fl}^r$", ls="--")
+    steer_rl, = axOmegas[1,0].plot([],[], animated=True, label=r"$\delta_\text{rl}$")
+    steer_rl_ref, = axOmegas[1,0].plot([],[], animated=True, label=r"$\delta_\text{rl}^r$", ls="--")
+    steer_rr, = axOmegas[1,1].plot([],[], animated=True, label=r"$\delta_\text{rr}$")
+    steer_rr_ref, = axOmegas[1,1].plot([],[], animated=True, label=r"$\delta_\text{rr}^r$", ls="--")
+    steer_fr, = axOmegas[0,1].plot([],[], animated=True, label=r"$\delta_\text{fr}$")
+    steer_fr_ref, = axOmegas[0,1].plot([],[], animated=True, label=r"$\delta_\text{fr}^r$", ls="--")
+    steer_axes = [axSteers[0,0],axSteers[1,0],axSteers[1,1],axSteers[0,1]]
+    steer_lines = [steer_fl, steer_rl, steer_rr, steer_fr]
+    steer_ref_lines = [steer_fl_ref, steer_rl_ref, steer_rr_ref, steer_fr_ref]
 
-figSteers, axSteers = plt.subplots(2,2, num="Steering angle")
-steer_fl, = axOmegas[0,0].plot([],[], animated=True, label=r"$\delta_\text{fl}$")
-steer_fl_ref, = axOmegas[0,0].plot([],[], animated=True, label=r"$\delta_\text{fl}^r$", ls="--")
-steer_rl, = axOmegas[1,0].plot([],[], animated=True, label=r"$\delta_\text{rl}$")
-steer_rl_ref, = axOmegas[1,0].plot([],[], animated=True, label=r"$\delta_\text{rl}^r$", ls="--")
-steer_rr, = axOmegas[1,1].plot([],[], animated=True, label=r"$\delta_\text{rr}$")
-steer_rr_ref, = axOmegas[1,1].plot([],[], animated=True, label=r"$\delta_\text{rr}^r$", ls="--")
-steer_fr, = axOmegas[0,1].plot([],[], animated=True, label=r"$\delta_\text{fr}$")
-steer_fr_ref, = axOmegas[0,1].plot([],[], animated=True, label=r"$\delta_\text{fr}^r$", ls="--")
-steer_axes = [axSteers[0,0],axSteers[1,0],axSteers[1,1],axSteers[0,1]]
-steer_lines = [steer_fl, steer_rl, steer_rr, steer_fr]
-steer_ref_lines = [steer_fl_ref, steer_rl_ref, steer_rr_ref, steer_fr_ref]
+    # Draw empty plots
+    plt.show(block=False)
+    plt.pause(0.1)
 
-# Draw empty plots
-plt.show(block=False)
-plt.pause(0.1)
-
-# Copy backgrounds for blitting
-figOmegasBg = figOmegas.canvas.copy_from_bbox(figOmegas.bbox)
-axOmegaBgs = [
-        figOmegas.canvas.copy_from_bbox(ax.bbox)
-        for ax in axOmegas.flatten()
-]
-axSteerBgs = [
-        figSteers.canvas.copy_from_bbox(ax.bbox)
-        for ax in axSteers.flatten()
-]
-
-# omega_fl = liveplot.Plot([],[], ax=axOmegas[0,0], label=r"$\omega_\text{fl}$")
-# omega_fl_ref = liveplot.Plot([],[], ax=axOmegas[0,0], label=r"$\omega_\text{fl}^r$", ls="--")
-# omega_rl = liveplot.Plot([],[], ax=axOmegas[1,0], label=r"$\omega_\text{rl}$")
-# omega_rl_ref = liveplot.Plot([],[], ax=axOmegas[1,0], label=r"$\omega_\text{rl}^r$", ls="--")
-# omega_rr = liveplot.Plot([],[], ax=axOmegas[1,1], label=r"$\omega_\text{rr}$")
-# omega_rr_ref = liveplot.Plot([],[], ax=axOmegas[1,1], label=r"$\omega_\text{rr}^r$", ls="--")
-# omega_fr = liveplot.Plot([],[], ax=axOmegas[0,1], label=r"$\omega_\text{fr}$")
-# omega_fr_ref = liveplot.Plot([],[], ax=axOmegas[0,1], label=r"$\omega_\text{fr}^r$", ls="--")
-
-#figSteer, axSteer = plt.subplots(2,2, num="Steering angles")
-#steer_fl = liveplot.Plot([],[], ax=axSteer[0,0], label=r"$\delta_\text{fl}$")
-#steer_fl_ref = liveplot.Plot([],[], ax=axSteer[0,0], label=r"$\delta_\text{fl}^r$", ls="--")
-#steer_rl = liveplot.Plot([],[], ax=axSteer[1,0], label=r"$\delta_\text{rl}$")
-#steer_rl_ref = liveplot.Plot([],[], ax=axSteer[1,0], label=r"$\delta_\text{rl}^r$", ls="--")
-#steer_rr = liveplot.Plot([],[], ax=axSteer[1,1], label=r"$\delta_\text{rr}$")
-#steer_rr_ref = liveplot.Plot([],[], ax=axSteer[1,1], label=r"$\delta_\text{rr}^r$", ls="--")
-#steer_fr = liveplot.Plot([],[], ax=axSteer[0,1], label=r"$\delta_\text{fr}$")
-#steer_fr_ref = liveplot.Plot([],[], ax=axSteer[0,1], label=r"$\delta_\text{fr}^r$", ls="--")
-#for ax in axSteer.flatten():
-#    ax.set_ylim(-np.pi,np.pi)
-
-
-
-#figTrajectory, axTrajectory = plt.subplots(1,1, num="Trajectory")
-#trajectoryPlot = liveplot.Plot([],[], ax=axTrajectory, ls="--")
-#positionMarker = liveplot.Marker(0,0, ax=axTrajectory)
-#axTrajectory.set_xlim(-20,20)
-#axTrajectory.set_ylim(-20,20)
+    # Copy backgrounds for blitting
+    figOmegasBg = figOmegas.canvas.copy_from_bbox(figOmegas.bbox)
+    axOmegaBgs = [
+            figOmegas.canvas.copy_from_bbox(ax.bbox)
+            for ax in axOmegas.flatten()
+    ]
+    axSteerBgs = [
+            figSteers.canvas.copy_from_bbox(ax.bbox)
+            for ax in axSteers.flatten()
+    ]
 
 # Controller setup
 drive_torques = np.zeros(4)
@@ -150,59 +123,60 @@ while t < tstop and not shouldStop:
     steer_refs = -np.deg2rad(5)*np.array([1,-1,-1,1])
 
     # Update live plots
-    ## 1) restore backgrounds
-    for bg in axOmegaBgs:
-        figOmegas.canvas.restore_region(bg)
-    for bg in axSteerBgs:
-        figSteers.canvas.restore_region(bg)
+    if doLivePlots:
+        ## 1) restore backgrounds
+        for bg in axOmegaBgs:
+            figOmegas.canvas.restore_region(bg)
+        for bg in axSteerBgs:
+            figSteers.canvas.restore_region(bg)
 
-    ## 2) update plot data
-    for i, (omega_line, ref_line) in enumerate(zip(omega_lines, omega_ref_lines)):
-        omega_line.set_data(
-                np.append(omega_line.get_xdata(), t),
-                np.append(omega_line.get_ydata(), omegas[i])
-        )
-        ref_line.set_data(
-                np.append(omega_fl_ref.get_xdata(), t),
-                np.append(omega_fl_ref.get_ydata(), omega_refs[i])
-        )
+        ## 2) update plot data
+        for i, (omega_line, ref_line) in enumerate(zip(omega_lines, omega_ref_lines)):
+            omega_line.set_data(
+                    np.append(omega_line.get_xdata(), t),
+                    np.append(omega_line.get_ydata(), omegas[i])
+            )
+            ref_line.set_data(
+                    np.append(omega_fl_ref.get_xdata(), t),
+                    np.append(omega_fl_ref.get_ydata(), omega_refs[i])
+            )
 
-    for i, (steer_line, ref_line) in enumerate(zip(steer_lines, steer_ref_lines)):
-        steer_line.set_data(
-                np.append(steer_line.get_xdata(), t),
-                np.append(steer_line.get_ydata(), steers[i])
-        )
-        ref_line.set_data(
-                np.append(steer_fl_ref.get_xdata(), t),
-                np.append(steer_fl_ref.get_ydata(), steer_refs[i])
-        )
+        for i, (steer_line, ref_line) in enumerate(zip(steer_lines, steer_ref_lines)):
+            steer_line.set_data(
+                    np.append(steer_line.get_xdata(), t),
+                    np.append(steer_line.get_ydata(), steers[i])
+            )
+            ref_line.set_data(
+                    np.append(steer_fl_ref.get_xdata(), t),
+                    np.append(steer_fl_ref.get_ydata(), steer_refs[i])
+            )
 
-    ## 3) set axes limits
-    for i, ax in enumerate(omega_axes):
-        xlim = ax.get_xlim()
-        ylim = ax.get_ylim()
-        ax.set_xlim(min(xlim[0], t), max(xlim[1], t))
-        ax.set_ylim(min(ylim[0], omegas[i], omega_refs[i]), max(ylim[1], omegas[i], omega_refs[i]))
-    for i, ax in enumerate(steer_axes):
-        xlim = ax.get_xlim()
-        ylim = ax.get_ylim()
-        ax.set_xlim(min(xlim[0], t), max(xlim[1], t))
-        ax.set_ylim(min(ylim[0], steers[i], steer_refs[i]), max(ylim[1], steers[i], steer_refs[i]))
+        ## 3) set axes limits
+        for i, ax in enumerate(omega_axes):
+            xlim = ax.get_xlim()
+            ylim = ax.get_ylim()
+            ax.set_xlim(min(xlim[0], t), max(xlim[1], t))
+            ax.set_ylim(min(ylim[0], omegas[i], omega_refs[i]), max(ylim[1], omegas[i], omega_refs[i]))
+        for i, ax in enumerate(steer_axes):
+            xlim = ax.get_xlim()
+            ylim = ax.get_ylim()
+            ax.set_xlim(min(xlim[0], t), max(xlim[1], t))
+            ax.set_ylim(min(ylim[0], steers[i], steer_refs[i]), max(ylim[1], steers[i], steer_refs[i]))
 
-    ## 4) draw plots
-    for i in range(len(omega_axes)):
-        omega_axes[i].draw_artist(omega_lines[i])
-        omega_axes[i].draw_artist(omega_ref_lines[i])
-    for i in range(len(steer_axes)):
-        steer_axes[i].draw_artist(steer_lines[i])
-        steer_axes[i].draw_artist(steer_ref_lines[i])
+        ## 4) draw plots
+        for i in range(len(omega_axes)):
+            omega_axes[i].draw_artist(omega_lines[i])
+            omega_axes[i].draw_artist(omega_ref_lines[i])
+        for i in range(len(steer_axes)):
+            steer_axes[i].draw_artist(steer_lines[i])
+            steer_axes[i].draw_artist(steer_ref_lines[i])
 
-    # TODO: check for memory leak
-    figOmegas.canvas.blit(figOmegas.bbox) 
-    figSteers.canvas.blit(figSteers.bbox) 
+        # TODO: check for memory leak
+        figOmegas.canvas.blit(figOmegas.bbox) 
+        figSteers.canvas.blit(figSteers.bbox) 
 
-    figOmegas.canvas.flush_events()
-    figSteers.canvas.flush_events()
+        figOmegas.canvas.flush_events()
+        figSteers.canvas.flush_events()
 
     # Wheel Controllers
     for i in range(4):

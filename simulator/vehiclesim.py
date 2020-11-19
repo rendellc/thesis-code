@@ -6,6 +6,7 @@ import numpy as np
 
 from box import Box
 from cylinder import Cylinder
+from wheel import Wheel
 from plane import Plane
 
 import window
@@ -30,7 +31,7 @@ def connect_fixed(b1, b2, world):
 
 def connect_wheel_to_body(wheel, body, world):
     joint = ode.Hinge2Joint(world)
-    joint.attach(body.body, wheel.body)
+    joint.attach(body.body, wheel.inner.body)
     joint.setAnchor(wheel.position)
     joint.setAxis1((0,0,1)) # axis 1 is specified relative to body 1
     joint.setAxis2((0,1,0)) # axis 2 is specified relative to body 2
@@ -51,17 +52,20 @@ class VehicleSim:
         gridsize = sim_params.get("gridsize", 20)
 
         body_color = np.array(sim_params.get("body_color", [0.91,0.96,0.95]))
-        wheel_color = np.array(sim_params.get("wheel_color", [0.1,0.1,0.1]))
-
+        wheel_color = np.array(sim_params.get("wheel_color", [0.61,0.7,0.6]))
+        tire_color = np.array(sim_params.get("tire_color", [0.1,0.1,0.1]))
 
         vp = vehicle_params
         front_mass = vp.get("front_mass", 0)
         beam_mass =  vp.get("beam_mass", 0)
-        wheel_mass = vp["wheel_mass"]
+        wheel_mass_inner = vp["wheel_mass_inner"]
+        tire_mass = vp["wheel_mass_tire"]
         fx, fy, fz = vp["front_length"], vp["front_width"], vp["front_height"]
         bx, by, bz = vp["beam_length"], vp["beam_width"], vp["beam_height"]
         wheel_clearing = vp["wheel_clearing_z"]
         wr, ww = vp["wheel_radius"], vp["wheel_width"]
+
+        wheel_mass = wheel_mass_inner + tire_mass
 
         if vp.get("use_body_mass", True):
             body_mass = vp["body_mass"]
@@ -103,10 +107,14 @@ class VehicleSim:
         rpy = (np.pi/2,0,0)
         yw = fy/2 + wr
         xwr = beam_xc - bx/2 + wr
-        self.wheel_fl = Cylinder(wheel_mass, wr, ww, (0,  yw, zw), rpy, self.world, self.space)
-        self.wheel_fr = Cylinder(wheel_mass, wr, ww, (0, -yw, zw), rpy, self.world, self.space)
-        self.wheel_rl = Cylinder(wheel_mass, wr, ww, (xwr,  yw, zw), rpy, self.world, self.space)
-        self.wheel_rr = Cylinder(wheel_mass, wr, ww, (xwr, -yw, zw), rpy, self.world, self.space)
+        self.wheel_fl = Wheel(wheel_mass_inner, 0.6*wr, tire_mass, wr,
+                ww, (0,  yw, zw), rpy, self.world, self.space)
+        self.wheel_fr = Wheel(wheel_mass_inner, 0.6*wr, tire_mass, wr,
+                ww, (0, -yw, zw), rpy, self.world, self.space)
+        self.wheel_rl = Wheel(wheel_mass_inner, 0.6*wr, tire_mass, wr,
+                ww, (xwr,  yw, zw), rpy, self.world, self.space)
+        self.wheel_rr = Wheel(wheel_mass_inner, 0.6*wr, tire_mass, wr,
+                ww, (xwr, -yw, zw), rpy, self.world, self.space)
 
         # connect bodies
         self.joint_front_beam_l = connect_fixed(self.front, self.beam_l, self.world)
@@ -115,6 +123,13 @@ class VehicleSim:
         self.joint_wheel_fr = connect_wheel_to_body(self.wheel_fr, self.front, self.world)
         self.joint_wheel_rl = connect_wheel_to_body(self.wheel_rl, self.beam_l, self.world)
         self.joint_wheel_rr = connect_wheel_to_body(self.wheel_rr, self.beam_r, self.world)
+
+        self.joint_tire_fl = connect_fixed(self.wheel_fl.inner, self.wheel_fl.tire, self.world)
+        self.joint_tire_rl = connect_fixed(self.wheel_rl.inner, self.wheel_rl.tire, self.world)
+        self.joint_tire_rr = connect_fixed(self.wheel_rr.inner, self.wheel_rr.tire, self.world)
+        self.joint_tire_fr = connect_fixed(self.wheel_fr.inner, self.wheel_fr.tire, self.world)
+
+
         # store wheel joints in order fl, rl, rr, fr
         self.joint_wheels = [
                 self.joint_wheel_fl,
@@ -135,7 +150,7 @@ class VehicleSim:
                     self.beam_l,
                     self.beam_r,
             ]
-            cylinders = [
+            wheels = [
                     self.wheel_fl,
                     self.wheel_rl,
                     self.wheel_rr,
@@ -143,7 +158,16 @@ class VehicleSim:
             ]
 
             box_renderers = [BoxRenderer(b, color=body_color) for b in boxes]
-            cylinder_renderers = [CylinderRenderer(c, color=wheel_color) for c in cylinders]
+
+            cylinder_renderers = []
+            for w in wheels:
+                cylinder_renderers.append(
+                    CylinderRenderer(w.inner, color=wheel_color, closed=True)
+                )
+                cylinder_renderers.append(
+                    CylinderRenderer(w.tire, color=tire_color, closed=True)
+                )
+
             self.renderer.add(*box_renderers, *cylinder_renderers)
             self.angle_camera = 0
 
