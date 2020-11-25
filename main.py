@@ -5,7 +5,13 @@ import matplotlib.pyplot as plt
 
 from simulator import VehicleSim
 from simulator.common import PID
+from simulator.common import ssa
+from simulator.rotations import rot_z, rot_z_der
 import liveplot
+
+import time
+
+np.set_printoptions(precision=4)
 
 """
 Lengde: 4110 mm
@@ -42,21 +48,25 @@ vp = dict(
         wheel_clearing_z=0.1,
         wheel_radius=1.010/2,
         wheel_width=0.4,
-        mu1=0.6,
+        mu1=0.8,
         mu2=0.3,
 )
-
 
 
 # simulator parameters
 sp = dict(
         body_color=[0.7,0.7,0.7],
 	do3Dview=True,
+        substeps=2,
+        window_width=400,
+        window_height=400,
 )
 
 sim = VehicleSim(vp, sp)
 
-doLivePlots = False
+wheel_arms = sim.getWheelPositions()
+
+doLivePlots = True
 if doLivePlots:
     # Plot setup
     figOmegas, axOmegas = plt.subplots(2,2, num="Angular velocity")
@@ -73,31 +83,49 @@ if doLivePlots:
     omega_ref_lines = [omega_fl_ref, omega_rl_ref, omega_rr_ref, omega_fr_ref]
 
     figSteers, axSteers = plt.subplots(2,2, num="Steering angle")
-    steer_fl, = axOmegas[0,0].plot([],[], animated=True, label=r"$\delta_\text{fl}$")
-    steer_fl_ref, = axOmegas[0,0].plot([],[], animated=True, label=r"$\delta_\text{fl}^r$", ls="--")
-    steer_rl, = axOmegas[1,0].plot([],[], animated=True, label=r"$\delta_\text{rl}$")
-    steer_rl_ref, = axOmegas[1,0].plot([],[], animated=True, label=r"$\delta_\text{rl}^r$", ls="--")
-    steer_rr, = axOmegas[1,1].plot([],[], animated=True, label=r"$\delta_\text{rr}$")
-    steer_rr_ref, = axOmegas[1,1].plot([],[], animated=True, label=r"$\delta_\text{rr}^r$", ls="--")
-    steer_fr, = axOmegas[0,1].plot([],[], animated=True, label=r"$\delta_\text{fr}$")
-    steer_fr_ref, = axOmegas[0,1].plot([],[], animated=True, label=r"$\delta_\text{fr}^r$", ls="--")
+    steer_fl, = axSteers[0,0].plot([],[], animated=True, label=r"$\delta_\text{fl}$")
+    steer_fl_ref, = axSteers[0,0].plot([],[], animated=True, label=r"$\delta_\text{fl}^r$", ls="--")
+    steer_rl, = axSteers[1,0].plot([],[], animated=True, label=r"$\delta_\text{rl}$")
+    steer_rl_ref, = axSteers[1,0].plot([],[], animated=True, label=r"$\delta_\text{rl}^r$", ls="--")
+    steer_rr, = axSteers[1,1].plot([],[], animated=True, label=r"$\delta_\text{rr}$")
+    steer_rr_ref, = axSteers[1,1].plot([],[], animated=True, label=r"$\delta_\text{rr}^r$", ls="--")
+    steer_fr, = axSteers[0,1].plot([],[], animated=True, label=r"$\delta_\text{fr}$")
+    steer_fr_ref, = axSteers[0,1].plot([],[], animated=True, label=r"$\delta_\text{fr}^r$", ls="--")
     steer_axes = [axSteers[0,0],axSteers[1,0],axSteers[1,1],axSteers[0,1]]
     steer_lines = [steer_fl, steer_rl, steer_rr, steer_fr]
     steer_ref_lines = [steer_fl_ref, steer_rl_ref, steer_rr_ref, steer_fr_ref]
+    for ax in steer_axes:
+        ax.set_ylim(-np.pi, np.pi)
+
+    figSlips, axSlips = plt.subplots(2,2, num="Slip x")
+    slip_fl, = axSlips[0,0].plot([],[], animated=True, label=r"$s_\text{fl}$")
+    slip_rl, = axSlips[1,0].plot([],[], animated=True, label=r"$s_\text{rl}$")
+    slip_rr, = axSlips[1,1].plot([],[], animated=True, label=r"$s_\text{rr}$")
+    slip_fr, = axSlips[0,1].plot([],[], animated=True, label=r"$s_\text{fr}$")
+    slip_axes = [axSlips[0,0],axSlips[1,0],axSlips[1,1],axSlips[0,1]]
+    slip_lines = [slip_fl, slip_rl, slip_rr, slip_fr]
+    for ax in slip_axes:
+        ax.set_ylim(-1,1)
 
     # Draw empty plots
     plt.show(block=False)
     plt.pause(0.1)
 
     # Copy backgrounds for blitting
-    figOmegasBg = figOmegas.canvas.copy_from_bbox(figOmegas.bbox)
+    figOmegaBg = figOmegas.canvas.copy_from_bbox(figOmegas.bbox)
     axOmegaBgs = [
             figOmegas.canvas.copy_from_bbox(ax.bbox)
             for ax in axOmegas.flatten()
     ]
+    figSteerBg = figSteers.canvas.copy_from_bbox(figSteers.bbox)
     axSteerBgs = [
             figSteers.canvas.copy_from_bbox(ax.bbox)
             for ax in axSteers.flatten()
+    ]
+    figSlipBg = figSlips.canvas.copy_from_bbox(figSlips.bbox)
+    axSlipBgs = [
+            figSlips.canvas.copy_from_bbox(ax.bbox)
+            for ax in axSlips.flatten()
     ]
 
 # Controller setup
@@ -114,23 +142,51 @@ tPltDraw, pltFps = t, 10
 shouldStop = False
 while t < tstop and not shouldStop:
     # Get states
-    pos = np.array(sim.getPosition())
-    rpy = np.array(sim.getRPY())
-    omegas = np.array(sim.getWheelDriveRates())
-    steers = np.array(sim.getWheelSteerAngles())
-    steerrates = np.array(sim.getWheelSteerRates())
+    pos = sim.getPosition()
+    vel = sim.getVelocity()
+    rpy = sim.getRPY()
+    rpyrate = sim.getRPYRate()
+    omegas = sim.getWheelDriveRates()
+    steers = sim.getWheelSteerAngles()
+    steerrates = sim.getWheelSteerRates()
+    vel_body = rot_z(-rpy[2]) @ vel
+
+    # Compute longitudinal slip, eq 8.9 in Kiencke
+    # assume roll and pitch are zero
+    wheel_velocities_body = vel_body + wheel_arms @ rot_z_der(-rpy[2], -rpyrate[2])
+    wheel_betas = np.arctan2(wheel_velocities_body[:,1], wheel_velocities_body[:,0])
+    wheel_alphas = steers - wheel_betas
+    wheel_speeds = np.linalg.norm(wheel_velocities_body, axis=1)
+    wheel_rot_speeds = omegas * wheel_radius * np.cos(wheel_alphas)
+    wheel_speed_diffs = wheel_rot_speeds - wheel_speeds
+    wheel_max_speeds = np.maximum(np.abs(wheel_rot_speeds), np.abs(wheel_speeds))
+    # dont generate divide by zero warnings
+    with np.errstate(divide="ignore",invalid="ignore"):
+        wheel_slips_lo = wheel_speed_diffs/wheel_max_speeds
+    # nans come from zeros, leave infs
+    wheel_slips_lo[np.isnan(wheel_slips_lo)] = 0 
 
     # Controllers and references
-    omega_refs = -1*np.array([1,1,1,1])
-    steer_refs = -np.deg2rad(5)*np.array([1,-1,-1,1])
+    if t < 10:
+        omega_all = 3
+    else:
+        omega_all = 1
+
+    omega_refs = omega_all*np.array([1,1,1,1])
+    steer_refs = np.deg2rad(0)*np.sin(0.1*t)*np.array([1,-1,-1,1])
 
     # Update live plots
     if doLivePlots:
         ## 1) restore backgrounds
-        for bg in axOmegaBgs:
-            figOmegas.canvas.restore_region(bg)
-        for bg in axSteerBgs:
-            figSteers.canvas.restore_region(bg)
+        figOmegas.canvas.restore_region(figOmegaBg)
+        figSteers.canvas.restore_region(figSteerBg)
+        figSlips.canvas.restore_region(figSlipBg)
+        #for bg in axOmegaBgs:
+        #    figOmegas.canvas.restore_region(bg)
+        #for bg in axSteerBgs:
+        #    figSteers.canvas.restore_region(bg)
+        #for bg in axSlipBgs:
+        #    figSlips.canvas.restore_region(bg)
 
         ## 2) update plot data
         for i, (omega_line, ref_line) in enumerate(zip(omega_lines, omega_ref_lines)):
@@ -139,18 +195,22 @@ while t < tstop and not shouldStop:
                     np.append(omega_line.get_ydata(), omegas[i])
             )
             ref_line.set_data(
-                    np.append(omega_fl_ref.get_xdata(), t),
-                    np.append(omega_fl_ref.get_ydata(), omega_refs[i])
+                    np.append(ref_line.get_xdata(), t),
+                    np.append(ref_line.get_ydata(), omega_refs[i])
             )
-
         for i, (steer_line, ref_line) in enumerate(zip(steer_lines, steer_ref_lines)):
             steer_line.set_data(
                     np.append(steer_line.get_xdata(), t),
                     np.append(steer_line.get_ydata(), steers[i])
             )
             ref_line.set_data(
-                    np.append(steer_fl_ref.get_xdata(), t),
-                    np.append(steer_fl_ref.get_ydata(), steer_refs[i])
+                    np.append(ref_line.get_xdata(), t),
+                    np.append(ref_line.get_ydata(), steer_refs[i])
+            )
+        for i, slip_line in enumerate(slip_lines):
+            slip_line.set_data(
+                    np.append(slip_line.get_xdata(), t),
+                    np.append(slip_line.get_ydata(), wheel_slips_lo[i])
             )
 
         ## 3) set axes limits
@@ -164,6 +224,9 @@ while t < tstop and not shouldStop:
             ylim = ax.get_ylim()
             ax.set_xlim(min(xlim[0], t), max(xlim[1], t))
             ax.set_ylim(min(ylim[0], steers[i], steer_refs[i]), max(ylim[1], steers[i], steer_refs[i]))
+        for ax in slip_axes:
+            xlim = ax.get_xlim()
+            ax.set_xlim(min(xlim[0], t), max(xlim[1], t))
 
         ## 4) draw plots
         for i in range(len(omega_axes)):
@@ -172,18 +235,23 @@ while t < tstop and not shouldStop:
         for i in range(len(steer_axes)):
             steer_axes[i].draw_artist(steer_lines[i])
             steer_axes[i].draw_artist(steer_ref_lines[i])
+        for i in range(len(slip_axes)):
+            slip_axes[i].draw_artist(slip_lines[i])
 
         # TODO: check for memory leak
+        # TODO: only need to blit on axes, which could improve performance
         figOmegas.canvas.blit(figOmegas.bbox) 
         figSteers.canvas.blit(figSteers.bbox) 
+        figSlips.canvas.blit(figSlips.bbox) 
 
         figOmegas.canvas.flush_events()
         figSteers.canvas.flush_events()
+        figSlips.canvas.flush_events()
 
     # Wheel Controllers
     for i in range(4):
-        drive_torques[i] = drive_pids[i](dt, omega_refs[i] - omegas[i])
-        steer_torques[i] = steer_pids[i](dt, steer_refs[i] - steers[i], -steerrates[i])
+        drive_torques[i] = drive_pids[i](dt, omegas[i] - omega_refs[i])
+        steer_torques[i] = steer_pids[i](dt, ssa(steers[i] - steer_refs[i]), steerrates[i])
 
 
     # Apply control input
@@ -192,4 +260,5 @@ while t < tstop and not shouldStop:
 
     # Setup for next iteration
     t += dt
+
 

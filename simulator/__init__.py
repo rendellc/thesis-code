@@ -1,9 +1,9 @@
-print(__name__, __file__,__path__)
+#print(__name__, __file__,__path__)
 
 import sys
 
 for p in __path__:
-    print("adding", p)
+    #print("adding", p)
     sys.path.insert(1, p)
 
 from vehiclesim import VehicleSim

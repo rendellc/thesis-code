@@ -2,6 +2,8 @@ import ode
 
 import rotations
 
+import numpy as np
+
 class Box:
     def __init__(self, mass, lengths, pos, rpy, world, space, doCollide=True):
         self.lengths = lengths
@@ -21,12 +23,20 @@ class Box:
 
     @property
     def position(self):
-        return self.body.getPosition()
+        return np.array(self.body.getPosition())
+
+    @property
+    def velocity(self):
+        return np.array(self.body.getLinearVel())
 
     @property
     def rpy(self):
         rpy = rotations.quaternion_to_rpy(self.body.getQuaternion())
-        return rpy
+        return np.array(rpy)
+
+    @property
+    def rpyrate(self):
+        return np.array(self.body.getAngularVel())
 
 
 if __name__=="__main__":

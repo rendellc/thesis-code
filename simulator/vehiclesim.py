@@ -28,6 +28,20 @@ def connect_fixed(b1, b2, world):
     joint.setFixed()
     return joint
 
+def center_of_mass(bodies):
+    total_mass = 0
+    mass_center = np.zeros(3)
+    for b in bodies:
+        pos = b.position
+        mass = b.mass.mass
+        mass_center += mass*pos
+        total_mass += mass
+
+    mass_center = mass_center/total_mass
+    return mass_center
+
+
+
 
 def connect_wheel_to_body(wheel, body, world):
     joint = ode.Hinge2Joint(world)
@@ -41,8 +55,8 @@ def connect_wheel_to_body(wheel, body, world):
 class VehicleSim:
     def __init__(self, vehicle_params, sim_params):
         self.sim_params = sim_params
-        print(vehicle_params)
-        print(sim_params)
+        # print(vehicle_params)
+        # print(sim_params)
 
         g = sim_params.get("g",-9.81)
         erp = sim_params.get("erp",0.8)
@@ -99,7 +113,7 @@ class VehicleSim:
         # setup vehicle
         zw = 0.1 + wr
         zc = zw + wheel_clearing + fz/2
-        self.front = Box(front_mass, (fx,fy,fz), (0,0,zc), (0,0,0), self.world, self.space)
+        self.front = Box(front_mass, (fx,fy,fz), (0,0,zc), (0,0,0), self.world, self.space, doCollide=False)
         beam_xc = fx/2 - bx/2 - 0.1
         beam_yc = fy/2 
         beam_zc = zc + fz/2 
@@ -143,9 +157,26 @@ class VehicleSim:
         ]
         assert self.joint_wheel_fl is self.joint_wheels[0]
 
+        mass_center_in_world = center_of_mass([self.front, 
+            self.beam_l, self.beam_r, 
+            self.wheel_fl.inner, self.wheel_fl.tire,
+            self.wheel_rl.inner, self.wheel_rl.tire,
+            self.wheel_rr.inner, self.wheel_rr.tire,
+            self.wheel_fr.inner, self.wheel_fr.tire])
+        self.mass_center_in_front = np.array(self.front.body.getPosRelPoint(mass_center_in_world))
+        #print(mass_center_in_world, self.mass_center_in_front)
+
+        self.wheels = [
+                self.wheel_fl,
+                self.wheel_rl,
+                self.wheel_rr,
+                self.wheel_fr,
+        ]
+
+
         # setup rendering
         if self.do3Dview:
-            self.window = window.Window("3D view", 1000,800)
+            self.window = window.Window("3D view", sim_params.get("window_width", 600), sim_params.get("window_height", 600))
             self.renderer = RendererCollection(program.Program(shader.COLOR_SHADERS))
             self.planerenderer = HorizontalPlaneRenderer(gridsize, program.Program(shader.LINE_SHADERS))
 
@@ -154,17 +185,10 @@ class VehicleSim:
                     self.beam_l,
                     self.beam_r,
             ]
-            wheels = [
-                    self.wheel_fl,
-                    self.wheel_rl,
-                    self.wheel_rr,
-                    self.wheel_fr,
-            ]
-
             box_renderers = [BoxRenderer(b, color=body_color) for b in boxes]
 
             cylinder_renderers = []
-            for w in wheels:
+            for w in self.wheels:
                 cylinder_renderers.append(
                     CylinderRenderer(w.inner, color=wheel_color, closed=True)
                 )
@@ -177,7 +201,19 @@ class VehicleSim:
             self.radius_camera = 6
             self.height_camera = 3
 
-        
+    def getWheelPositions(self):
+        """
+        Get the position of each wheel relative to center of mass in body frame.
+        """
+        positions = np.zeros((len(self.wheels),3))
+        for i, w in enumerate(self.wheels):
+            position_rel_front = np.array(self.front.body.getPosRelPoint(w.position))
+            positions[i] = position_rel_front - self.mass_center_in_front
+
+        return positions
+
+            
+
     def _near_callback(self, args, geom1, geom2):
         # check if objects collide
         contacts = ode.collide(geom1, geom2)
@@ -197,8 +233,9 @@ class VehicleSim:
 
             # note: mu is a force limit and not the Coulomb friction coefficient
             # http://ode.org/wiki/index.php?title=Manual#Contact
-            c.setMu(self.frictionLimit1) 
-            c.setMu2(self.frictionLimit2)
+            scale = 1 # unphysical scaling parameter for testing, should be 1
+            c.setMu(self.frictionLimit1 * scale) 
+            c.setMu2(self.frictionLimit2 * scale)
             j = ode.ContactJoint(world, contactgroup, c)
             j.attach(geom1.getBody(), geom2.getBody())
 
@@ -211,21 +248,30 @@ class VehicleSim:
 
     def getPosition(self):
         """
-        Return position of front box.
+        Return position of center of mass.
         """
-        return self.front.position
+        return np.array(self.front.body.getRelPointPos(self.mass_center_in_front))
+
+    def getVelocity(self):
+        """
+        Return velocity of center of mass in world frame.
+        """
+        return np.array(self.front.body.getRelPointVel(self.mass_center_in_front))
 
     def getRPY(self):
         return self.front.rpy
 
+    def getRPYRate(self):
+        return self.front.rpyrate
+
     def getWheelDriveRates(self):
-        return [joint.getAngle2Rate() for joint in self.joint_wheels]
+        return -np.array([joint.getAngle2Rate() for joint in self.joint_wheels])
 
     def getWheelSteerAngles(self):
-        return [joint.getAngle1() for joint in self.joint_wheels]
+        return -np.array([joint.getAngle1() for joint in self.joint_wheels])
 
     def getWheelSteerRates(self):
-        return [joint.getAngle1Rate() for joint in self.joint_wheels]
+        return -np.array([joint.getAngle1Rate() for joint in self.joint_wheels])
 
 
     def step(self, t, dt):
@@ -260,12 +306,12 @@ class VehicleSim:
             if glfw.get_key(self.window.window, glfw.KEY_W) == glfw.PRESS:
                 self.height_camera += step_height_camera
 
-            posx,posy,posz = self.front.position
-            _,_,yaw = self.front.rpy
-            zc = self.height_camera
+            posx,posy,posz = self.getPosition()
+            _,_,yaw = self.getRPY()
             cx = self.radius_camera*np.cos(yaw+self.angle_camera + 0.0*t)
             cy = self.radius_camera*np.sin(yaw+self.angle_camera + 0.0*t)
-            eye = glm.vec3(posx+cx,posy+cy,posz+zc)
+            cz = self.height_camera
+            eye = glm.vec3(posx+cx,posy+cy,posz+cz)
             target = glm.vec3(posx,posy,posz)
             view = glm.lookAt(eye, target, glm.vec3(0,0,1))
 

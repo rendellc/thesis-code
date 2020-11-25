@@ -106,7 +106,7 @@ class BoxRenderer:
         pos = self.box.position
         rpy = self.box.rpy
 
-        model = glm.translate(glm.mat4(1), pos)
+        model = glm.translate(glm.mat4(1), glm.vec3(pos))
         model = glm.rotate(model, rpy[2], glm.vec3(0,0,1))
         model = glm.rotate(model, rpy[1], glm.vec3(0,1,0))
         model = glm.rotate(model, rpy[0], glm.vec3(1,0,0))
@@ -259,7 +259,7 @@ class CylinderRenderer:
         pos = self.cylinder.position
         rpy = self.cylinder.rpy
 
-        model = glm.translate(glm.mat4(1), pos)
+        model = glm.translate(glm.mat4(1), glm.vec3(pos))
         model = glm.rotate(model, rpy[2], glm.vec3(0,0,1))
         model = glm.rotate(model, rpy[1], glm.vec3(0,1,0))
         model = glm.rotate(model, rpy[0], glm.vec3(1,0,0))

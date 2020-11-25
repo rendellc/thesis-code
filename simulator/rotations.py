@@ -22,6 +22,12 @@ def rot_z(psi):
         [s(psi), c(psi), 0],
         [0, 0, 1]])
 
+def rot_z_der(psi, psirate):
+    return psirate*np.array([
+        [-s(psi), -c(psi), 0],
+        [c(psi), -s(psi), 0],
+        [0, 0, 0]])
+
 def euler_to_matrix(rpy):
     return rot_z(rpy[2]) @  rot_y(rpy[1]) @ rot_x(rpy[0])
 

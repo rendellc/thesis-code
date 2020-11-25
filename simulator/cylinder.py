@@ -2,6 +2,8 @@ import ode
 
 import rotations
 
+import numpy as np
+
 class Cylinder:
     def __init__(self, mass, radius, height, pos, rpy, world, space):
         self.radius = radius
@@ -21,12 +23,12 @@ class Cylinder:
 
     @property
     def position(self):
-        return self.body.getPosition()
+        return np.array(self.body.getPosition())
 
     @property
     def rpy(self):
         rpy = rotations.quaternion_to_rpy(self.body.getQuaternion())
-        return rpy
+        return np.array(rpy)
 
 
 if __name__=="__main__":

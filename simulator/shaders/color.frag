@@ -17,11 +17,11 @@ void main(){
   vec3 reflectDir = reflect(-lightDir, norm);
 
   // ambient
-  float ambientStrength = 0.8;
+  float ambientStrength = 0.9;
   vec3 ambient = ambientStrength * fragmentColor;
 
   // diffuse
-  float diffStrength = max(dot(norm, lightDir), 0.01);
+  float diffStrength = max(dot(norm, lightDir), 0);
   vec3 diffuse = diffStrength * lightColor;
 
   // specular
