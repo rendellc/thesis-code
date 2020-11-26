@@ -64,6 +64,7 @@ class VehicleSim:
         self.do3Dview = sim_params.get("do3Dview", True)
         self.substeps = sim_params.get("substeps", 2)
         gridsize = sim_params.get("gridsize", 20)
+        self.friction_scale = sim_params.get("friction_scale", 1)
 
         body_color = np.array(sim_params.get("body_color", [0.91,0.96,0.95]))
         wheel_color = np.array(sim_params.get("wheel_color", [0.61,0.7,0.6]))
@@ -233,9 +234,8 @@ class VehicleSim:
 
             # note: mu is a force limit and not the Coulomb friction coefficient
             # http://ode.org/wiki/index.php?title=Manual#Contact
-            scale = 1 # unphysical scaling parameter for testing, should be 1
-            c.setMu(self.frictionLimit1 * scale) 
-            c.setMu2(self.frictionLimit2 * scale)
+            c.setMu(self.frictionLimit1 * self.friction_scale) 
+            c.setMu2(self.frictionLimit2 * self.friction_scale)
             j = ode.ContactJoint(world, contactgroup, c)
             j.attach(geom1.getBody(), geom2.getBody())
 

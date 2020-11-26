@@ -8,6 +8,7 @@ from simulator.common import PID
 from simulator.common import ssa
 from simulator.rotations import rot_z, rot_z_der
 import liveplot
+from blitmanager import BlitManager
 
 import time
 
@@ -60,6 +61,7 @@ sp = dict(
         substeps=2,
         window_width=400,
         window_height=400,
+        friction_scale=1,
 )
 
 sim = VehicleSim(vp, sp)
@@ -81,6 +83,7 @@ if doLivePlots:
     omega_axes = [axOmegas[0,0],axOmegas[1,0],axOmegas[1,1],axOmegas[0,1]]
     omega_lines = [omega_fl, omega_rl, omega_rr, omega_fr]
     omega_ref_lines = [omega_fl_ref, omega_rl_ref, omega_rr_ref, omega_fr_ref]
+    bmOmegas = BlitManager(figOmegas.canvas, [*omega_lines, *omega_ref_lines])
 
     figSteers, axSteers = plt.subplots(2,2, num="Steering angle")
     steer_fl, = axSteers[0,0].plot([],[], animated=True, label=r"$\delta_\text{fl}$")
@@ -94,6 +97,7 @@ if doLivePlots:
     steer_axes = [axSteers[0,0],axSteers[1,0],axSteers[1,1],axSteers[0,1]]
     steer_lines = [steer_fl, steer_rl, steer_rr, steer_fr]
     steer_ref_lines = [steer_fl_ref, steer_rl_ref, steer_rr_ref, steer_fr_ref]
+    bmSteers = BlitManager(figSteers.canvas, [*steer_lines, *steer_ref_lines])
     for ax in steer_axes:
         ax.set_ylim(-np.pi, np.pi)
 
@@ -104,29 +108,13 @@ if doLivePlots:
     slip_fr, = axSlips[0,1].plot([],[], animated=True, label=r"$s_\text{fr}$")
     slip_axes = [axSlips[0,0],axSlips[1,0],axSlips[1,1],axSlips[0,1]]
     slip_lines = [slip_fl, slip_rl, slip_rr, slip_fr]
+    bmSlips = BlitManager(figSlips.canvas, slip_lines)
     for ax in slip_axes:
         ax.set_ylim(-1,1)
 
     # Draw empty plots
     plt.show(block=False)
     plt.pause(0.1)
-
-    # Copy backgrounds for blitting
-    figOmegaBg = figOmegas.canvas.copy_from_bbox(figOmegas.bbox)
-    axOmegaBgs = [
-            figOmegas.canvas.copy_from_bbox(ax.bbox)
-            for ax in axOmegas.flatten()
-    ]
-    figSteerBg = figSteers.canvas.copy_from_bbox(figSteers.bbox)
-    axSteerBgs = [
-            figSteers.canvas.copy_from_bbox(ax.bbox)
-            for ax in axSteers.flatten()
-    ]
-    figSlipBg = figSlips.canvas.copy_from_bbox(figSlips.bbox)
-    axSlipBgs = [
-            figSlips.canvas.copy_from_bbox(ax.bbox)
-            for ax in axSlips.flatten()
-    ]
 
 # Controller setup
 drive_torques = np.zeros(4)
@@ -166,29 +154,24 @@ while t < tstop and not shouldStop:
     # nans come from zeros, leave infs
     wheel_slips_lo[np.isnan(wheel_slips_lo)] = 0 
 
-    # Controllers and references
+    # Controllers and References
     if t < 10:
         omega_all = 3
     else:
         omega_all = 1
 
     omega_refs = omega_all*np.array([1,1,1,1])
-    steer_refs = np.deg2rad(0)*np.sin(0.1*t)*np.array([1,-1,-1,1])
+    steer_refs = np.deg2rad(30)*np.sin(0.1*t)*np.array([1,-1,-1,1])
+
+    for i in range(4):
+        drive_torques[i] = drive_pids[i](dt, omegas[i] - omega_refs[i])
+        steer_torques[i] = steer_pids[i](dt, ssa(steers[i] - steer_refs[i]), steerrates[i])
+
+
 
     # Update live plots
     if doLivePlots:
-        ## 1) restore backgrounds
-        figOmegas.canvas.restore_region(figOmegaBg)
-        figSteers.canvas.restore_region(figSteerBg)
-        figSlips.canvas.restore_region(figSlipBg)
-        #for bg in axOmegaBgs:
-        #    figOmegas.canvas.restore_region(bg)
-        #for bg in axSteerBgs:
-        #    figSteers.canvas.restore_region(bg)
-        #for bg in axSlipBgs:
-        #    figSlips.canvas.restore_region(bg)
-
-        ## 2) update plot data
+        ## update plot data
         for i, (omega_line, ref_line) in enumerate(zip(omega_lines, omega_ref_lines)):
             omega_line.set_data(
                     np.append(omega_line.get_xdata(), t),
@@ -213,7 +196,7 @@ while t < tstop and not shouldStop:
                     np.append(slip_line.get_ydata(), wheel_slips_lo[i])
             )
 
-        ## 3) set axes limits
+        ## set axes limits
         for i, ax in enumerate(omega_axes):
             xlim = ax.get_xlim()
             ylim = ax.get_ylim()
@@ -228,31 +211,10 @@ while t < tstop and not shouldStop:
             xlim = ax.get_xlim()
             ax.set_xlim(min(xlim[0], t), max(xlim[1], t))
 
-        ## 4) draw plots
-        for i in range(len(omega_axes)):
-            omega_axes[i].draw_artist(omega_lines[i])
-            omega_axes[i].draw_artist(omega_ref_lines[i])
-        for i in range(len(steer_axes)):
-            steer_axes[i].draw_artist(steer_lines[i])
-            steer_axes[i].draw_artist(steer_ref_lines[i])
-        for i in range(len(slip_axes)):
-            slip_axes[i].draw_artist(slip_lines[i])
-
-        # TODO: check for memory leak
-        # TODO: only need to blit on axes, which could improve performance
-        figOmegas.canvas.blit(figOmegas.bbox) 
-        figSteers.canvas.blit(figSteers.bbox) 
-        figSlips.canvas.blit(figSlips.bbox) 
-
-        figOmegas.canvas.flush_events()
-        figSteers.canvas.flush_events()
-        figSlips.canvas.flush_events()
-
-    # Wheel Controllers
-    for i in range(4):
-        drive_torques[i] = drive_pids[i](dt, omegas[i] - omega_refs[i])
-        steer_torques[i] = steer_pids[i](dt, ssa(steers[i] - steer_refs[i]), steerrates[i])
-
+        ## update plots
+        bmOmegas.update()
+        bmSteers.update()
+        bmSlips.update()
 
     # Apply control input
     sim.setTorques(steer_torques, drive_torques)
