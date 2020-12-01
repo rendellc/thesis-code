@@ -273,6 +273,8 @@ class VehicleSim:
     def getWheelSteerRates(self):
         return -np.array([joint.getAngle1Rate() for joint in self.joint_wheels])
 
+    def setFrictionScale(self, scale):
+        self.friction_scale = scale
 
     def step(self, t, dt):
         steps = self.sim_params.get("substeps", 2)

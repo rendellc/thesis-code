@@ -57,7 +57,7 @@ vp = dict(
 # simulator parameters
 sp = dict(
         body_color=[0.7,0.7,0.7],
-	do3Dview=True,
+        do3Dview=True,
         substeps=2,
         window_width=400,
         window_height=400,
@@ -215,6 +215,10 @@ while t < tstop and not shouldStop:
         bmOmegas.update()
         bmSteers.update()
         bmSlips.update()
+
+    # Change sim parameters
+    #if t > 20:
+    #    sim.setFrictionScale(0.01)
 
     # Apply control input
     sim.setTorques(steer_torques, drive_torques)
