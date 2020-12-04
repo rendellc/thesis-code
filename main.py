@@ -154,18 +154,32 @@ while t < tstop and not shouldStop:
     # nans come from zeros, leave infs
     wheel_slips_lo[np.isnan(wheel_slips_lo)] = 0 
 
+
+
     # Controllers and References
     if t < 10:
-        omega_all = 3
+        omega_all = 2
     else:
-        omega_all = 1
+        omega_all = 0
+
+    # Change sim parameters
+    if t < 5:
+        sim.setFrictionScale(0.001)
+    elif t < 10:
+        sim.setFrictionScale(1)
+    elif t < 15:
+        sim.setFrictionScale(0.1)
+    else:
+        sim.setFrictionScale(1)
 
     omega_refs = omega_all*np.array([1,1,1,1])
-    steer_refs = np.deg2rad(30)*np.sin(0.1*t)*np.array([1,-1,-1,1])
+    steer_refs = np.deg2rad(0)*np.sin(0.1*t)*np.array([1,-1,-1,1])
+
 
     for i in range(4):
         drive_torques[i] = drive_pids[i](dt, omegas[i] - omega_refs[i])
         steer_torques[i] = steer_pids[i](dt, ssa(steers[i] - steer_refs[i]), steerrates[i])
+
 
 
 
@@ -215,10 +229,6 @@ while t < tstop and not shouldStop:
         bmOmegas.update()
         bmSteers.update()
         bmSlips.update()
-
-    # Change sim parameters
-    #if t > 20:
-    #    sim.setFrictionScale(0.01)
 
     # Apply control input
     sim.setTorques(steer_torques, drive_torques)
