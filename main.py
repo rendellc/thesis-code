@@ -112,6 +112,12 @@ if doLivePlots:
     for ax in slip_axes:
         ax.set_ylim(-1,1)
 
+
+    figFricScale, axFricScale = plt.subplots(1,1, num="Friction scale")
+    fric_scale_line, = axFricScale.plot([],[], animated=True)
+    bmFricScale = BlitManager(figFricScale.canvas, [fric_scale_line])
+    axFricScale.set_ylim(0,1.5)
+
     # Draw empty plots
     plt.show(block=False)
     plt.pause(0.1)
@@ -157,20 +163,14 @@ while t < tstop and not shouldStop:
 
 
     # Controllers and References
-    if t < 10:
-        omega_all = 2
-    else:
-        omega_all = 0
+    omega_all = 2
+    if t > 10:
+        omega_all = -2
 
     # Change sim parameters
-    if t < 5:
-        sim.setFrictionScale(0.001)
-    elif t < 10:
-        sim.setFrictionScale(1)
-    elif t < 15:
-        sim.setFrictionScale(0.1)
-    else:
-        sim.setFrictionScale(1)
+    fs = 1
+    if 10 <= t < 20:
+        fs = 0.5
 
     omega_refs = omega_all*np.array([1,1,1,1])
     steer_refs = np.deg2rad(0)*np.sin(0.1*t)*np.array([1,-1,-1,1])
@@ -179,8 +179,6 @@ while t < tstop and not shouldStop:
     for i in range(4):
         drive_torques[i] = drive_pids[i](dt, omegas[i] - omega_refs[i])
         steer_torques[i] = steer_pids[i](dt, ssa(steers[i] - steer_refs[i]), steerrates[i])
-
-
 
 
     # Update live plots
@@ -210,6 +208,12 @@ while t < tstop and not shouldStop:
                     np.append(slip_line.get_ydata(), wheel_slips_lo[i])
             )
 
+        fric_scale_line.set_data(
+            np.append(fric_scale_line.get_xdata(), t),
+            np.append(fric_scale_line.get_ydata(), fs)
+        )
+
+
         ## set axes limits
         for i, ax in enumerate(omega_axes):
             xlim = ax.get_xlim()
@@ -225,12 +229,18 @@ while t < tstop and not shouldStop:
             xlim = ax.get_xlim()
             ax.set_xlim(min(xlim[0], t), max(xlim[1], t))
 
+        xlim = axFricScale.get_xlim()
+        axFricScale.set_xlim(min(xlim[0], t), max(xlim[1], t))
+
+
         ## update plots
         bmOmegas.update()
         bmSteers.update()
         bmSlips.update()
+        bmFricScale.update()
 
     # Apply control input
+    sim.setFrictionScale(fs)
     sim.setTorques(steer_torques, drive_torques)
     shouldStop = sim.step(t, dt)
 
