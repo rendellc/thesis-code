@@ -17,6 +17,8 @@ class Window:
         assert self.window, "failed to create window"
         glfw.set_window_size_callback(self.window, self._glfw_window_size_callback)
 
+        self.x, self.y = glfw.get_window_pos(self.window)
+
         glfw.make_context_current(self.window)
 
         glfw.set_input_mode(self.window, glfw.STICKY_KEYS, True)
@@ -33,6 +35,8 @@ class Window:
         self.width, self.height = width, height
         glViewport(0,0,self.width,self.height)
 
+    def _glfw_window_position_callback(self, window, x, y):
+        self.x, self.y = x, y
 
     def _glfw_error_callback(self, errorint, errorstr):
         print("ERROR:", errorint, errorstr)

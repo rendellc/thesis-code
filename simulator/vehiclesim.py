@@ -63,8 +63,11 @@ class VehicleSim:
         cfm = sim_params.get("cfm",1e-5)
         self.do3Dview = sim_params.get("do3Dview", True)
         self.substeps = sim_params.get("substeps", 2)
-        gridsize = sim_params.get("gridsize", 20)
+        gridsize = sim_params.get("gridsize", 50)
         self.friction_scale = sim_params.get("friction_scale", 1)
+        self.angle_camera = sim_params.get("camera_start_angle", np.pi)
+        self.camera_auto_yaw = sim_params.get("camera_auto_yaw", 0.0)
+
 
         body_color = np.array(sim_params.get("body_color", [0.91,0.96,0.95]))
         wheel_color = np.array(sim_params.get("wheel_color", [0.61,0.7,0.6]))
@@ -198,7 +201,6 @@ class VehicleSim:
                 )
 
             self.renderer.add(*box_renderers, *cylinder_renderers)
-            self.angle_camera = np.pi
             self.radius_camera = 6
             self.height_camera = 3
 
@@ -310,8 +312,8 @@ class VehicleSim:
 
             posx,posy,posz = self.getPosition()
             _,_,yaw = self.getRPY()
-            cx = self.radius_camera*np.cos(yaw+self.angle_camera + 0.0*t)
-            cy = self.radius_camera*np.sin(yaw+self.angle_camera + 0.0*t)
+            cx = self.radius_camera*np.cos(yaw+self.angle_camera + self.camera_auto_yaw*t)
+            cy = self.radius_camera*np.sin(yaw+self.angle_camera + self.camera_auto_yaw*t)
             cz = self.height_camera
             eye = glm.vec3(posx+cx,posy+cy,posz+cz)
             target = glm.vec3(posx,posy,posz)
