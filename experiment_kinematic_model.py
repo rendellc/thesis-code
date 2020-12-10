@@ -3,8 +3,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-plt.style.use(["science","no-latex"])
-#plt.style.use(["science","ieee","no-latex"])
+#plt.style.use(["science","no-latex"])
+plt.style.use(["science","ieee","no-latex"])
+figsize = (3.5,2.2)
 np.set_printoptions(precision=4)
 
 from simulator import VehicleSim
@@ -14,9 +15,6 @@ from simulator.rotations import rot_z, rot_z_der
 import liveplot
 from blitmanager import BlitManager
 
-import pyautogui
-import cv2
-
 import tqdm
 import time
 
@@ -24,6 +22,8 @@ import params
 vp = params.VEHICLE_PARAMS
 sp = params.SIM_PARAMS
 sp["do3Dview"] = True
+sp["record3Dfilename"] = "test.mp4"
+sp["record3Dfps"] = 30
 wheel_radius = vp["wheel_radius"]
 
 
@@ -43,14 +43,6 @@ def generate_data():
     omegass = np.zeros((num_steps,4))
     steerss = np.zeros((num_steps,4))
     steerratess = np.zeros((num_steps,4))
-
-
-    recordfile = ""
-    if sp["record3D"]:
-        recordfile = "3dview.mp4"
-        codec = cv2.VideoWriter_fourcc(*"mp4v")
-        out = cv2.VideoWriter(recordfile, codec, fps, (sp["window_width"],sp["window_height"]))
-
 
     # Controller setup
     drive_torques = np.zeros(4)
@@ -88,12 +80,6 @@ def generate_data():
         steerss[step_index] = steers
         steerratess[step_index] = steerrates
 
-        if sp["record3D"]:
-            frame = pyautogui.screenshot(region=(sim.window.x, sim.window.y, sim.window.width, sim.window.height))
-            frame = np.array(frame)
-            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            out.write(frame)
-
         # Controllers and References
         omega_all = 0
         if t > 5:
@@ -129,10 +115,8 @@ def generate_data():
         t += dt
         step_index += 1
 
-    if sp["record3D"]:
-        out.release()
-        cv2.destroyAllWindows()
 
+    
     wheel_arms = sim.getWheelPositions()
     datadict = dict(
             t=ts,
@@ -144,8 +128,8 @@ def generate_data():
             steers=steerss,
             steerrates=steerratess,
             wheel_arms=wheel_arms,
-            order="FL,RL,RR,FR",
-            videofile=recordfile,
+            order=["FL","RL","RR","FR"],
+            videofile=sp["record3Dfilename"],
     )
 
     return datadict
@@ -189,13 +173,36 @@ def kinematic_models_test(data):
     b = np.zeros(8)
 
 
+    # Slip calculation
+    slip_long = np.zeros((num_steps,4))
 
     for i in range(len(ts)-1):
         pos = data["pos"][i]
+        vel = data["vel"][i]
         rpy = data["rpy"][i]
+        rpyrate = data["rpyrate"][i]
         omegas = data["omegas"][i]
         steers = data["steers"][i]
+        vel_body = rot_z(-rpy[2]) @ vel
         dt = ts[i+1] - ts[i] # time to next step
+
+        # Compute longitudinal slip, eq 8.9 in Kiencke
+        # assume roll and pitch are zero
+        wheel_velocities_body = vel_body + wheel_arms @ rot_z_der(-rpy[2], -rpyrate[2])
+        wheel_betas = np.arctan2(wheel_velocities_body[:,1], wheel_velocities_body[:,0])
+        wheel_alphas = steers - wheel_betas
+        wheel_speeds = np.linalg.norm(wheel_velocities_body, axis=1)
+        wheel_rot_speeds = omegas * wheel_radius * np.cos(wheel_alphas)
+        wheel_speed_diffs = wheel_rot_speeds - wheel_speeds
+        wheel_max_speeds = np.maximum(np.abs(wheel_rot_speeds), np.abs(wheel_speeds))
+        # dont generate divide by zero warnings
+        with np.errstate(divide="ignore",invalid="ignore"):
+            wheel_slips_lo = wheel_speed_diffs/wheel_max_speeds
+        # nans come from zeros, leave infs
+        wheel_slips_lo[np.isnan(wheel_slips_lo)] = 0 
+        slip_long[i] = wheel_slips_lo
+
+
 
         # Kinematic model setup
         b[::2] = wheel_radius*omegas*np.cos(steers)
@@ -243,41 +250,59 @@ def kinematic_models_test(data):
         error_ratio = simple_pos_error_norm/full_pos_error_norm
     error_ratio[np.isnan(error_ratio)] = 1
 
-    fig, ax = plt.subplots(1,1,num="position error norm")
+    fig, ax = plt.subplots(1,1,figsize=figsize,num="position error norm")
     ax.plot(ts, full_pos_error_norm, label="full")
     ax.plot(ts, simple_pos_error_norm, label="simple")
-    ax.set_xlabel("t [s]")
-    ax.set_ylabel(r"$|p - \hat{p}|$")
+    ax.set_xlabel("time [s]")
+    ax.set_ylabel("[m]")
     ax.set_xlim(ts[0], ts[~0])
     ax.set_ylim(bottom=0)
     ax.legend(loc="upper left")
     fig.savefig("results/kinematic_test/pos_error.pdf")
 
-    fig, ax = plt.subplots(1,1,num="yaw error norm")
-    ax.plot(ts, full_yaw_error_norm, label="full")
-    ax.plot(ts, simple_yaw_error_norm, label="simple")
-    ax.set_xlabel("t [s]")
-    ax.set_ylabel(r"$|\psi - \hat{\psi}|$")
+    fig, ax = plt.subplots(1,1,figsize=figsize,num="yaw error norm")
+    ax.plot(ts, np.rad2deg(full_yaw_error_norm), label="full")
+    ax.plot(ts, np.rad2deg(simple_yaw_error_norm), label="simple")
+    ax.set_xlabel("time [s]")
+    ax.set_ylabel("[deg]")
     ax.set_xlim(ts[0], ts[~0])
     ax.set_ylim(bottom=0)
     ax.legend(loc="upper left")
     fig.savefig("results/kinematic_test/yaw_error.pdf")
 
-    plt.show()
+    fig, ax = plt.subplots(1,1,figsize=figsize,num="ratio")
+    ax.plot(ts, error_ratio)
+    ax.set_xlabel("time [s]")
+    fig.savefig("results/kinematic_test/ratio.pdf")
+
+    fig, ax = plt.subplots(1,1,figsize=figsize,num="trajectories")
+    ax.plot(data["pos"][:,0],data["pos"][:,1], label="ground truth")
+    ax.plot(full_state[:,0],full_state[:,1], label="full")
+    ax.plot(simple_state[:,0],simple_state[:,1], label="simple")
+    ax.set_xlabel("x [m]")
+    ax.set_ylabel("y [m]")
+    ax.set_aspect("equal")
+    ax.legend(loc="upper left")
+    fig.savefig("results/kinematic_test/trajectories.pdf")
+
+
+    fig, ax = plt.subplots(1,1,figsize=figsize,num="slip")
+    for i in range(len(data["order"])):
+        ax.plot(ts, slip_long[:,i], label=data["order"][i])
+    ax.legend(loc="upper left")
+    ax.set_ylim(-1,1)
+    fig.savefig("results/kinematic_test/slip.pdf")
+    #plt.show()
     
 
 if __name__=="__main__":
     from scipy.io import savemat, loadmat
     from shutil import move
 
-    # data = generate_data()
-    # data["title"] = "Long run"
-    # data["description"] = """
-    #     Long run with turn, reverse motion, slip, and other unmodelled behaviour.
-    # """
-    # savemat("data/kinematic_test_long.mat", data)
-    # if data["videofile"]:
-    #     move(data["videofile"], "data/kinematic_test_long.mp4")
+    data = generate_data()
+    savemat("data/kinematic_test_long.mat", data)
+    if data["videofile"]:
+        move(data["videofile"], "data/kinematic_test_long.mp4")
 
     data = loadmat("data/kinematic_test_long.mat")
     kinematic_models_test(data)

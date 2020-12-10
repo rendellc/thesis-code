@@ -20,7 +20,7 @@ import program
 import shader
 import rotations as R
 
-
+import cv2
 
 def connect_fixed(b1, b2, world):
     joint = ode.FixedJoint(world)
@@ -62,6 +62,8 @@ class VehicleSim:
         erp = sim_params.get("erp",0.8)
         cfm = sim_params.get("cfm",1e-5)
         self.do3Dview = sim_params.get("do3Dview", True)
+        self.record3Dfilename = sim_params.get("record3Dfilename", "")
+        self.record3Dfps = sim_params.get("record3Dfps", 30)
         self.substeps = sim_params.get("substeps", 2)
         gridsize = sim_params.get("gridsize", 50)
         self.friction_scale = sim_params.get("friction_scale", 1)
@@ -204,6 +206,14 @@ class VehicleSim:
             self.radius_camera = 6
             self.height_camera = 3
 
+        if self.record3Dfilename != "":
+            codec = cv2.VideoWriter_fourcc(*"mp4v")
+            filename = self.record3Dfilename
+            fps = self.record3Dfps
+            size = (self.window.width, self.window.height)
+            self.videoout = cv2.VideoWriter(filename, codec, fps, size)
+
+
     def getWheelPositions(self):
         """
         Get the position of each wheel relative to center of mass in body frame.
@@ -324,6 +334,11 @@ class VehicleSim:
 
             self.renderer.draw(eye, projview)
             self.planerenderer.draw(eye, projview)
+            
+            # record video if we have created the writer
+            if hasattr(self, "videoout"):
+                frame = self.window.capture()
+                self.videoout.write(frame)
 
             self.window.swap()
             self.window.poll_events()
@@ -332,6 +347,10 @@ class VehicleSim:
                 shouldStop = True
 
         return shouldStop
+
+    def __del__(self):
+        if hasattr(self, "videoout"):
+            self.videoout.release()
 
 
 

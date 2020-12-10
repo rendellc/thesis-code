@@ -2,6 +2,8 @@ import glfw
 
 from OpenGL.GL import *
 
+import numpy as np
+
 
 class Window:
     def __init__(self, title, width, height):
@@ -30,7 +32,6 @@ class Window:
         self.left_arrow_pressed = False
         self.right_arrow_pressed = False
 
-
     def _glfw_window_size_callback(self, window, width, height):
         self.width, self.height = width, height
         glViewport(0,0,self.width,self.height)
@@ -40,6 +41,16 @@ class Window:
 
     def _glfw_error_callback(self, errorint, errorstr):
         print("ERROR:", errorint, errorstr)
+
+    def capture(self):
+        """
+        Read pixel values from framebuffer and return as RGB image array
+        """
+        data = glReadPixels(0,0,self.width,self.height, GL_RGB, GL_UNSIGNED_BYTE)
+        data = np.frombuffer(data, np.uint8)
+        data = data.reshape((self.height,self.width,3))
+        data = np.flipud(data)
+        return data
 
 
     def clear(self):
