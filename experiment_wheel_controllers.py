@@ -22,13 +22,12 @@ import params
 vp = params.VEHICLE_PARAMS
 sp = params.SIM_PARAMS
 sp["do3Dview"] = True
-sp["record3Dfilename"] = "test.mp4"
+sp["record3Dfilename"] = ""
 sp["record3Dfps"] = 30
-#sp["friction_scale"] = 0.01
 wheel_radius = vp["wheel_radius"]
 
 
-def generate_data():
+def main():
     sim = VehicleSim(vp, sp)
 
     # Setup to save data
@@ -49,7 +48,15 @@ def generate_data():
     drive_torques = np.zeros(4)
     steer_torques = np.zeros(4)
 
-    drive_pids = [PID(100,5,5) for _ in range(4)]
+
+    class DriveController:
+        def __init__(self, kp, kd, ki):
+            self.pid = PID(kp,kd,ki)
+
+        def __call__(self, dt, err, derr=None):
+            return self.pid(dt, err, derr)
+
+    drive_ctrls = [DriveController(100,5,5) for _ in range(4)]
     steer_pids = [PID(250,20,10) for _ in range(4)]
 
     t = tstart
@@ -82,28 +89,24 @@ def generate_data():
         steerratess[step_index] = steerrates
 
         # Controllers and References
-        omega_all = 0
-        if t > 5:
-            omega_all = 1
-        if t > 90:
-            omega_all = -1
-        if t > 150:
-            omega_all = 1
+        vehicle_speed = 0 # km/h
+        if t > 10:
+            vehicle_speed = 5
+        if t > 20:
+            vehicle_speed = 10
+        if t > 30:
+            vehicle_speed = -5
+        if t > 60:
+            vehicle_speed = 0
+
+        omega_all = (vehicle_speed/3.6)/wheel_radius
 
         omega_refs = omega_all*np.array([1,1,1,1])
 
-        if t < 30:
-            steer_refs = np.deg2rad(5)*np.array([1,-1,-1,1])
-        elif t < 60:
-            steer_refs = np.deg2rad(0)*np.array([1,-1,-1,1])
-        else:
-            steer_refs = np.deg2rad(-5)*np.array([1,-1,-1,1])
-        #else:
-        #    steer_refs = np.deg2rad(0)*np.array([1,-1,-1,1])
-
+        steer_refs = np.deg2rad(0)*np.array([1,-1,-1,1])
 
         for i in range(4):
-            drive_torques[i] = drive_pids[i](dt, omegas[i] - omega_refs[i])
+            drive_torques[i] = drive_ctrls[i](dt, omegas[i] - omega_refs[i])
             steer_torques[i] = steer_pids[i](dt, ssa(steers[i] - steer_refs[i]), steerrates[i])
 
 
@@ -137,7 +140,7 @@ def generate_data():
 
 
 
-def kinematic_models_test(data, figdir="./"):
+def kinematic_models_test(data):
     # Kinematic models
     ts = data["t"].flatten()
     wheel_arms = data["wheel_arms"]
@@ -203,24 +206,11 @@ def kinematic_models_test(data, figdir="./"):
         wheel_slips_lo[np.isnan(wheel_slips_lo)] = 0 
         slip_long[i] = wheel_slips_lo
 
+
+
         # Kinematic model setup
         b[::2] = wheel_radius*omegas*np.cos(steers)
         b[1::2] = wheel_radius*omegas*np.sin(steers)
-
-        # with slip modification in weight matrix
-        if False:
-            Winv = np.kron(np.diag(1/(1 - np.abs(wheel_slips_lo))), np.eye(2))
-            Ainv = np.linalg.inv(A.T.dot(Winv).dot(A)).dot(A.T).dot(Winv)
-            Axinv = Ax.T.dot(Winv)/(Ax.T.dot(Winv).dot(Ax))
-            Ayinv = Ay.T.dot(Winv)/(Ay.T.dot(Winv).dot(Ay))
-            Apinv = Ap.T.dot(Winv)/(Ap.T.dot(Winv).dot(Ap))
-        #with slip modification in b (can be thought of as changing the effective radius of the wheel)
-        # means the estimation meight be biased
-        if False:
-            b[0:2] = (1 - np.abs(wheel_slips_lo[0]))*b[0:2]
-            b[2:4] = (1 - np.abs(wheel_slips_lo[0]))*b[2:4]
-            b[4:6] = (1 - np.abs(wheel_slips_lo[0]))*b[4:6]
-            b[6:8] = (1 - np.abs(wheel_slips_lo[0]))*b[6:8]
 
         # Full kinematic model
         ## compare with GT
@@ -243,7 +233,6 @@ def kinematic_models_test(data, figdir="./"):
         simple_bodyrate[1] = Ayinv.dot(b)
         simple_bodyrate[2] = Apinv.dot(b)
         simple_J[:2,:2] = rot_z(simple_state[i,2])[:2,:2]
-        #simple_J[:2,:2] = rot_z(full_state[i,2])[:2,:2]
         simple_state[i+1] = simple_state[i] + \
                 dt*simple_J.dot(simple_bodyrate)
         
@@ -273,7 +262,7 @@ def kinematic_models_test(data, figdir="./"):
     ax.set_xlim(ts[0], ts[~0])
     ax.set_ylim(bottom=0)
     ax.legend(loc="upper left")
-    fig.savefig(figdir + "pos_error.pdf")
+    fig.savefig("results/kinematic_test/pos_error.pdf")
 
     fig, ax = plt.subplots(1,1,figsize=figsize,num="yaw error norm")
     ax.plot(ts, np.rad2deg(full_yaw_error_norm), label="full")
@@ -283,14 +272,12 @@ def kinematic_models_test(data, figdir="./"):
     ax.set_xlim(ts[0], ts[~0])
     ax.set_ylim(bottom=0)
     ax.legend(loc="upper left")
-    fig.savefig(figdir + "yaw_error.pdf")
+    fig.savefig("results/kinematic_test/yaw_error.pdf")
 
     fig, ax = plt.subplots(1,1,figsize=figsize,num="ratio")
     ax.plot(ts, error_ratio)
-    ax.set_xlim(ts[0], ts[~0])
-    ax.set_ylim(bottom=0)
     ax.set_xlabel("time [s]")
-    fig.savefig(figdir + "ratio.pdf")
+    fig.savefig("results/kinematic_test/ratio.pdf")
 
     fig, ax = plt.subplots(1,1,figsize=figsize,num="trajectories")
     ax.plot(data["pos"][:,0],data["pos"][:,1], label="ground truth")
@@ -300,16 +287,15 @@ def kinematic_models_test(data, figdir="./"):
     ax.set_ylabel("y [m]")
     ax.set_aspect("equal")
     ax.legend(loc="upper left")
-    fig.savefig(figdir + "trajectories.pdf")
+    fig.savefig("results/kinematic_test/trajectories.pdf")
 
 
     fig, ax = plt.subplots(1,1,figsize=figsize,num="slip")
     for i in range(len(data["order"])):
         ax.plot(ts, slip_long[:,i], label=data["order"][i])
     ax.legend(loc="upper left")
-    ax.set_xlim(ts[0], ts[~0])
     ax.set_ylim(-1,1)
-    fig.savefig(figdir + "slip.pdf")
+    fig.savefig("results/kinematic_test/slip.pdf")
     #plt.show()
     
 
@@ -317,11 +303,4 @@ if __name__=="__main__":
     from scipy.io import savemat, loadmat
     from shutil import move
 
-    #data = generate_data()
-    #savemat("data/kinematic_test_long_low_friction.mat", data)
-    #if data["videofile"]:
-    #    move(data["videofile"], "data/kinematic_test_long_low_friction.mp4")
-
-    data = loadmat("data/kinematic_test_long_low_friction.mat")
-    kinematic_models_test(data, figdir="results/kinematic_test_low_friction/")
-
+    main()
