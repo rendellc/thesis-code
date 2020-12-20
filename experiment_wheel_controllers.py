@@ -21,13 +21,14 @@ import time
 import params
 vp = params.VEHICLE_PARAMS
 sp = params.SIM_PARAMS
-sp["do3Dview"] = True
+sp["do3Dview"] = False
 sp["record3Dfilename"] = ""
 sp["record3Dfps"] = 30
 wheel_radius = vp["wheel_radius"]
+wheel_width = vp["wheel_width"]
 
 
-def main():
+def run_experiment(mf_factor):
     sim = VehicleSim(vp, sp)
 
     # Setup to save data
@@ -42,6 +43,7 @@ def main():
     rpyrates = np.zeros((num_steps,3))
     omegass = np.zeros((num_steps,4))
     steerss = np.zeros((num_steps,4))
+    steerrefs = np.zeros_like(steerss)
     steerratess = np.zeros((num_steps,4))
 
     # Controller setup
@@ -63,6 +65,8 @@ def main():
     tPltDraw, pltFps = t, 10
     shouldStop = False
     step_index = 0
+    next_print = 0 # debug printing
+    #for step_index in range(0,num_steps):
     for step_index in tqdm.tqdm(range(0,num_steps)):
         if shouldStop:
             break
@@ -90,25 +94,30 @@ def main():
 
         # Controllers and References
         vehicle_speed = 0 # km/h
-        if t > 10:
-            vehicle_speed = 5
-        if t > 20:
-            vehicle_speed = 10
-        if t > 30:
-            vehicle_speed = -5
-        if t > 60:
-            vehicle_speed = 0
-
         omega_all = (vehicle_speed/3.6)/wheel_radius
-
         omega_refs = omega_all*np.array([1,1,1,1])
 
-        steer_refs = np.deg2rad(0)*np.array([1,-1,-1,1])
+        steer_angle = 0
+        if t > 10:
+            steer_angle = 20
+        if t > 50:
+            steer_angle = -20
+        if t > 120:
+            steer_angle = -90
+
+        steer_refs = np.deg2rad(steer_angle)*np.array([1,1,1,1])
+        steer_error = ssa(steers - steer_refs)
+
+        steerrefs[step_index] = steer_refs
+
+        loads = -sim.getWheelLoads() # negative sign to turn into normal forces
+        steer_resistance = 1/3 * np.sign(steer_error)*wheel_width*1*loads
 
         for i in range(4):
             drive_torques[i] = drive_ctrls[i](dt, omegas[i] - omega_refs[i])
-            steer_torques[i] = steer_pids[i](dt, ssa(steers[i] - steer_refs[i]), steerrates[i])
 
+            # TODO: modify steer torque
+            steer_torques[i] = mf_factor * steer_resistance[i] + steer_pids[i](dt, steer_error[i], steerrates[i])
 
         # Apply control input
         sim.setTorques(steer_torques, drive_torques)
@@ -131,176 +140,66 @@ def main():
             omegas=omegass,
             steers=steerss,
             steerrates=steerratess,
+            steerrefs=steerrefs,
             wheel_arms=wheel_arms,
             order=["FL","RL","RR","FR"],
+            mf_factor=mf_factor,
             videofile=sp["record3Dfilename"],
     )
 
     return datadict
 
 
+def plot_results(datas, figdir):
+    data = datas[0]
+    t = data["t"].flatten()
 
-def kinematic_models_test(data):
-    # Kinematic models
-    ts = data["t"].flatten()
-    wheel_arms = data["wheel_arms"]
-    pos = data["pos"][0]
-    vel = data["vel"][0]
-    _,_,yaw = data["rpy"][0]
-    num_steps = len(ts)
+    fig, ax = plt.subplots(1,1,num="Front Left")
+    ax.plot(t,np.rad2deg(datas[0]["steerrefs"][:,0]),
+            label="ref")
+    lines = {}
+    for i in range(len(datas)):
+        mf_factor = datas[i]['mf_factor'].item()
+        line, = ax.plot(t,np.rad2deg(datas[i]["steers"][:,0]),
+                label="$K_{mf} = " + str(mf_factor) + "$")
+        lines[mf_factor] = line
 
-    # Full model
-    A = np.zeros((8,3))
-    zu = np.array([0,0,1])
-    A[::2,0] = 1
-    A[1::2,1] = 1
-    A[:,2] = np.cross(zu,wheel_arms)[:,:2].flatten()
-    Ainv = np.linalg.inv(A.T.dot(A)).dot(A.T)
+    ax.set_xlim(t[0],t[~0])
+    #ax.set_yticks([90,0,-90,-180])
+    ax.set_ylim(-180,45)
+    ax.legend(loc="lower left")
 
-    full_state = np.zeros((num_steps,3))
-    full_state[0] = np.hstack([pos[:2],yaw]).flatten()
-    full_J = np.eye(3) # transformation from body to inertial frame
-    full_J[:2,:2] = rot_z(yaw)[:2,:2]
+    fig.savefig(figdir + "comparison_fl.pdf")
 
-    # Simple model
-    Ax = A[:,0]
-    Ay = A[:,1]
-    Ap = A[:,2]
-    Axinv = Ax.T/(Ax.T.dot(Ax))
-    Ayinv = Ay.T/(Ay.T.dot(Ay))
-    Apinv = Ap.T/(Ap.T.dot(Ap))
+    ax.lines.remove(lines[0])
+    ax.legend(loc="lower left")
+    ax.set_xlim(170,180)
+    ax.set_ylim(-90-5,-90+5)
+    fig.savefig(figdir + "comparison_zoom.pdf")
 
-    simple_state = full_state.copy()
-    simple_J = full_J.copy()
-    simple_bodyrate = np.zeros(3)
-
-    b = np.zeros(8)
-
-
-    # Slip calculation
-    slip_long = np.zeros((num_steps,4))
-
-    for i in range(len(ts)-1):
-        pos = data["pos"][i]
-        vel = data["vel"][i]
-        rpy = data["rpy"][i]
-        rpyrate = data["rpyrate"][i]
-        omegas = data["omegas"][i]
-        steers = data["steers"][i]
-        vel_body = rot_z(-rpy[2]) @ vel
-        dt = ts[i+1] - ts[i] # time to next step
-
-        # Compute longitudinal slip, eq 8.9 in Kiencke
-        # assume roll and pitch are zero
-        wheel_velocities_body = vel_body + wheel_arms @ rot_z_der(-rpy[2], -rpyrate[2])
-        wheel_betas = np.arctan2(wheel_velocities_body[:,1], wheel_velocities_body[:,0])
-        wheel_alphas = steers - wheel_betas
-        wheel_speeds = np.linalg.norm(wheel_velocities_body, axis=1)
-        wheel_rot_speeds = omegas * wheel_radius * np.cos(wheel_alphas)
-        wheel_speed_diffs = wheel_rot_speeds - wheel_speeds
-        wheel_max_speeds = np.maximum(np.abs(wheel_rot_speeds), np.abs(wheel_speeds))
-        # dont generate divide by zero warnings
-        with np.errstate(divide="ignore",invalid="ignore"):
-            wheel_slips_lo = wheel_speed_diffs/wheel_max_speeds
-        # nans come from zeros, leave infs
-        wheel_slips_lo[np.isnan(wheel_slips_lo)] = 0 
-        slip_long[i] = wheel_slips_lo
+    plt.show()
 
 
 
-        # Kinematic model setup
-        b[::2] = wheel_radius*omegas*np.cos(steers)
-        b[1::2] = wheel_radius*omegas*np.sin(steers)
-
-        # Full kinematic model
-        ## compare with GT
-        #full_error_pos = full_state[i,:2] - pos[:2]
-        #full_error_yaw = abs(ssa(full_state[i,2] - rpy[2]))
-
-        ## update for next timestep
-        full_bodyrate = Ainv.dot(b) #[vx,vy,yawrate]
-        full_J[:2,:2] = rot_z(full_state[i,2])[:2,:2]
-        full_state[i+1] = full_state[i] + \
-                dt*full_J.dot(full_bodyrate)
-
-        # Simplified kinematic model
-        ## compare with GT
-        #simple_error_pos = simple_state[i,:2] - pos[:2]
-        #simple_error_yaw = abs(ssa(simple_state[i,2] - rpy[2]))
-
-        ## update for next timestep
-        simple_bodyrate[0] = Axinv.dot(b)
-        simple_bodyrate[1] = Ayinv.dot(b)
-        simple_bodyrate[2] = Apinv.dot(b)
-        simple_J[:2,:2] = rot_z(simple_state[i,2])[:2,:2]
-        simple_state[i+1] = simple_state[i] + \
-                dt*simple_J.dot(simple_bodyrate)
-        
-        #se, fe = np.linalg.norm(simple_error_pos), np.linalg.norm(full_error_pos)
-        #ratio = se/fe
-        #print(f"{se:.5f} {fe:.5f} {ratio}")
-
-    full_pos_error = full_state[:,:2] - data["pos"][:,:2]
-    full_yaw_error = full_state[:,2] - data["rpy"][:,2]
-    simple_pos_error = simple_state[:,:2] - data["pos"][:,:2]
-    simple_yaw_error = simple_state[:,2] - data["rpy"][:,2]
-    full_pos_error_norm = np.linalg.norm(full_pos_error, axis=1)
-    full_yaw_error_norm = np.abs(ssa(full_yaw_error))
-    simple_pos_error_norm = np.linalg.norm(simple_pos_error, axis=1)
-    simple_yaw_error_norm = np.abs(ssa(simple_yaw_error))
-
-
-    with np.errstate(divide="ignore",invalid="ignore"):
-        error_ratio = simple_pos_error_norm/full_pos_error_norm
-    error_ratio[np.isnan(error_ratio)] = 1
-
-    fig, ax = plt.subplots(1,1,figsize=figsize,num="position error norm")
-    ax.plot(ts, full_pos_error_norm, label="full")
-    ax.plot(ts, simple_pos_error_norm, label="simple")
-    ax.set_xlabel("time [s]")
-    ax.set_ylabel("[m]")
-    ax.set_xlim(ts[0], ts[~0])
-    ax.set_ylim(bottom=0)
-    ax.legend(loc="upper left")
-    fig.savefig("results/kinematic_test/pos_error.pdf")
-
-    fig, ax = plt.subplots(1,1,figsize=figsize,num="yaw error norm")
-    ax.plot(ts, np.rad2deg(full_yaw_error_norm), label="full")
-    ax.plot(ts, np.rad2deg(simple_yaw_error_norm), label="simple")
-    ax.set_xlabel("time [s]")
-    ax.set_ylabel("[deg]")
-    ax.set_xlim(ts[0], ts[~0])
-    ax.set_ylim(bottom=0)
-    ax.legend(loc="upper left")
-    fig.savefig("results/kinematic_test/yaw_error.pdf")
-
-    fig, ax = plt.subplots(1,1,figsize=figsize,num="ratio")
-    ax.plot(ts, error_ratio)
-    ax.set_xlabel("time [s]")
-    fig.savefig("results/kinematic_test/ratio.pdf")
-
-    fig, ax = plt.subplots(1,1,figsize=figsize,num="trajectories")
-    ax.plot(data["pos"][:,0],data["pos"][:,1], label="ground truth")
-    ax.plot(full_state[:,0],full_state[:,1], label="full")
-    ax.plot(simple_state[:,0],simple_state[:,1], label="simple")
-    ax.set_xlabel("x [m]")
-    ax.set_ylabel("y [m]")
-    ax.set_aspect("equal")
-    ax.legend(loc="upper left")
-    fig.savefig("results/kinematic_test/trajectories.pdf")
-
-
-    fig, ax = plt.subplots(1,1,figsize=figsize,num="slip")
-    for i in range(len(data["order"])):
-        ax.plot(ts, slip_long[:,i], label=data["order"][i])
-    ax.legend(loc="upper left")
-    ax.set_ylim(-1,1)
-    fig.savefig("results/kinematic_test/slip.pdf")
-    #plt.show()
-    
 
 if __name__=="__main__":
     from scipy.io import savemat, loadmat
     from shutil import move
 
-    main()
+    mf_list = [0,1,2]
+
+    #for mf in mf_list:
+    #    data = run_experiment(mf)
+    #    savemat(f"results/wheel_controller/data_{mf}.mat", data)
+
+    datas = [
+        loadmat(f"results/wheel_controller/data_{mf}.mat")
+        for mf in mf_list
+    ]
+
+    plot_results(datas, "results/wheel_controller/")
+
+
+
+
+

@@ -115,7 +115,13 @@ for step in tqdm.tqdm(range(steps-1)):
     error[step] = np.hstack([eta_body_err, nu])
 
     u[step] = -K_LQ @ error[step]
-    b = wheel_radius*u[step]
+    uxy = u[step].reshape(4,2)
+    omega = np.linalg.norm(uxy,axis=1)
+    omega_limit = float('inf')
+    saturate = omega > omega_limit
+    uxy[saturate] = (uxy[saturate].T/omega[saturate]*omega_limit).T
+    u[step] = uxy.flatten()
+    b = wheel_radius*u[step].flatten()
 
     # compute derivatives
     nudot = Ainv @ b

@@ -72,3 +72,5 @@ class Window:
     def terminate(self):
         glfw.terminate()
 
+
+

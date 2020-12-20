@@ -103,8 +103,10 @@ class VehicleSim:
 
 
         self.mu1, self.mu2 = vp["mu1"], vp["mu2"]
-        self.frictionLimit1 = self.mu1 * (front_mass + 2*beam_mass + 4*wheel_mass)/4 * abs(g)
-        self.frictionLimit2 = self.mu2 * (front_mass + 2*beam_mass + 4*wheel_mass)/4 * abs(g)
+        self.vehicle_mass = front_mass + 2*beam_mass + 4*wheel_mass
+        # TODO: load transfer
+        self.frictionLimit1 = self.mu1 * self.vehicle_mass/4 * abs(g)
+        self.frictionLimit2 = self.mu2 * self.vehicle_mass/4 * abs(g)
 
 
         # setup ode
@@ -225,7 +227,56 @@ class VehicleSim:
 
         return positions
 
-            
+    def computeWheelLoads(self,cg_to_front,cg_to_rear,height_cg,width_front,width_rear,ax_ch,ay_ch,mass,g):
+        lf = cg_to_front
+        lr = cg_to_rear
+        hcg = height_cg
+        bf = width_front
+        br = width_rear
+        l = lr + lf
+        m = mass
+
+        G = np.array([
+            [1,1,1,1],
+            [-l,0,0,-l],
+            [bf/2,0,0,-bf/2],
+            [0,br/2,-br/2,0]])
+        A = hcg*ay_ch/g * np.array([
+            [0,0,0,0],
+            [0,0,0,0],
+            [1,0,0,1],
+            [0,1,1,0]])
+        b = np.array([m*g, -hcg*m*ax_ch + lr*m*g,0,0])
+
+        #loads = np.linalg.inv(G+A) @ b
+
+        loads = np.array([
+            m*(g*lr/l - ax_ch*hcg/l)*(0.5 - hcg*ay_ch/(bf*g)),
+            m*(g*lf/l + ax_ch*hcg/l)*(0.5 - hcg*ay_ch/(br*g)),
+            m*(g*lf/l + ax_ch*hcg/l)*(0.5 + hcg*ay_ch/(br*g)),
+            m*(g*lr/l - ax_ch*hcg/l)*(0.5 + hcg*ay_ch/(bf*g))
+        ])
+
+
+        return loads
+
+    def getWheelLoads(self):
+        g = self.sim_params.get("g",-9.81)
+        # NOTE: ODE doesn't provide a way of obtaining acceleration.
+        # need to compute it manually
+        ax_ch, ay_ch, az_ch = -np.array(self.front.body.getForce())/self.vehicle_mass
+        
+        pos_cg = self.getPosition()
+        wheel_positions = self.getWheelPositions()
+        cg_to_front = abs(wheel_positions[0][0] - pos_cg[0])
+        cg_to_rear = abs(wheel_positions[1][0] - pos_cg[0])
+        height_cg = pos_cg[2]
+        width_front = abs(wheel_positions[0][1] - wheel_positions[3][1])
+        width_rear = abs(wheel_positions[1][1] - wheel_positions[2][1])
+        mass = self.vehicle_mass
+
+        return self.computeWheelLoads(cg_to_front,cg_to_rear,height_cg,width_front,width_rear,ax_ch,ay_ch,mass,g)
+
 
     def _near_callback(self, args, geom1, geom2):
         # check if objects collide

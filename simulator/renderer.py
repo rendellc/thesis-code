@@ -122,6 +122,12 @@ class BoxRenderer:
 
         glDrawElements(GL_TRIANGLES, self.indices_size, GL_UNSIGNED_INT, c_void_p(0))
 
+    def __del__(self):
+        # free OpenGL resources
+        glDeleteBuffers(1,self.ebo)
+        glDeleteBuffers(1,self.vbo)
+
+
 
 class HorizontalPlaneRenderer:
     def __init__(self, grid_size, prog):
@@ -164,6 +170,10 @@ class HorizontalPlaneRenderer:
         loc = glGetUniformLocation(self.program.id, "mvp")
         glUniformMatrix4fv(loc, 1, GL_FALSE, glm.value_ptr(mvp))
         glDrawArrays(GL_LINES, 0, self.n_points)
+
+    def __del__(self):
+        # free OpenGL resources
+        glDeleteBuffers(1,self.vbo)
 
 class CylinderRenderer:
     def __init__(self, cylinder, *, color=None, sectors=8, closed=False):
@@ -281,6 +291,10 @@ class CylinderRenderer:
             glDrawElements(GL_TRIANGLE_FAN, self.bottom_slice[1],
                     GL_UNSIGNED_INT, c_void_p(self.bottom_slice[0]))
 
+    def __del__(self):
+        # free OpenGL resources
+        glDeleteBuffers(1,self.ebo)
+        glDeleteBuffers(1,self.vbo)
 
 
 class RendererCollection:
