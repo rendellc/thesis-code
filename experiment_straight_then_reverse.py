@@ -22,7 +22,7 @@ import params
 vp = params.VEHICLE_PARAMS
 sp = params.SIM_PARAMS
 sp["do3Dview"] = True
-sp["record3Dfilename"] = "test.mp4"
+sp["record3Dfilename"] = ""
 sp["record3Dfps"] = 30
 #sp["friction_scale"] = 0.01
 wheel_radius = vp["wheel_radius"]
