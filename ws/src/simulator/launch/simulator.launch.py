@@ -18,7 +18,7 @@ def generate_launch_description():
     
 
     # TODO: don't hardcode path
-    modeldir = "/home/cale/thesis-code/ws/src/simulator/models/autoagri/vehicle.sdf"
+    modeldir = "/home/cale/thesis-code/ws/src/simulator/models/simple_car/model.sdf"
     
     spawn_entity = Node(
         package="gazebo_ros",
