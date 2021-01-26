@@ -27,8 +27,22 @@
             </collision>
         </link>
     </xacro:macro>
-    <xacro:macro name="link_cylinder" params="name mass radius length">
-        <link name="${name}">
+    <xacro:macro name="wheel" params="name parent mass radius length xyz">
+        <link name="${name}_base">
+            <inertial>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <mass value="20"/>
+                <inertia ixx="1" ixy="0" ixz="0" 
+                    iyy="1" iyz="0"
+                    izz="1"/>
+            </inertial>
+            <visual>
+                <geometry>
+                    <box size="0.3 0.3 0.3"/>
+                </geometry>
+            </visual>
+        </link>
+        <link name="${name}_tire">
             <inertial>
                 <origin xyz="0 0 0" rpy="0 0 0"/>
                 <mass value="${mass}"/>
@@ -49,24 +63,33 @@
                 </geometry>
             </collision>
         </link>
-    </xacro:macro>
-    <xacro:macro name="wheel_joint" params="parent child xyz">
-        <joint name="joint_${parent}_to_${child}" type="continuous">
-            <origin xyz="${xyz}" rpy="${pi/2} 0 0"/>
+        <joint name="joint_${parent}_to_${name}_base" type="continuous">
+            <origin xyz="${xyz}" rpy="0 0 0"/>
             <parent link="${parent}"/>
-            <child link="${child}"/>
+            <child link="${name}_base"/>
             <axis xyz="0 0 1"/>
         </joint>
+        <joint name="joint_base_to_${name}_tire" type="continuous">
+            <origin xyz="0 0 -1" rpy="${pi/2} 0 0"/>
+            <parent link="${name}_base"/>
+            <child link="${name}_tire"/>
+            <axis xyz="0 0 1"/>
+        </joint>
+        <gazebo reference="${name}_base">
+            <material>Gazebo/Blue</material>
+        </gazebo>
+        <gazebo reference="${name}_tire">
+            <material>Gazebo/Orange</material>
+            <mu1>0.8</mu1>
+            <mu2>0.5</mu2>
+        </gazebo>
+    </xacro:macro>
+    <xacro:macro name="wheel_joint" params="parent child xyz">
     </xacro:macro>
 
     <xacro:link_box name="base_link" mass="${body_mass}" length="2" width="0.8" height="0.5"/>
-    <xacro:link_cylinder name="wheel_link_fl" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}"/>
-    <xacro:link_cylinder name="wheel_link_rl" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}"/>
-    <xacro:link_cylinder name="wheel_link_rr" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}"/>
-    <xacro:link_cylinder name="wheel_link_fr" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}"/>
-        
-    <xacro:wheel_joint parent="base_link" child="wheel_link_fl" xyz="2 2 0"/>
-    <xacro:wheel_joint parent="base_link" child="wheel_link_rl" xyz="-2 2 0"/>
-    <xacro:wheel_joint parent="base_link" child="wheel_link_rr" xyz="-2 -2 0"/>
-    <xacro:wheel_joint parent="base_link" child="wheel_link_fr" xyz="2 -2 0"/>
+    <xacro:wheel name="wheel_fl" parent="base_link" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}" xyz="2 2 0"/>
+    <xacro:wheel name="wheel_rl" parent="base_link" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}" xyz="-2 2 0"/>
+    <xacro:wheel name="wheel_rr" parent="base_link" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}" xyz="-2 -2 0"/>
+    <xacro:wheel name="wheel_fr" parent="base_link" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}" xyz="2 -2 0"/>
 </robot>
