@@ -80,7 +80,7 @@
     <axis xyz="0 0 1"/>
   </joint>
   <joint name="joint_wheel_fl_steer_to_wheel_fl_tire" type="continuous">
-    <origin rpy="1.5707963267948966 0 0" xyz="0 0 -0.65"/>
+    <origin rpy="-1.5707963267948966 0 0" xyz="0 0 -0.65"/>
     <parent link="wheel_fl_steer"/>
     <child link="wheel_fl_tire"/>
     <axis xyz="0 0 1"/>
@@ -159,7 +159,7 @@
     <axis xyz="0 0 1"/>
   </joint>
   <joint name="joint_wheel_rl_steer_to_wheel_rl_tire" type="continuous">
-    <origin rpy="1.5707963267948966 0 0" xyz="0 0 -0.65"/>
+    <origin rpy="-1.5707963267948966 0 0" xyz="0 0 -0.65"/>
     <parent link="wheel_rl_steer"/>
     <child link="wheel_rl_tire"/>
     <axis xyz="0 0 1"/>
@@ -238,7 +238,7 @@
     <axis xyz="0 0 1"/>
   </joint>
   <joint name="joint_wheel_rr_steer_to_wheel_rr_tire" type="continuous">
-    <origin rpy="1.5707963267948966 0 0" xyz="0 0 -0.65"/>
+    <origin rpy="-1.5707963267948966 0 0" xyz="0 0 -0.65"/>
     <parent link="wheel_rr_steer"/>
     <child link="wheel_rr_tire"/>
     <axis xyz="0 0 1"/>
@@ -317,7 +317,7 @@
     <axis xyz="0 0 1"/>
   </joint>
   <joint name="joint_wheel_fr_steer_to_wheel_fr_tire" type="continuous">
-    <origin rpy="1.5707963267948966 0 0" xyz="0 0 -0.65"/>
+    <origin rpy="-1.5707963267948966 0 0" xyz="0 0 -0.65"/>
     <parent link="wheel_fr_steer"/>
     <child link="wheel_fr_tire"/>
     <axis xyz="0 0 1"/>

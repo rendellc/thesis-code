@@ -91,7 +91,7 @@
             <axis xyz="0 0 1"/>
         </joint>
         <joint name="joint_${name}_steer_to_${name}_tire" type="continuous">
-            <origin xyz="0 0 ${-radius - 0.15}" rpy="${pi/2} 0 0"/>
+            <origin xyz="0 0 ${-radius - 0.15}" rpy="${-pi/2} 0 0"/>
             <parent link="${name}_steer"/>
             <child link="${name}_tire"/>
             <axis xyz="0 0 1"/>
