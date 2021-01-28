@@ -6,10 +6,10 @@
                 "limitSymbolsToIncludedHeaders": true
             },
             "includePath": [
+                "${workspaceFolder}/src/**",
+                "${workspaceFolder}/install/**",
                 "/opt/ros/foxy/include",
-                "/usr/include/**",
-                "${workspaceFolder}/*/include",
-                "${workspaceFolder}/../install/*/include"
+                "/usr/include/**"
             ],
             "name": "ROS"
         }

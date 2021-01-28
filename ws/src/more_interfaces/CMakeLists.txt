@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(simulator)
+project(more_interfaces)
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
@@ -17,37 +17,30 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-find_package(gazebo_ros REQUIRED)
-find_package(gazebo_dev REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 
+set(msg_files
+  "msg/AddressBook.msg"
+)
+
 rosidl_generate_interfaces(${PROJECT_NAME}
-  "msg/FloatArray.msg"
+  ${msg_files}
 )
 
-link_directories(${gazebo_dev_LIBRARY_DIRS})
-
-add_library(simple_car SHARED
-  src/gazebo_plugins/simple_car.cpp
+add_executable(publish_address_book
+  src/publish_address_book.cpp
 )
-target_include_directories(simple_car PUBLIC include)
-ament_target_dependencies(simple_car
-  "gazebo_dev"
-  "gazebo_ros"
+ament_target_dependencies(publish_address_book
   "rclcpp"
 )
-rosidl_target_interfaces(simple_car
+install(TARGETS publish_address_book
+  DESTINATION lib/${PROJECT_NAME}
+)
+ament_export_dependencies(rosidl_default_runtime)
+rosidl_target_interfaces(publish_address_book
   ${PROJECT_NAME} "rosidl_typesupport_cpp"
 )
-ament_export_libraries(simple_car)
-
-
-install(TARGETS
-  simple_car
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

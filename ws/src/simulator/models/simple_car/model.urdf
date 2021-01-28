@@ -26,12 +26,25 @@
   <link name="wheel_fl_base">
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-      <mass value="20"/>
+      <mass value="1"/>
       <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1"/>
     </inertial>
     <visual>
+      <origin rpy="0 0 0" xyz="0 0 0.075"/>
       <geometry>
-        <box size="0.3 0.3 0.3"/>
+        <box size="0.3 0.3 0.15"/>
+      </geometry>
+    </visual>
+  </link>
+  <link name="wheel_fl_steer">
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 -0.075"/>
+      <geometry>
+        <box size="0.3 0.3 0.15"/>
       </geometry>
     </visual>
   </link>
@@ -54,19 +67,34 @@
       </geometry>
     </collision>
   </link>
-  <joint name="joint_base_link_to_wheel_fl_base" type="continuous">
+  <joint name="joint_base_link_to_wheel_fl_base" type="fixed">
     <origin rpy="0 0 0" xyz="2 2 0"/>
     <parent link="base_link"/>
     <child link="wheel_fl_base"/>
     <axis xyz="0 0 1"/>
   </joint>
-  <joint name="joint_base_to_wheel_fl_tire" type="continuous">
-    <origin rpy="1.5707963267948966 0 0" xyz="0 0 -1"/>
+  <joint name="joint_wheel_fl_base_to_wheel_fl_steer" type="continuous">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
     <parent link="wheel_fl_base"/>
+    <child link="wheel_fl_steer"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  <joint name="joint_wheel_fl_steer_to_wheel_fl_tire" type="continuous">
+    <origin rpy="1.5707963267948966 0 0" xyz="0 0 -0.65"/>
+    <parent link="wheel_fl_steer"/>
     <child link="wheel_fl_tire"/>
     <axis xyz="0 0 1"/>
   </joint>
-  <gazebo reference="wheel_fl_base">
+  <transmission name="wheel_fl_steer_transmission">
+    <type>transmission_interface/SimpleTransmission</type>
+    <actuator name="${name}_steer_motor">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+    <joint name="joint_wheel_fl_base_to_wheel_fl_steer">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+  </transmission>
+  <gazebo reference="wheel_fl_steer">
     <material>Gazebo/Blue</material>
   </gazebo>
   <gazebo reference="wheel_fl_tire">
@@ -77,12 +105,25 @@
   <link name="wheel_rl_base">
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-      <mass value="20"/>
+      <mass value="1"/>
       <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1"/>
     </inertial>
     <visual>
+      <origin rpy="0 0 0" xyz="0 0 0.075"/>
       <geometry>
-        <box size="0.3 0.3 0.3"/>
+        <box size="0.3 0.3 0.15"/>
+      </geometry>
+    </visual>
+  </link>
+  <link name="wheel_rl_steer">
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 -0.075"/>
+      <geometry>
+        <box size="0.3 0.3 0.15"/>
       </geometry>
     </visual>
   </link>
@@ -105,19 +146,34 @@
       </geometry>
     </collision>
   </link>
-  <joint name="joint_base_link_to_wheel_rl_base" type="continuous">
+  <joint name="joint_base_link_to_wheel_rl_base" type="fixed">
     <origin rpy="0 0 0" xyz="-2 2 0"/>
     <parent link="base_link"/>
     <child link="wheel_rl_base"/>
     <axis xyz="0 0 1"/>
   </joint>
-  <joint name="joint_base_to_wheel_rl_tire" type="continuous">
-    <origin rpy="1.5707963267948966 0 0" xyz="0 0 -1"/>
+  <joint name="joint_wheel_rl_base_to_wheel_rl_steer" type="continuous">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
     <parent link="wheel_rl_base"/>
+    <child link="wheel_rl_steer"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  <joint name="joint_wheel_rl_steer_to_wheel_rl_tire" type="continuous">
+    <origin rpy="1.5707963267948966 0 0" xyz="0 0 -0.65"/>
+    <parent link="wheel_rl_steer"/>
     <child link="wheel_rl_tire"/>
     <axis xyz="0 0 1"/>
   </joint>
-  <gazebo reference="wheel_rl_base">
+  <transmission name="wheel_rl_steer_transmission">
+    <type>transmission_interface/SimpleTransmission</type>
+    <actuator name="${name}_steer_motor">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+    <joint name="joint_wheel_rl_base_to_wheel_rl_steer">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+  </transmission>
+  <gazebo reference="wheel_rl_steer">
     <material>Gazebo/Blue</material>
   </gazebo>
   <gazebo reference="wheel_rl_tire">
@@ -128,12 +184,25 @@
   <link name="wheel_rr_base">
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-      <mass value="20"/>
+      <mass value="1"/>
       <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1"/>
     </inertial>
     <visual>
+      <origin rpy="0 0 0" xyz="0 0 0.075"/>
       <geometry>
-        <box size="0.3 0.3 0.3"/>
+        <box size="0.3 0.3 0.15"/>
+      </geometry>
+    </visual>
+  </link>
+  <link name="wheel_rr_steer">
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 -0.075"/>
+      <geometry>
+        <box size="0.3 0.3 0.15"/>
       </geometry>
     </visual>
   </link>
@@ -156,19 +225,34 @@
       </geometry>
     </collision>
   </link>
-  <joint name="joint_base_link_to_wheel_rr_base" type="continuous">
+  <joint name="joint_base_link_to_wheel_rr_base" type="fixed">
     <origin rpy="0 0 0" xyz="-2 -2 0"/>
     <parent link="base_link"/>
     <child link="wheel_rr_base"/>
     <axis xyz="0 0 1"/>
   </joint>
-  <joint name="joint_base_to_wheel_rr_tire" type="continuous">
-    <origin rpy="1.5707963267948966 0 0" xyz="0 0 -1"/>
+  <joint name="joint_wheel_rr_base_to_wheel_rr_steer" type="continuous">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
     <parent link="wheel_rr_base"/>
+    <child link="wheel_rr_steer"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  <joint name="joint_wheel_rr_steer_to_wheel_rr_tire" type="continuous">
+    <origin rpy="1.5707963267948966 0 0" xyz="0 0 -0.65"/>
+    <parent link="wheel_rr_steer"/>
     <child link="wheel_rr_tire"/>
     <axis xyz="0 0 1"/>
   </joint>
-  <gazebo reference="wheel_rr_base">
+  <transmission name="wheel_rr_steer_transmission">
+    <type>transmission_interface/SimpleTransmission</type>
+    <actuator name="${name}_steer_motor">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+    <joint name="joint_wheel_rr_base_to_wheel_rr_steer">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+  </transmission>
+  <gazebo reference="wheel_rr_steer">
     <material>Gazebo/Blue</material>
   </gazebo>
   <gazebo reference="wheel_rr_tire">
@@ -179,12 +263,25 @@
   <link name="wheel_fr_base">
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-      <mass value="20"/>
+      <mass value="1"/>
       <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1"/>
     </inertial>
     <visual>
+      <origin rpy="0 0 0" xyz="0 0 0.075"/>
       <geometry>
-        <box size="0.3 0.3 0.3"/>
+        <box size="0.3 0.3 0.15"/>
+      </geometry>
+    </visual>
+  </link>
+  <link name="wheel_fr_steer">
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 -0.075"/>
+      <geometry>
+        <box size="0.3 0.3 0.15"/>
       </geometry>
     </visual>
   </link>
@@ -207,24 +304,46 @@
       </geometry>
     </collision>
   </link>
-  <joint name="joint_base_link_to_wheel_fr_base" type="continuous">
+  <joint name="joint_base_link_to_wheel_fr_base" type="fixed">
     <origin rpy="0 0 0" xyz="2 -2 0"/>
     <parent link="base_link"/>
     <child link="wheel_fr_base"/>
     <axis xyz="0 0 1"/>
   </joint>
-  <joint name="joint_base_to_wheel_fr_tire" type="continuous">
-    <origin rpy="1.5707963267948966 0 0" xyz="0 0 -1"/>
+  <joint name="joint_wheel_fr_base_to_wheel_fr_steer" type="continuous">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
     <parent link="wheel_fr_base"/>
+    <child link="wheel_fr_steer"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  <joint name="joint_wheel_fr_steer_to_wheel_fr_tire" type="continuous">
+    <origin rpy="1.5707963267948966 0 0" xyz="0 0 -0.65"/>
+    <parent link="wheel_fr_steer"/>
     <child link="wheel_fr_tire"/>
     <axis xyz="0 0 1"/>
   </joint>
-  <gazebo reference="wheel_fr_base">
+  <transmission name="wheel_fr_steer_transmission">
+    <type>transmission_interface/SimpleTransmission</type>
+    <actuator name="${name}_steer_motor">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+    <joint name="joint_wheel_fr_base_to_wheel_fr_steer">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+  </transmission>
+  <gazebo reference="wheel_fr_steer">
     <material>Gazebo/Blue</material>
   </gazebo>
   <gazebo reference="wheel_fr_tire">
     <material>Gazebo/Orange</material>
     <mu1>0.8</mu1>
     <mu2>0.5</mu2>
+  </gazebo>
+  <gazebo>
+    <plugin filename="libsimple_car.so" name="simple_car">
+      <ros>
+        <namespace>/vehicle_namespace</namespace>
+      </ros>
+    </plugin>
   </gazebo>
 </robot>
