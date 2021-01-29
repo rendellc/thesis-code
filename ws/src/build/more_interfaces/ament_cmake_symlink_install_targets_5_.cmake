@@ -1,0 +1,1 @@
+ament_cmake_symlink_install_targets("TARGET_FILES" "/home/cale/thesis-code/ws/src/build/more_interfaces/rosidl_generator_py/more_interfaces/libmore_interfaces__python.so" "TARGETS" "more_interfaces__python" "ARCHIVE_DESTINATION" "lib" "LIBRARY_DESTINATION" "lib" "RUNTIME_DESTINATION" "bin")

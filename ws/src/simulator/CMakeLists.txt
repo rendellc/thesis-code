@@ -17,10 +17,12 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(ament_cmake_python REQUIRED)
 find_package(gazebo_ros REQUIRED)
 find_package(gazebo_dev REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclpy REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
@@ -43,13 +45,26 @@ rosidl_target_interfaces(simple_car
   ${PROJECT_NAME} "rosidl_typesupport_cpp"
 )
 ament_export_libraries(simple_car)
-
-
 install(TARGETS
   simple_car
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
+
+
+# install python modules
+ament_python_install_package(${PROJECT_NAME})
+install(PROGRAMS
+  simulator/spawn_vehicle.py
+  DESTINATION bin
+)
+
+
+# Export package dependencies
+ament_export_dependencies(ament_cmake)
+ament_export_dependencies(ament_cmake_python)
+ament_export_dependencies(rclcpp)
+ament_export_dependencies(rclpy)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

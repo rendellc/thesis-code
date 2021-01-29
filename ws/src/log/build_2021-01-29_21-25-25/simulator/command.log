@@ -1,0 +1,4 @@
+Invoking command in '/home/cale/thesis-code/ws/src/build/simulator': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/foxy /usr/bin/cmake --build /home/cale/thesis-code/ws/src/build/simulator -- -j4 -l4
+Invoked command in '/home/cale/thesis-code/ws/src/build/simulator' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/foxy /usr/bin/cmake --build /home/cale/thesis-code/ws/src/build/simulator -- -j4 -l4
+Invoking command in '/home/cale/thesis-code/ws/src/build/simulator': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/foxy /usr/bin/cmake --install /home/cale/thesis-code/ws/src/build/simulator
+Invoked command in '/home/cale/thesis-code/ws/src/build/simulator' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/foxy /usr/bin/cmake --install /home/cale/thesis-code/ws/src/build/simulator

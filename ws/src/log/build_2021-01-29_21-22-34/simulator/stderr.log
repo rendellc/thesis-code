@@ -1,0 +1,6 @@
+CMake Error at cmake_install.cmake:385 (file):
+  file INSTALL cannot find
+  "/home/cale/thesis-code/ws/src/simulator/scripts/spawn_vehicle.py": No such
+  file or directory.
+
+

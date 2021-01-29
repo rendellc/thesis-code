@@ -7,19 +7,19 @@
   <link name="base_link">
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-      <mass value="50"/>
-      <inertia ixx="3.7083333333333335" ixy="0" ixz="0" iyy="17.708333333333332" iyz="0" izz="19.333333333333332"/>
+      <mass value="1580"/>
+      <inertia ixx="263.3333333333333" ixy="0" ixz="0" iyy="263.3333333333333" iyz="0" izz="263.3333333333333"/>
     </inertial>
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <box size="2 0.8 0.5"/>
+        <box size="1 1 1"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <box size="2 0.8 0.5"/>
+        <box size="1 1 1"/>
       </geometry>
     </collision>
   </link>
@@ -51,24 +51,24 @@
   <link name="wheel_fl_tire">
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-      <mass value="50"/>
-      <inertia ixx="3.4999999999999996" ixy="0" ixz="0" iyy="3.4999999999999996" iyz="0" izz="6.25"/>
+      <mass value="200"/>
+      <inertia ixx="15.417916666666665" ixy="0" ixz="0" iyy="15.417916666666665" iyz="0" izz="25.5025"/>
     </inertial>
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.3" radius="0.5"/>
+        <cylinder length="0.4" radius="0.505"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.3" radius="0.5"/>
+        <cylinder length="0.4" radius="0.505"/>
       </geometry>
     </collision>
   </link>
   <joint name="joint_base_link_to_wheel_fl_base" type="fixed">
-    <origin rpy="0 0 0" xyz="2 2 0"/>
+    <origin rpy="0 0 0" xyz="0.2 1 0"/>
     <parent link="base_link"/>
     <child link="wheel_fl_base"/>
     <axis xyz="0 0 1"/>
@@ -80,7 +80,7 @@
     <axis xyz="0 0 1"/>
   </joint>
   <joint name="joint_wheel_fl_steer_to_wheel_fl_tire" type="continuous">
-    <origin rpy="-1.5707963267948966 0 0" xyz="0 0 -0.65"/>
+    <origin rpy="-1.5707963267948966 0 0" xyz="0 0 -0.655"/>
     <parent link="wheel_fl_steer"/>
     <child link="wheel_fl_tire"/>
     <axis xyz="0 0 1"/>
@@ -130,24 +130,24 @@
   <link name="wheel_rl_tire">
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-      <mass value="50"/>
-      <inertia ixx="3.4999999999999996" ixy="0" ixz="0" iyy="3.4999999999999996" iyz="0" izz="6.25"/>
+      <mass value="200"/>
+      <inertia ixx="15.417916666666665" ixy="0" ixz="0" iyy="15.417916666666665" iyz="0" izz="25.5025"/>
     </inertial>
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.3" radius="0.5"/>
+        <cylinder length="0.4" radius="0.505"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.3" radius="0.5"/>
+        <cylinder length="0.4" radius="0.505"/>
       </geometry>
     </collision>
   </link>
   <joint name="joint_base_link_to_wheel_rl_base" type="fixed">
-    <origin rpy="0 0 0" xyz="-2 2 0"/>
+    <origin rpy="0 0 0" xyz="-3 1 0"/>
     <parent link="base_link"/>
     <child link="wheel_rl_base"/>
     <axis xyz="0 0 1"/>
@@ -159,7 +159,7 @@
     <axis xyz="0 0 1"/>
   </joint>
   <joint name="joint_wheel_rl_steer_to_wheel_rl_tire" type="continuous">
-    <origin rpy="-1.5707963267948966 0 0" xyz="0 0 -0.65"/>
+    <origin rpy="-1.5707963267948966 0 0" xyz="0 0 -0.655"/>
     <parent link="wheel_rl_steer"/>
     <child link="wheel_rl_tire"/>
     <axis xyz="0 0 1"/>
@@ -209,24 +209,24 @@
   <link name="wheel_rr_tire">
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-      <mass value="50"/>
-      <inertia ixx="3.4999999999999996" ixy="0" ixz="0" iyy="3.4999999999999996" iyz="0" izz="6.25"/>
+      <mass value="200"/>
+      <inertia ixx="15.417916666666665" ixy="0" ixz="0" iyy="15.417916666666665" iyz="0" izz="25.5025"/>
     </inertial>
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.3" radius="0.5"/>
+        <cylinder length="0.4" radius="0.505"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.3" radius="0.5"/>
+        <cylinder length="0.4" radius="0.505"/>
       </geometry>
     </collision>
   </link>
   <joint name="joint_base_link_to_wheel_rr_base" type="fixed">
-    <origin rpy="0 0 0" xyz="-2 -2 0"/>
+    <origin rpy="0 0 0" xyz="-3 -1 0"/>
     <parent link="base_link"/>
     <child link="wheel_rr_base"/>
     <axis xyz="0 0 1"/>
@@ -238,7 +238,7 @@
     <axis xyz="0 0 1"/>
   </joint>
   <joint name="joint_wheel_rr_steer_to_wheel_rr_tire" type="continuous">
-    <origin rpy="-1.5707963267948966 0 0" xyz="0 0 -0.65"/>
+    <origin rpy="-1.5707963267948966 0 0" xyz="0 0 -0.655"/>
     <parent link="wheel_rr_steer"/>
     <child link="wheel_rr_tire"/>
     <axis xyz="0 0 1"/>
@@ -288,24 +288,24 @@
   <link name="wheel_fr_tire">
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-      <mass value="50"/>
-      <inertia ixx="3.4999999999999996" ixy="0" ixz="0" iyy="3.4999999999999996" iyz="0" izz="6.25"/>
+      <mass value="200"/>
+      <inertia ixx="15.417916666666665" ixy="0" ixz="0" iyy="15.417916666666665" iyz="0" izz="25.5025"/>
     </inertial>
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.3" radius="0.5"/>
+        <cylinder length="0.4" radius="0.505"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.3" radius="0.5"/>
+        <cylinder length="0.4" radius="0.505"/>
       </geometry>
     </collision>
   </link>
   <joint name="joint_base_link_to_wheel_fr_base" type="fixed">
-    <origin rpy="0 0 0" xyz="2 -2 0"/>
+    <origin rpy="0 0 0" xyz="0.2 -1 0"/>
     <parent link="base_link"/>
     <child link="wheel_fr_base"/>
     <axis xyz="0 0 1"/>
@@ -317,7 +317,7 @@
     <axis xyz="0 0 1"/>
   </joint>
   <joint name="joint_wheel_fr_steer_to_wheel_fr_tire" type="continuous">
-    <origin rpy="-1.5707963267948966 0 0" xyz="0 0 -0.65"/>
+    <origin rpy="-1.5707963267948966 0 0" xyz="0 0 -0.655"/>
     <parent link="wheel_fr_steer"/>
     <child link="wheel_fr_tire"/>
     <axis xyz="0 0 1"/>

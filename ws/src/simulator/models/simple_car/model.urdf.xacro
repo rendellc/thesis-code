@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="simple_car">
-    <xacro:property name="wheel_mass" value="50"/>
-    <xacro:property name="wheel_radius" value="0.5"/>
-    <xacro:property name="wheel_length" value="0.3"/>
-    <xacro:property name="body_mass" value="50"/>
+    <xacro:property name="wheel_mass" value="200"/>
+    <xacro:property name="wheel_radius" value="0.505"/>
+    <xacro:property name="wheel_length" value="0.4"/>
+    <xacro:property name="body_mass" value="1580"/>
     <xacro:macro name="link_box" params="name mass length width height">
         <link name="${name}">
             <inertial>
@@ -117,11 +117,11 @@
     <xacro:macro name="wheel_joint" params="parent child xyz">
     </xacro:macro>
 
-    <xacro:link_box name="base_link" mass="${body_mass}" length="2" width="0.8" height="0.5"/>
-    <xacro:wheel name="wheel_fl" parent="base_link" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}" xyz="2 2 0"/>
-    <xacro:wheel name="wheel_rl" parent="base_link" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}" xyz="-2 2 0"/>
-    <xacro:wheel name="wheel_rr" parent="base_link" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}" xyz="-2 -2 0"/>
-    <xacro:wheel name="wheel_fr" parent="base_link" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}" xyz="2 -2 0"/>
+    <xacro:link_box name="base_link" mass="${body_mass}" length="1" width="1" height="1"/>
+    <xacro:wheel name="wheel_fl" parent="base_link" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}" xyz="0.2 1 0"/>
+    <xacro:wheel name="wheel_rl" parent="base_link" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}" xyz="-3 1 0"/>
+    <xacro:wheel name="wheel_rr" parent="base_link" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}" xyz="-3 -1 0"/>
+    <xacro:wheel name="wheel_fr" parent="base_link" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}" xyz="0.2 -1 0"/>
         
     <gazebo>
         <plugin name="simple_car" filename="libsimple_car.so">

@@ -1,0 +1,209 @@
+[0.029s] Invoking command in '/home/cale/thesis-code/ws/src/build/more_interfaces': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/foxy /usr/bin/cmake /home/cale/thesis-code/ws/src/more_interfaces -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/cale/thesis-code/ws/src/install/more_interfaces
+[0.203s] -- The C compiler identification is GNU 9.3.0
+[0.308s] -- The CXX compiler identification is GNU 9.3.0
+[0.314s] -- Check for working C compiler: /usr/bin/cc
+[0.421s] -- Check for working C compiler: /usr/bin/cc -- works
+[0.424s] -- Detecting C compiler ABI info
+[0.528s] -- Detecting C compiler ABI info - done
+[0.561s] -- Detecting C compile features
+[0.563s] -- Detecting C compile features - done
+[0.567s] -- Check for working CXX compiler: /usr/bin/c++
+[0.680s] -- Check for working CXX compiler: /usr/bin/c++ -- works
+[0.681s] -- Detecting CXX compiler ABI info
+[0.776s] -- Detecting CXX compiler ABI info - done
+[0.789s] -- Detecting CXX compile features
+[0.790s] -- Detecting CXX compile features - done
+[0.799s] -- Found ament_cmake: 0.9.8 (/opt/ros/foxy/share/ament_cmake/cmake)
+[0.821s] -- Found PythonInterp: /usr/bin/python3 (found suitable version "3.8.5", minimum required is "3") 
+[0.822s] -- Using PYTHON_EXECUTABLE: /usr/bin/python3
+[1.011s] -- Override CMake install command with custom implementation using symlinks instead of copying resources
+[1.042s] -- Found rclcpp: 2.3.0 (/opt/ros/foxy/share/rclcpp/cmake)
+[1.102s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[1.112s] -- Found rosidl_adapter: 1.2.0 (/opt/ros/foxy/share/rosidl_adapter/cmake)
+[1.212s] -- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "1.1.1f")  
+[1.250s] -- Found FastRTPS: /opt/ros/foxy/include  
+[1.337s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[1.405s] -- Found rmw_implementation_cmake: 1.0.2 (/opt/ros/foxy/share/rmw_implementation_cmake/cmake)
+[1.407s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[1.408s] -- Looking for pthread.h
+[1.515s] -- Looking for pthread.h - found
+[1.516s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+[1.603s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Failed
+[1.604s] -- Looking for pthread_create in pthreads
+[1.695s] -- Looking for pthread_create in pthreads - not found
+[1.696s] -- Looking for pthread_create in pthread
+[1.827s] -- Looking for pthread_create in pthread - found
+[1.828s] -- Found Threads: TRUE  
+[2.010s] -- Found rosidl_default_generators: 1.0.0 (/opt/ros/foxy/share/rosidl_default_generators/cmake)
+[2.081s] -- Found PythonInterp: /usr/bin/python3 (found version "3.8.5") 
+[2.325s] -- Found ament_cmake_ros: 0.9.0 (/opt/ros/foxy/share/ament_cmake_ros/cmake)
+[2.534s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[2.565s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[2.613s] -- Found PythonInterp: /usr/bin/python3 (found suitable version "3.8.5", minimum required is "3.5") 
+[2.619s] -- Found python_cmake_module: 0.8.0 (/opt/ros/foxy/share/python_cmake_module/cmake)
+[2.653s] -- Found PythonLibs: /usr/lib/x86_64-linux-gnu/libpython3.8.so (found suitable version "3.8.5", minimum required is "3.5") 
+[2.654s] -- Using PYTHON_EXECUTABLE: /usr/bin/python3
+[2.654s] -- Using PYTHON_INCLUDE_DIRS: /usr/include/python3.8
+[2.654s] -- Using PYTHON_LIBRARIES: /usr/lib/x86_64-linux-gnu/libpython3.8.so
+[2.684s] -- Found PythonExtra: .so  
+[2.754s] -- Found ament_lint_auto: 0.9.6 (/opt/ros/foxy/share/ament_lint_auto/cmake)
+[2.827s] -- Added test 'copyright' to check source files copyright and LICENSE
+[2.829s] -- Added test 'cppcheck' to perform static code analysis on C / C++ code
+[2.831s] -- Configured cppcheck include dirs: 
+[2.831s] -- Configured cppcheck exclude dirs and/or files: 
+[2.834s] -- Added test 'cpplint' to check C / C++ code against the Google style
+[2.834s] -- Configured cpplint exclude dirs and/or files: 
+[2.836s] -- Added test 'lint_cmake' to check CMake code style
+[2.846s] -- Added test 'uncrustify' to check C / C++ code style
+[2.846s] -- Configured uncrustify additional arguments: 
+[2.850s] -- Added test 'xmllint' to check XML markup files
+[2.867s] -- Configuring done
+[2.948s] -- Generating done
+[2.957s] -- Build files have been written to: /home/cale/thesis-code/ws/src/build/more_interfaces
+[2.973s] Invoked command in '/home/cale/thesis-code/ws/src/build/more_interfaces' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/foxy /usr/bin/cmake /home/cale/thesis-code/ws/src/more_interfaces -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/cale/thesis-code/ws/src/install/more_interfaces
+[2.974s] Invoking command in '/home/cale/thesis-code/ws/src/build/more_interfaces': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/foxy /usr/bin/cmake --build /home/cale/thesis-code/ws/src/build/more_interfaces -- -j4 -l4
+[3.094s] [35m[1mScanning dependencies of target more_interfaces__cpp[0m
+[3.115s] [  3%] [34m[1mGenerating C++ code for ROS interfaces[0m
+[3.115s] [  6%] [34m[1mGenerating C code for ROS interfaces[0m
+[3.538s] [35m[1mScanning dependencies of target more_interfaces__rosidl_generator_c[0m
+[3.572s] [  6%] Built target more_interfaces__cpp
+[3.587s] [  9%] [32mBuilding C object CMakeFiles/more_interfaces__rosidl_generator_c.dir/rosidl_generator_c/more_interfaces/msg/detail/address_book__functions.c.o[0m
+[3.606s] [ 12%] [34m[1mGenerating C++ introspection for ROS interfaces[0m
+[3.634s] [ 15%] [34m[1mGenerating C++ type support dispatch for ROS interfaces[0m
+[3.647s] [ 18%] [34m[1mGenerating C++ type support for eProsima Fast-RTPS[0m
+[3.713s] [ 21%] [32m[1mLinking C shared library libmore_interfaces__rosidl_generator_c.so[0m
+[3.858s] [ 21%] Built target more_interfaces__rosidl_generator_c
+[3.935s] [ 24%] [34m[1mGenerating C type support dispatch for ROS interfaces[0m
+[4.211s] [35m[1mScanning dependencies of target more_interfaces__rosidl_typesupport_cpp[0m
+[4.230s] [35m[1mScanning dependencies of target more_interfaces__rosidl_typesupport_introspection_cpp[0m
+[4.267s] [ 27%] [32mBuilding CXX object CMakeFiles/more_interfaces__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/more_interfaces/msg/address_book__type_support.cpp.o[0m
+[4.285s] [ 30%] [32mBuilding CXX object CMakeFiles/more_interfaces__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/more_interfaces/msg/detail/address_book__type_support.cpp.o[0m
+[4.483s] [35m[1mScanning dependencies of target more_interfaces__rosidl_typesupport_c[0m
+[4.497s] [35m[1mScanning dependencies of target more_interfaces__rosidl_typesupport_fastrtps_cpp[0m
+[4.541s] [ 33%] [32mBuilding CXX object CMakeFiles/more_interfaces__rosidl_typesupport_c.dir/rosidl_typesupport_c/more_interfaces/msg/address_book__type_support.cpp.o[0m
+[4.579s] [ 36%] [32mBuilding CXX object CMakeFiles/more_interfaces__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/more_interfaces/msg/detail/dds_fastrtps/address_book__type_support.cpp.o[0m
+[4.672s] [ 39%] [32m[1mLinking CXX shared library libmore_interfaces__rosidl_typesupport_c.so[0m
+[4.824s] [ 39%] Built target more_interfaces__rosidl_typesupport_c
+[4.856s] [ 42%] [34m[1mGenerating C introspection for ROS interfaces[0m
+[5.232s] [ 45%] [32m[1mLinking CXX shared library libmore_interfaces__rosidl_typesupport_introspection_cpp.so[0m
+[5.406s] [ 48%] [32m[1mLinking CXX shared library libmore_interfaces__rosidl_typesupport_cpp.so[0m
+[5.407s] [ 48%] Built target more_interfaces__rosidl_typesupport_introspection_cpp
+[5.555s] [ 48%] Built target more_interfaces__rosidl_typesupport_cpp
+[5.563s] [35m[1mScanning dependencies of target more_interfaces__rosidl_typesupport_introspection_c[0m
+[5.629s] [ 51%] [32mBuilding C object CMakeFiles/more_interfaces__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/more_interfaces/msg/detail/address_book__type_support.c.o[0m
+[5.742s] [ 54%] [32m[1mLinking C shared library libmore_interfaces__rosidl_typesupport_introspection_c.so[0m
+[5.783s] [ 57%] [32m[1mLinking CXX shared library libmore_interfaces__rosidl_typesupport_fastrtps_cpp.so[0m
+[5.848s] [ 57%] Built target more_interfaces__rosidl_typesupport_introspection_c
+[5.927s] [ 57%] Built target more_interfaces__rosidl_typesupport_fastrtps_cpp
+[5.943s] [ 60%] [34m[1mGenerating C type support for eProsima Fast-RTPS[0m
+[6.214s] [35m[1mScanning dependencies of target more_interfaces__rosidl_typesupport_fastrtps_c[0m
+[6.240s] [ 63%] [32mBuilding CXX object CMakeFiles/more_interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/more_interfaces/msg/detail/address_book__type_support_c.cpp.o[0m
+[6.876s] [ 66%] [32m[1mLinking CXX shared library libmore_interfaces__rosidl_typesupport_fastrtps_c.so[0m
+[7.078s] [ 66%] Built target more_interfaces__rosidl_typesupport_fastrtps_c
+[7.108s] [35m[1mScanning dependencies of target more_interfaces[0m
+[7.143s] [ 66%] Built target more_interfaces
+[7.159s] [35m[1mScanning dependencies of target more_interfaces__py[0m
+[7.176s] [ 69%] [34m[1mGenerating Python code for ROS interfaces[0m
+[7.191s] [35m[1mScanning dependencies of target publish_address_book[0m
+[7.429s] [ 72%] [32mBuilding CXX object CMakeFiles/publish_address_book.dir/src/publish_address_book.cpp.o[0m
+[8.446s] [ 72%] Built target more_interfaces__py
+[8.508s] [35m[1mScanning dependencies of target more_interfaces__python[0m
+[8.661s] [ 75%] [32mBuilding C object CMakeFiles/more_interfaces__python.dir/rosidl_generator_py/more_interfaces/msg/_address_book_s.c.o[0m
+[8.999s] [ 78%] [32m[1mLinking C shared library rosidl_generator_py/more_interfaces/libmore_interfaces__python.so[0m
+[9.136s] [ 78%] Built target more_interfaces__python
+[9.173s] [35m[1mScanning dependencies of target more_interfaces__rosidl_typesupport_introspection_c__pyext[0m
+[9.189s] [35m[1mScanning dependencies of target more_interfaces__rosidl_typesupport_c__pyext[0m
+[9.216s] [35m[1mScanning dependencies of target more_interfaces__rosidl_typesupport_fastrtps_c__pyext[0m
+[9.246s] [ 81%] [32mBuilding C object CMakeFiles/more_interfaces__rosidl_typesupport_introspection_c__pyext.dir/rosidl_generator_py/more_interfaces/_more_interfaces_s.ep.rosidl_typesupport_introspection_c.c.o[0m
+[9.273s] [ 84%] [32mBuilding C object CMakeFiles/more_interfaces__rosidl_typesupport_c__pyext.dir/rosidl_generator_py/more_interfaces/_more_interfaces_s.ep.rosidl_typesupport_c.c.o[0m
+[9.311s] [ 87%] [32mBuilding C object CMakeFiles/more_interfaces__rosidl_typesupport_fastrtps_c__pyext.dir/rosidl_generator_py/more_interfaces/_more_interfaces_s.ep.rosidl_typesupport_fastrtps_c.c.o[0m
+[9.421s] [ 90%] [32m[1mLinking C shared library rosidl_generator_py/more_interfaces/more_interfaces_s__rosidl_typesupport_introspection_c.cpython-38-x86_64-linux-gnu.so[0m
+[9.615s] [ 90%] Built target more_interfaces__rosidl_typesupport_introspection_c__pyext
+[9.642s] [ 93%] [32m[1mLinking CXX shared library rosidl_generator_py/more_interfaces/more_interfaces_s__rosidl_typesupport_fastrtps_c.cpython-38-x86_64-linux-gnu.so[0m
+[9.665s] [ 96%] [32m[1mLinking C shared library rosidl_generator_py/more_interfaces/more_interfaces_s__rosidl_typesupport_c.cpython-38-x86_64-linux-gnu.so[0m
+[9.757s] [ 96%] Built target more_interfaces__rosidl_typesupport_fastrtps_c__pyext
+[9.841s] [ 96%] Built target more_interfaces__rosidl_typesupport_c__pyext
+[12.994s] [100%] [32m[1mLinking CXX executable publish_address_book[0m
+[13.196s] [100%] Built target publish_address_book
+[13.211s] Invoked command in '/home/cale/thesis-code/ws/src/build/more_interfaces' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/foxy /usr/bin/cmake --build /home/cale/thesis-code/ws/src/build/more_interfaces -- -j4 -l4
+[13.274s] Invoking command in '/home/cale/thesis-code/ws/src/build/more_interfaces': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/foxy /usr/bin/cmake --install /home/cale/thesis-code/ws/src/build/more_interfaces
+[13.290s] -- Install configuration: ""
+[13.290s] -- Execute custom install script
+[13.290s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/ament_index/resource_index/rosidl_interfaces/more_interfaces
+[13.297s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/include/more_interfaces/msg/address_book.h
+[13.310s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/include/more_interfaces/msg/detail/address_book__functions.h
+[13.317s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/include/more_interfaces/msg/detail/address_book__struct.h
+[13.328s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/include/more_interfaces/msg/detail/address_book__type_support.h
+[13.340s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/include/more_interfaces/msg/rosidl_generator_c__visibility_control.h
+[13.349s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/environment/library_path.sh
+[13.361s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/environment/library_path.dsv
+[13.373s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/include/more_interfaces/msg/detail/address_book__rosidl_typesupport_fastrtps_c.h
+[13.385s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/include/more_interfaces/msg/rosidl_typesupport_fastrtps_c__visibility_control.h
+[13.398s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/lib/libmore_interfaces__rosidl_typesupport_fastrtps_c.so
+[13.413s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/include/more_interfaces/msg/detail/address_book__rosidl_typesupport_fastrtps_cpp.hpp
+[13.425s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/include/more_interfaces/msg/rosidl_typesupport_fastrtps_cpp__visibility_control.h
+[13.434s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/lib/libmore_interfaces__rosidl_typesupport_fastrtps_cpp.so
+[13.444s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/include/more_interfaces/msg/detail/address_book__rosidl_typesupport_introspection_c.h
+[13.454s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/include/more_interfaces/msg/rosidl_typesupport_introspection_c__visibility_control.h
+[13.465s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/include/more_interfaces/msg/address_book.hpp
+[13.476s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/include/more_interfaces/msg/detail/address_book__builder.hpp
+[13.487s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/include/more_interfaces/msg/detail/address_book__struct.hpp
+[13.499s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/include/more_interfaces/msg/detail/address_book__traits.hpp
+[13.508s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/include/more_interfaces/msg/detail/address_book__rosidl_typesupport_introspection_cpp.hpp
+[13.518s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/environment/pythonpath.sh
+[13.530s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/environment/pythonpath.dsv
+[13.542s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/lib/python3.8/site-packages/more_interfaces/__init__.py
+[13.553s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/lib/python3.8/site-packages/more_interfaces/msg/__init__.py
+[13.563s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/lib/python3.8/site-packages/more_interfaces/msg/_address_book.py
+[13.574s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/lib/python3.8/site-packages/more_interfaces/more_interfaces_s__rosidl_typesupport_fastrtps_c.cpython-38-x86_64-linux-gnu.so
+[13.585s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/lib/python3.8/site-packages/more_interfaces/more_interfaces_s__rosidl_typesupport_introspection_c.cpython-38-x86_64-linux-gnu.so
+[13.599s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/lib/python3.8/site-packages/more_interfaces/more_interfaces_s__rosidl_typesupport_c.cpython-38-x86_64-linux-gnu.so
+[13.624s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/lib/libmore_interfaces__python.so
+[13.639s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/msg/AddressBook.idl
+[13.655s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/msg/AddressBook.msg
+[13.666s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/lib/more_interfaces/publish_address_book
+[13.677s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/ament_index/resource_index/package_run_dependencies/more_interfaces
+[13.691s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/ament_index/resource_index/parent_prefix_path/more_interfaces
+[13.705s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/environment/ament_prefix_path.sh
+[13.716s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/environment/ament_prefix_path.dsv
+[13.726s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/environment/path.sh
+[13.737s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/environment/path.dsv
+[13.748s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/local_setup.bash
+[13.758s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/local_setup.sh
+[13.768s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/local_setup.zsh
+[13.779s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/local_setup.dsv
+[13.790s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/package.dsv
+[13.801s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/ament_index/resource_index/packages/more_interfaces
+[13.812s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/rosidl_cmake-extras.cmake
+[13.823s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/ament_cmake_export_dependencies-extras.cmake
+[13.833s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/ament_cmake_export_libraries-extras.cmake
+[13.844s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/ament_cmake_export_targets-extras.cmake
+[13.855s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/ament_cmake_export_include_directories-extras.cmake
+[13.866s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/rosidl_cmake_export_typesupport_libraries-extras.cmake
+[13.877s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/rosidl_cmake_export_typesupport_targets-extras.cmake
+[13.888s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/more_interfacesConfig.cmake
+[13.899s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/more_interfacesConfig-version.cmake
+[13.910s] -- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/package.xml
+[13.921s] -- Installing: /home/cale/thesis-code/ws/src/install/more_interfaces/lib/libmore_interfaces__rosidl_generator_c.so
+[13.922s] -- Set runtime path of "/home/cale/thesis-code/ws/src/install/more_interfaces/lib/libmore_interfaces__rosidl_generator_c.so" to ""
+[13.922s] -- Installing: /home/cale/thesis-code/ws/src/install/more_interfaces/lib/libmore_interfaces__rosidl_typesupport_introspection_c.so
+[13.923s] -- Set runtime path of "/home/cale/thesis-code/ws/src/install/more_interfaces/lib/libmore_interfaces__rosidl_typesupport_introspection_c.so" to ""
+[13.923s] -- Installing: /home/cale/thesis-code/ws/src/install/more_interfaces/lib/libmore_interfaces__rosidl_typesupport_c.so
+[13.924s] -- Set runtime path of "/home/cale/thesis-code/ws/src/install/more_interfaces/lib/libmore_interfaces__rosidl_typesupport_c.so" to ""
+[13.924s] -- Installing: /home/cale/thesis-code/ws/src/install/more_interfaces/lib/libmore_interfaces__rosidl_typesupport_introspection_cpp.so
+[13.925s] -- Set runtime path of "/home/cale/thesis-code/ws/src/install/more_interfaces/lib/libmore_interfaces__rosidl_typesupport_introspection_cpp.so" to ""
+[13.925s] -- Installing: /home/cale/thesis-code/ws/src/install/more_interfaces/lib/libmore_interfaces__rosidl_typesupport_cpp.so
+[13.925s] -- Set runtime path of "/home/cale/thesis-code/ws/src/install/more_interfaces/lib/libmore_interfaces__rosidl_typesupport_cpp.so" to ""
+[13.961s] Compiling '/home/cale/thesis-code/ws/src/install/more_interfaces/lib/python3.8/site-packages/more_interfaces/__init__.py'...
+[13.967s] -- Installing: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/more_interfaces__rosidl_generator_cExport.cmake
+[13.967s] -- Installing: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/more_interfaces__rosidl_generator_cExport-noconfig.cmake
+[13.968s] -- Installing: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/more_interfaces__rosidl_typesupport_introspection_cExport.cmake
+[13.968s] -- Installing: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/more_interfaces__rosidl_typesupport_introspection_cExport-noconfig.cmake
+[13.969s] -- Installing: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/more_interfaces__rosidl_typesupport_cExport.cmake
+[13.969s] -- Installing: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/more_interfaces__rosidl_typesupport_cExport-noconfig.cmake
+[13.969s] -- Installing: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/more_interfaces__rosidl_generator_cppExport.cmake
+[13.970s] -- Installing: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/more_interfaces__rosidl_typesupport_introspection_cppExport.cmake
+[13.970s] -- Installing: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/more_interfaces__rosidl_typesupport_introspection_cppExport-noconfig.cmake
+[13.970s] -- Installing: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/more_interfaces__rosidl_typesupport_cppExport.cmake
+[13.971s] -- Installing: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/more_interfaces__rosidl_typesupport_cppExport-noconfig.cmake
+[13.979s] Invoked command in '/home/cale/thesis-code/ws/src/build/more_interfaces' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/foxy /usr/bin/cmake --install /home/cale/thesis-code/ws/src/build/more_interfaces

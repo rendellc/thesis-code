@@ -1,0 +1,39 @@
+import rclpy
+from rclpy.node import Node
+
+from gazebo_msgs.srv import SpawnEntity
+from geometry_msgs.msg import Pose, Point
+
+import xacro
+
+
+def main(args=None):
+
+    rclpy.init(args=args)
+    node = rclpy.create_node("vehicle_spawner_node")
+    client = node.create_client(SpawnEntity, "spawn_entity")
+    modelfile = "/home/cale/thesis-code/ws/src/simulator/models/simple_car/model.urdf.xacro"
+    node.get_logger().info("parsing [" + modelfile + "]")
+    urdf = xacro.process_file(modelfile).toxml()
+    
+    request = SpawnEntity.Request()
+    request.name = "vehicle"
+    request.xml = urdf
+    request.robot_namespace = "vehicle_namespace"
+    request.initial_pose.position.x = 5.0
+    request.initial_pose.position.y = 5.0
+    request.initial_pose.position.z = 1.3
+
+    request.reference_frame = "map"
+
+    while not client.wait_for_service(timeout_sec=1.0):
+        node.get_logger().info("service not availabe, waiting again")
+    
+    future = client.call_async(request)
+    rclpy.spin_until_future_complete(node, future)
+
+    node.destroy_node()
+    rclpy.shutdown()
+    
+if __name__=="__main__":
+    main()

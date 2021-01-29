@@ -1,0 +1,1005 @@
+[0.000000] (-) TimerEvent: {}
+[0.000216] (more_interfaces) JobQueued: {'identifier': 'more_interfaces', 'dependencies': OrderedDict()}
+[0.000316] (simulator) JobQueued: {'identifier': 'simulator', 'dependencies': OrderedDict()}
+[0.000413] (tuts) JobQueued: {'identifier': 'tuts', 'dependencies': OrderedDict()}
+[0.000833] (more_interfaces) JobStarted: {'identifier': 'more_interfaces'}
+[0.011281] (simulator) JobStarted: {'identifier': 'simulator'}
+[0.019497] (tuts) JobStarted: {'identifier': 'tuts'}
+[0.025823] (more_interfaces) JobProgress: {'identifier': 'more_interfaces', 'progress': 'cmake'}
+[0.026119] (more_interfaces) Command: {'cmd': ['/usr/bin/cmake', '/home/cale/thesis-code/ws/src/more_interfaces', '-DAMENT_CMAKE_SYMLINK_INSTALL=1', '-DCMAKE_INSTALL_PREFIX=/home/cale/thesis-code/ws/src/install/more_interfaces'], 'cwd': '/home/cale/thesis-code/ws/src/build/more_interfaces', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('TMUX', '/tmp/tmux-1000/default,4037,0'), ('SNAP_INSTANCE_KEY', ''), ('USER', 'cale'), ('SNAP_COMMON', '/var/snap/tmux/common'), ('LC_TIME', 'nb_NO.UTF-8'), ('SSH_AGENT_PID', '1670'), ('XDG_SESSION_TYPE', 'x11'), ('SHLVL', '2'), ('LD_LIBRARY_PATH', '/home/cale/thesis-code/ws/install/tuts/lib:/home/cale/thesis-code/ws/install/simulator/lib:/home/cale/thesis-code/ws/install/more_interfaces/lib:/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/opt/ros/foxy/opt/yaml_cpp_vendor/lib:/opt/ros/foxy/opt/rviz_ogre_vendor/lib:/opt/ros/foxy/lib/x86_64-linux-gnu:/opt/ros/foxy/lib'), ('HOME', '/home/cale'), ('SNAP_LIBRARY_PATH', '/var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd/void'), ('OLDPWD', '/home/cale/thesis-code/ws/src/simulator'), ('DESKTOP_SESSION', 'ubuntu'), ('SNAP_USER_DATA', '/home/cale/snap/tmux/11'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('LC_MONETARY', 'nb_NO.UTF-8'), ('MANAGERPID', '1490'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('SNAP_REVISION', '11'), ('COLORTERM', 'truecolor'), ('IM_CONFIG_PHASE', '1'), ('COLCON_PREFIX_PATH', '/home/cale/thesis-code/ws/install'), ('ROS_DISTRO', 'foxy'), ('LOGNAME', 'cale'), ('SNAP_CONTEXT', '5rFTArxDeVztWap5qJ7-cC1PigRsn-87mkWt22gAypSe369qeC-h'), ('JOURNAL_STREAM', '8:43761'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_SESSION_CLASS', 'user'), ('SNAP_VERSION', '2.3'), ('USERNAME', 'cale'), ('TERM', 'xterm'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('SNAP_INSTANCE_NAME', 'tmux'), ('ROS_LOCALHOST_ONLY', '0'), ('WINDOWPATH', '2'), ('PATH', '/home/cale/.local/bin:/opt/ros/foxy/bin:/home/cale/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin'), ('SESSION_MANAGER', 'local/cale-GL503VM:@/tmp/.ICE-unix/1705,unix/cale-GL503VM:/tmp/.ICE-unix/1705'), ('INVOCATION_ID', '78c155d5685c42f7982b3d20a941ae8d'), ('XDG_MENU_PREFIX', 'gnome-'), ('LC_ADDRESS', 'nb_NO.UTF-8'), ('GNOME_TERMINAL_SCREEN', '/org/gnome/Terminal/screen/a566c6cd_098f_473d_a308_2fe8d3bf0ffe'), ('SNAP_DATA', '/var/snap/tmux/11'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':1'), ('LANG', 'en_US.UTF-8'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('LC_TELEPHONE', 'nb_NO.UTF-8'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/gdm/Xauthority'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('GNOME_TERMINAL_SERVICE', ':1.279'), ('SNAP_USER_COMMON', '/home/cale/snap/tmux/common'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('SNAP_ARCH', 'amd64'), ('AMENT_PREFIX_PATH', '/home/cale/thesis-code/ws/install/tuts:/home/cale/thesis-code/ws/install/simulator:/home/cale/thesis-code/ws/install/more_interfaces:/opt/ros/foxy'), ('SNAP_COOKIE', '5rFTArxDeVztWap5qJ7-cC1PigRsn-87mkWt22gAypSe369qeC-h'), ('SHELL', '/bin/bash'), ('LC_NAME', 'nb_NO.UTF-8'), ('QT_ACCESSIBILITY', '1'), ('SNAP_REEXEC', ''), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('SNAP_NAME', 'tmux'), ('LC_MEASUREMENT', 'nb_NO.UTF-8'), ('GPG_AGENT_INFO', '/run/user/1000/gnupg/S.gpg-agent:0:1'), ('LC_IDENTIFICATION', 'nb_NO.UTF-8'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/cale/thesis-code/ws/src/build/more_interfaces'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('SNAP_REAL_HOME', '/home/cale'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('PYTHONPATH', '/home/cale/thesis-code/ws/install/tuts/lib/python3.8/site-packages:/home/cale/thesis-code/ws/install/simulator/lib/python3.8/site-packages:/home/cale/thesis-code/ws/install/more_interfaces/lib/python3.8/site-packages:/opt/ros/foxy/lib/python3.8/site-packages'), ('SNAP', '/snap/tmux/11'), ('LC_NUMERIC', 'nb_NO.UTF-8'), ('LC_PAPER', 'nb_NO.UTF-8'), ('COLCON', '1'), ('VTE_VERSION', '6003'), ('TMUX_PANE', '%0'), ('CMAKE_PREFIX_PATH', '/home/cale/thesis-code/ws/install/tuts:/home/cale/thesis-code/ws/install/simulator:/home/cale/thesis-code/ws/install/more_interfaces:/opt/ros/foxy')]), 'shell': False}
+[0.032271] (simulator) JobProgress: {'identifier': 'simulator', 'progress': 'cmake'}
+[0.035410] (simulator) Command: {'cmd': ['/usr/bin/cmake', '/home/cale/thesis-code/ws/src/simulator', '-DCMAKE_INSTALL_PREFIX=/home/cale/thesis-code/ws/src/install/simulator'], 'cwd': '/home/cale/thesis-code/ws/src/build/simulator', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('TMUX', '/tmp/tmux-1000/default,4037,0'), ('SNAP_INSTANCE_KEY', ''), ('USER', 'cale'), ('SNAP_COMMON', '/var/snap/tmux/common'), ('LC_TIME', 'nb_NO.UTF-8'), ('SSH_AGENT_PID', '1670'), ('XDG_SESSION_TYPE', 'x11'), ('SHLVL', '2'), ('LD_LIBRARY_PATH', '/home/cale/thesis-code/ws/install/tuts/lib:/home/cale/thesis-code/ws/install/simulator/lib:/home/cale/thesis-code/ws/install/more_interfaces/lib:/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/opt/ros/foxy/opt/yaml_cpp_vendor/lib:/opt/ros/foxy/opt/rviz_ogre_vendor/lib:/opt/ros/foxy/lib/x86_64-linux-gnu:/opt/ros/foxy/lib'), ('HOME', '/home/cale'), ('SNAP_LIBRARY_PATH', '/var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd/void'), ('OLDPWD', '/home/cale/thesis-code/ws/src/simulator'), ('DESKTOP_SESSION', 'ubuntu'), ('SNAP_USER_DATA', '/home/cale/snap/tmux/11'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('LC_MONETARY', 'nb_NO.UTF-8'), ('MANAGERPID', '1490'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('SNAP_REVISION', '11'), ('COLORTERM', 'truecolor'), ('IM_CONFIG_PHASE', '1'), ('COLCON_PREFIX_PATH', '/home/cale/thesis-code/ws/install'), ('ROS_DISTRO', 'foxy'), ('LOGNAME', 'cale'), ('SNAP_CONTEXT', '5rFTArxDeVztWap5qJ7-cC1PigRsn-87mkWt22gAypSe369qeC-h'), ('JOURNAL_STREAM', '8:43761'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_SESSION_CLASS', 'user'), ('SNAP_VERSION', '2.3'), ('USERNAME', 'cale'), ('TERM', 'xterm'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('SNAP_INSTANCE_NAME', 'tmux'), ('ROS_LOCALHOST_ONLY', '0'), ('WINDOWPATH', '2'), ('PATH', '/home/cale/.local/bin:/opt/ros/foxy/bin:/home/cale/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin'), ('SESSION_MANAGER', 'local/cale-GL503VM:@/tmp/.ICE-unix/1705,unix/cale-GL503VM:/tmp/.ICE-unix/1705'), ('INVOCATION_ID', '78c155d5685c42f7982b3d20a941ae8d'), ('XDG_MENU_PREFIX', 'gnome-'), ('LC_ADDRESS', 'nb_NO.UTF-8'), ('GNOME_TERMINAL_SCREEN', '/org/gnome/Terminal/screen/a566c6cd_098f_473d_a308_2fe8d3bf0ffe'), ('SNAP_DATA', '/var/snap/tmux/11'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':1'), ('LANG', 'en_US.UTF-8'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('LC_TELEPHONE', 'nb_NO.UTF-8'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/gdm/Xauthority'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('GNOME_TERMINAL_SERVICE', ':1.279'), ('SNAP_USER_COMMON', '/home/cale/snap/tmux/common'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('SNAP_ARCH', 'amd64'), ('AMENT_PREFIX_PATH', '/home/cale/thesis-code/ws/install/tuts:/home/cale/thesis-code/ws/install/simulator:/home/cale/thesis-code/ws/install/more_interfaces:/opt/ros/foxy'), ('SNAP_COOKIE', '5rFTArxDeVztWap5qJ7-cC1PigRsn-87mkWt22gAypSe369qeC-h'), ('SHELL', '/bin/bash'), ('LC_NAME', 'nb_NO.UTF-8'), ('QT_ACCESSIBILITY', '1'), ('SNAP_REEXEC', ''), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('SNAP_NAME', 'tmux'), ('LC_MEASUREMENT', 'nb_NO.UTF-8'), ('GPG_AGENT_INFO', '/run/user/1000/gnupg/S.gpg-agent:0:1'), ('LC_IDENTIFICATION', 'nb_NO.UTF-8'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/cale/thesis-code/ws/src/build/simulator'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('SNAP_REAL_HOME', '/home/cale'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('PYTHONPATH', '/home/cale/thesis-code/ws/install/tuts/lib/python3.8/site-packages:/home/cale/thesis-code/ws/install/simulator/lib/python3.8/site-packages:/home/cale/thesis-code/ws/install/more_interfaces/lib/python3.8/site-packages:/opt/ros/foxy/lib/python3.8/site-packages'), ('SNAP', '/snap/tmux/11'), ('LC_NUMERIC', 'nb_NO.UTF-8'), ('LC_PAPER', 'nb_NO.UTF-8'), ('COLCON', '1'), ('VTE_VERSION', '6003'), ('TMUX_PANE', '%0'), ('CMAKE_PREFIX_PATH', '/home/cale/thesis-code/ws/install/tuts:/home/cale/thesis-code/ws/install/simulator:/home/cale/thesis-code/ws/install/more_interfaces')]), 'shell': False}
+[0.047751] (tuts) JobProgress: {'identifier': 'tuts', 'progress': 'cmake'}
+[0.050645] (tuts) Command: {'cmd': ['/usr/bin/cmake', '/home/cale/thesis-code/ws/src/tuts', '-DAMENT_CMAKE_SYMLINK_INSTALL=1', '-DCMAKE_INSTALL_PREFIX=/home/cale/thesis-code/ws/src/install/tuts'], 'cwd': '/home/cale/thesis-code/ws/src/build/tuts', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('TMUX', '/tmp/tmux-1000/default,4037,0'), ('SNAP_INSTANCE_KEY', ''), ('USER', 'cale'), ('SNAP_COMMON', '/var/snap/tmux/common'), ('LC_TIME', 'nb_NO.UTF-8'), ('SSH_AGENT_PID', '1670'), ('XDG_SESSION_TYPE', 'x11'), ('SHLVL', '2'), ('LD_LIBRARY_PATH', '/home/cale/thesis-code/ws/install/tuts/lib:/home/cale/thesis-code/ws/install/simulator/lib:/home/cale/thesis-code/ws/install/more_interfaces/lib:/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/opt/ros/foxy/opt/yaml_cpp_vendor/lib:/opt/ros/foxy/opt/rviz_ogre_vendor/lib:/opt/ros/foxy/lib/x86_64-linux-gnu:/opt/ros/foxy/lib'), ('HOME', '/home/cale'), ('SNAP_LIBRARY_PATH', '/var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd/void'), ('OLDPWD', '/home/cale/thesis-code/ws/src/simulator'), ('DESKTOP_SESSION', 'ubuntu'), ('SNAP_USER_DATA', '/home/cale/snap/tmux/11'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('LC_MONETARY', 'nb_NO.UTF-8'), ('MANAGERPID', '1490'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('SNAP_REVISION', '11'), ('COLORTERM', 'truecolor'), ('IM_CONFIG_PHASE', '1'), ('COLCON_PREFIX_PATH', '/home/cale/thesis-code/ws/install'), ('ROS_DISTRO', 'foxy'), ('LOGNAME', 'cale'), ('SNAP_CONTEXT', '5rFTArxDeVztWap5qJ7-cC1PigRsn-87mkWt22gAypSe369qeC-h'), ('JOURNAL_STREAM', '8:43761'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_SESSION_CLASS', 'user'), ('SNAP_VERSION', '2.3'), ('USERNAME', 'cale'), ('TERM', 'xterm'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('SNAP_INSTANCE_NAME', 'tmux'), ('ROS_LOCALHOST_ONLY', '0'), ('WINDOWPATH', '2'), ('PATH', '/home/cale/.local/bin:/opt/ros/foxy/bin:/home/cale/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin'), ('SESSION_MANAGER', 'local/cale-GL503VM:@/tmp/.ICE-unix/1705,unix/cale-GL503VM:/tmp/.ICE-unix/1705'), ('INVOCATION_ID', '78c155d5685c42f7982b3d20a941ae8d'), ('XDG_MENU_PREFIX', 'gnome-'), ('LC_ADDRESS', 'nb_NO.UTF-8'), ('GNOME_TERMINAL_SCREEN', '/org/gnome/Terminal/screen/a566c6cd_098f_473d_a308_2fe8d3bf0ffe'), ('SNAP_DATA', '/var/snap/tmux/11'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':1'), ('LANG', 'en_US.UTF-8'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('LC_TELEPHONE', 'nb_NO.UTF-8'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/gdm/Xauthority'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('GNOME_TERMINAL_SERVICE', ':1.279'), ('SNAP_USER_COMMON', '/home/cale/snap/tmux/common'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('SNAP_ARCH', 'amd64'), ('AMENT_PREFIX_PATH', '/home/cale/thesis-code/ws/install/tuts:/home/cale/thesis-code/ws/install/simulator:/home/cale/thesis-code/ws/install/more_interfaces:/opt/ros/foxy'), ('SNAP_COOKIE', '5rFTArxDeVztWap5qJ7-cC1PigRsn-87mkWt22gAypSe369qeC-h'), ('SHELL', '/bin/bash'), ('LC_NAME', 'nb_NO.UTF-8'), ('QT_ACCESSIBILITY', '1'), ('SNAP_REEXEC', ''), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('SNAP_NAME', 'tmux'), ('LC_MEASUREMENT', 'nb_NO.UTF-8'), ('GPG_AGENT_INFO', '/run/user/1000/gnupg/S.gpg-agent:0:1'), ('LC_IDENTIFICATION', 'nb_NO.UTF-8'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/cale/thesis-code/ws/src/build/tuts'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('SNAP_REAL_HOME', '/home/cale'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('PYTHONPATH', '/home/cale/thesis-code/ws/install/tuts/lib/python3.8/site-packages:/home/cale/thesis-code/ws/install/simulator/lib/python3.8/site-packages:/home/cale/thesis-code/ws/install/more_interfaces/lib/python3.8/site-packages:/opt/ros/foxy/lib/python3.8/site-packages'), ('SNAP', '/snap/tmux/11'), ('LC_NUMERIC', 'nb_NO.UTF-8'), ('LC_PAPER', 'nb_NO.UTF-8'), ('COLCON', '1'), ('VTE_VERSION', '6003'), ('TMUX_PANE', '%0'), ('CMAKE_PREFIX_PATH', '/home/cale/thesis-code/ws/install/tuts:/home/cale/thesis-code/ws/install/simulator:/home/cale/thesis-code/ws/install/more_interfaces:/opt/ros/foxy')]), 'shell': False}
+[0.099587] (-) TimerEvent: {}
+[0.192391] (simulator) StdoutLine: {'line': b'-- The C compiler identification is GNU 9.3.0\n'}
+[0.198810] (tuts) StdoutLine: {'line': b'-- The C compiler identification is GNU 9.3.0\n'}
+[0.200834] (-) TimerEvent: {}
+[0.203965] (more_interfaces) StdoutLine: {'line': b'-- The C compiler identification is GNU 9.3.0\n'}
+[0.302342] (simulator) StdoutLine: {'line': b'-- The CXX compiler identification is GNU 9.3.0\n'}
+[0.302525] (-) TimerEvent: {}
+[0.308475] (more_interfaces) StdoutLine: {'line': b'-- The CXX compiler identification is GNU 9.3.0\n'}
+[0.314537] (more_interfaces) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc\n'}
+[0.314773] (simulator) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc\n'}
+[0.327384] (tuts) StdoutLine: {'line': b'-- The CXX compiler identification is GNU 9.3.0\n'}
+[0.327554] (tuts) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc\n'}
+[0.404617] (-) TimerEvent: {}
+[0.421725] (simulator) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc -- works\n'}
+[0.421957] (more_interfaces) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc -- works\n'}
+[0.424575] (more_interfaces) StdoutLine: {'line': b'-- Detecting C compiler ABI info\n'}
+[0.426860] (tuts) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc -- works\n'}
+[0.428319] (tuts) StdoutLine: {'line': b'-- Detecting C compiler ABI info\n'}
+[0.433948] (simulator) StdoutLine: {'line': b'-- Detecting C compiler ABI info\n'}
+[0.504708] (-) TimerEvent: {}
+[0.529160] (more_interfaces) StdoutLine: {'line': b'-- Detecting C compiler ABI info - done\n'}
+[0.535380] (simulator) StdoutLine: {'line': b'-- Detecting C compiler ABI info - done\n'}
+[0.542503] (tuts) StdoutLine: {'line': b'-- Detecting C compiler ABI info - done\n'}
+[0.561868] (tuts) StdoutLine: {'line': b'-- Detecting C compile features\n'}
+[0.562113] (simulator) StdoutLine: {'line': b'-- Detecting C compile features\n'}
+[0.562203] (more_interfaces) StdoutLine: {'line': b'-- Detecting C compile features\n'}
+[0.562901] (tuts) StdoutLine: {'line': b'-- Detecting C compile features - done\n'}
+[0.563472] (simulator) StdoutLine: {'line': b'-- Detecting C compile features - done\n'}
+[0.563693] (more_interfaces) StdoutLine: {'line': b'-- Detecting C compile features - done\n'}
+[0.567179] (tuts) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++\n'}
+[0.568131] (more_interfaces) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++\n'}
+[0.570680] (simulator) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++\n'}
+[0.604837] (-) TimerEvent: {}
+[0.664077] (simulator) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++ -- works\n'}
+[0.666183] (simulator) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info\n'}
+[0.671533] (tuts) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++ -- works\n'}
+[0.672965] (tuts) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info\n'}
+[0.680873] (more_interfaces) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++ -- works\n'}
+[0.682087] (more_interfaces) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info\n'}
+[0.704935] (-) TimerEvent: {}
+[0.765185] (simulator) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info - done\n'}
+[0.776912] (more_interfaces) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info - done\n'}
+[0.780068] (simulator) StdoutLine: {'line': b'-- Detecting CXX compile features\n'}
+[0.780917] (simulator) StdoutLine: {'line': b'-- Detecting CXX compile features - done\n'}
+[0.784701] (simulator) StdoutLine: {'line': b'-- Found ament_cmake: 0.9.8 (/opt/ros/foxy/share/ament_cmake/cmake)\n'}
+[0.790236] (more_interfaces) StdoutLine: {'line': b'-- Detecting CXX compile features\n'}
+[0.790838] (more_interfaces) StdoutLine: {'line': b'-- Detecting CXX compile features - done\n'}
+[0.799207] (more_interfaces) StdoutLine: {'line': b'-- Found ament_cmake: 0.9.8 (/opt/ros/foxy/share/ament_cmake/cmake)\n'}
+[0.799578] (tuts) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info - done\n'}
+[0.805070] (-) TimerEvent: {}
+[0.812245] (tuts) StdoutLine: {'line': b'-- Detecting CXX compile features\n'}
+[0.816592] (simulator) StdoutLine: {'line': b'-- Found PythonInterp: /usr/bin/python3 (found suitable version "3.8.5", minimum required is "3") \n'}
+[0.816768] (simulator) StdoutLine: {'line': b'-- Using PYTHON_EXECUTABLE: /usr/bin/python3\n'}
+[0.816853] (tuts) StdoutLine: {'line': b'-- Detecting CXX compile features - done\n'}
+[0.817128] (tuts) StdoutLine: {'line': b'-- Found ament_cmake: 0.9.8 (/opt/ros/foxy/share/ament_cmake/cmake)\n'}
+[0.822065] (more_interfaces) StdoutLine: {'line': b'-- Found PythonInterp: /usr/bin/python3 (found suitable version "3.8.5", minimum required is "3") \n'}
+[0.822423] (more_interfaces) StdoutLine: {'line': b'-- Using PYTHON_EXECUTABLE: /usr/bin/python3\n'}
+[0.847683] (tuts) StdoutLine: {'line': b'-- Found PythonInterp: /usr/bin/python3 (found suitable version "3.8.5", minimum required is "3") \n'}
+[0.847881] (tuts) StdoutLine: {'line': b'-- Using PYTHON_EXECUTABLE: /usr/bin/python3\n'}
+[0.905155] (-) TimerEvent: {}
+[1.005626] (-) TimerEvent: {}
+[1.011521] (more_interfaces) StdoutLine: {'line': b'-- Override CMake install command with custom implementation using symlinks instead of copying resources\n'}
+[1.033063] (tuts) StdoutLine: {'line': b'-- Override CMake install command with custom implementation using symlinks instead of copying resources\n'}
+[1.036863] (simulator) StdoutLine: {'line': b'-- Found gazebo_ros: 3.5.0 (/opt/ros/foxy/share/gazebo_ros/cmake)\n'}
+[1.042716] (more_interfaces) StdoutLine: {'line': b'-- Found rclcpp: 2.3.0 (/opt/ros/foxy/share/rclcpp/cmake)\n'}
+[1.062353] (tuts) StdoutLine: {'line': b'-- Found rosidl_default_generators: 1.0.0 (/opt/ros/foxy/share/rosidl_default_generators/cmake)\n'}
+[1.066973] (tuts) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[1.075968] (tuts) StdoutLine: {'line': b'-- Found rosidl_adapter: 1.2.0 (/opt/ros/foxy/share/rosidl_adapter/cmake)\n'}
+[1.102827] (more_interfaces) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[1.105119] (simulator) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[1.106592] (-) TimerEvent: {}
+[1.112494] (more_interfaces) StdoutLine: {'line': b'-- Found rosidl_adapter: 1.2.0 (/opt/ros/foxy/share/rosidl_adapter/cmake)\n'}
+[1.116252] (simulator) StdoutLine: {'line': b'-- Found rosidl_adapter: 1.2.0 (/opt/ros/foxy/share/rosidl_adapter/cmake)\n'}
+[1.204584] (tuts) StdoutLine: {'line': b'-- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "1.1.1f")  \n'}
+[1.207168] (-) TimerEvent: {}
+[1.212855] (more_interfaces) StdoutLine: {'line': b'-- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "1.1.1f")  \n'}
+[1.215098] (simulator) StdoutLine: {'line': b'-- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "1.1.1f")  \n'}
+[1.238936] (tuts) StdoutLine: {'line': b'-- Found FastRTPS: /opt/ros/foxy/include  \n'}
+[1.248542] (more_interfaces) StdoutLine: {'line': b'-- Found FastRTPS: /opt/ros/foxy/include  \n'}
+[1.250537] (simulator) StdoutLine: {'line': b'-- Found FastRTPS: /opt/ros/foxy/include  \n'}
+[1.307319] (-) TimerEvent: {}
+[1.332065] (tuts) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[1.337446] (more_interfaces) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[1.338667] (simulator) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[1.390260] (tuts) StdoutLine: {'line': b'-- Found PythonInterp: /usr/bin/python3 (found version "3.8.5") \n'}
+[1.405646] (more_interfaces) StdoutLine: {'line': b'-- Found rmw_implementation_cmake: 1.0.2 (/opt/ros/foxy/share/rmw_implementation_cmake/cmake)\n'}
+[1.406934] (simulator) StdoutLine: {'line': b'-- Found rmw_implementation_cmake: 1.0.2 (/opt/ros/foxy/share/rmw_implementation_cmake/cmake)\n'}
+[1.407383] (-) TimerEvent: {}
+[1.407667] (more_interfaces) StdoutLine: {'line': b"-- Using RMW implementation 'rmw_fastrtps_cpp' as default\n"}
+[1.408828] (simulator) StdoutLine: {'line': b"-- Using RMW implementation 'rmw_fastrtps_cpp' as default\n"}
+[1.409019] (more_interfaces) StdoutLine: {'line': b'-- Looking for pthread.h\n'}
+[1.409802] (simulator) StdoutLine: {'line': b'-- Looking for pthread.h\n'}
+[1.504245] (simulator) StdoutLine: {'line': b'-- Looking for pthread.h - found\n'}
+[1.504424] (simulator) StdoutLine: {'line': b'-- Performing Test CMAKE_HAVE_LIBC_PTHREAD\n'}
+[1.507479] (-) TimerEvent: {}
+[1.515949] (more_interfaces) StdoutLine: {'line': b'-- Looking for pthread.h - found\n'}
+[1.516931] (more_interfaces) StdoutLine: {'line': b'-- Performing Test CMAKE_HAVE_LIBC_PTHREAD\n'}
+[1.559720] (tuts) StdoutLine: {'line': b'-- Found ament_cmake_ros: 0.9.0 (/opt/ros/foxy/share/ament_cmake_ros/cmake)\n'}
+[1.593235] (simulator) StdoutLine: {'line': b'-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Failed\n'}
+[1.593545] (simulator) StdoutLine: {'line': b'-- Looking for pthread_create in pthreads\n'}
+[1.604333] (more_interfaces) StdoutLine: {'line': b'-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Failed\n'}
+[1.604549] (more_interfaces) StdoutLine: {'line': b'-- Looking for pthread_create in pthreads\n'}
+[1.607579] (-) TimerEvent: {}
+[1.680721] (simulator) StdoutLine: {'line': b'-- Looking for pthread_create in pthreads - not found\n'}
+[1.681219] (simulator) StdoutLine: {'line': b'-- Looking for pthread_create in pthread\n'}
+[1.684259] (tuts) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[1.695536] (tuts) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[1.696352] (more_interfaces) StdoutLine: {'line': b'-- Looking for pthread_create in pthreads - not found\n'}
+[1.696532] (more_interfaces) StdoutLine: {'line': b'-- Looking for pthread_create in pthread\n'}
+[1.707692] (-) TimerEvent: {}
+[1.737919] (tuts) StdoutLine: {'line': b'-- Found PythonInterp: /usr/bin/python3 (found suitable version "3.8.5", minimum required is "3.5") \n'}
+[1.741206] (tuts) StdoutLine: {'line': b'-- Found python_cmake_module: 0.8.0 (/opt/ros/foxy/share/python_cmake_module/cmake)\n'}
+[1.783440] (tuts) StdoutLine: {'line': b'-- Found PythonLibs: /usr/lib/x86_64-linux-gnu/libpython3.8.so (found suitable version "3.8.5", minimum required is "3.5") \n'}
+[1.783673] (tuts) StdoutLine: {'line': b'-- Using PYTHON_EXECUTABLE: /usr/bin/python3\n'}
+[1.783764] (tuts) StdoutLine: {'line': b'-- Using PYTHON_INCLUDE_DIRS: /usr/include/python3.8\n'}
+[1.783838] (tuts) StdoutLine: {'line': b'-- Using PYTHON_LIBRARIES: /usr/lib/x86_64-linux-gnu/libpython3.8.so\n'}
+[1.802144] (simulator) StdoutLine: {'line': b'-- Looking for pthread_create in pthread - found\n'}
+[1.804279] (simulator) StdoutLine: {'line': b'-- Found Threads: TRUE  \n'}
+[1.807811] (-) TimerEvent: {}
+[1.809269] (tuts) StdoutLine: {'line': b'-- Found PythonExtra: .so  \n'}
+[1.827618] (more_interfaces) StdoutLine: {'line': b'-- Looking for pthread_create in pthread - found\n'}
+[1.828954] (more_interfaces) StdoutLine: {'line': b'-- Found Threads: TRUE  \n'}
+[1.866477] (tuts) StdoutLine: {'line': b'-- Found ament_lint_auto: 0.9.6 (/opt/ros/foxy/share/ament_lint_auto/cmake)\n'}
+[1.895307] (tuts) StdoutLine: {'line': b"-- Added test 'copyright' to check source files copyright and LICENSE\n"}
+[1.897163] (tuts) StdoutLine: {'line': b"-- Added test 'cppcheck' to perform static code analysis on C / C++ code\n"}
+[1.898460] (tuts) StdoutLine: {'line': b'-- Configured cppcheck include dirs: $<BUILD_INTERFACE:/home/cale/thesis-code/ws/src/tuts/include>\n'}
+[1.899645] (tuts) StdoutLine: {'line': b'-- Configured cppcheck exclude dirs and/or files: \n'}
+[1.900165] (tuts) StdoutLine: {'line': b"-- Added test 'cpplint' to check C / C++ code against the Google style\n"}
+[1.900345] (tuts) StdoutLine: {'line': b'-- Configured cpplint exclude dirs and/or files: \n'}
+[1.901471] (tuts) StdoutLine: {'line': b"-- Added test 'lint_cmake' to check CMake code style\n"}
+[1.903035] (tuts) StdoutLine: {'line': b"-- Added test 'uncrustify' to check C / C++ code style\n"}
+[1.903252] (tuts) StdoutLine: {'line': b'-- Configured uncrustify additional arguments: \n'}
+[1.904131] (tuts) StdoutLine: {'line': b"-- Added test 'xmllint' to check XML markup files\n"}
+[1.907896] (-) TimerEvent: {}
+[1.911734] (tuts) StdoutLine: {'line': b'-- Configuring done\n'}
+[1.958398] (tuts) StdoutLine: {'line': b'-- Generating done\n'}
+[1.963660] (tuts) StdoutLine: {'line': b'-- Build files have been written to: /home/cale/thesis-code/ws/src/build/tuts\n'}
+[1.973128] (tuts) CommandEnded: {'returncode': 0}
+[1.974692] (tuts) JobProgress: {'identifier': 'tuts', 'progress': 'build'}
+[1.978246] (tuts) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/cale/thesis-code/ws/src/build/tuts', '--', '-j4', '-l4'], 'cwd': '/home/cale/thesis-code/ws/src/build/tuts', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('TMUX', '/tmp/tmux-1000/default,4037,0'), ('SNAP_INSTANCE_KEY', ''), ('USER', 'cale'), ('SNAP_COMMON', '/var/snap/tmux/common'), ('LC_TIME', 'nb_NO.UTF-8'), ('SSH_AGENT_PID', '1670'), ('XDG_SESSION_TYPE', 'x11'), ('SHLVL', '2'), ('LD_LIBRARY_PATH', '/home/cale/thesis-code/ws/install/tuts/lib:/home/cale/thesis-code/ws/install/simulator/lib:/home/cale/thesis-code/ws/install/more_interfaces/lib:/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/opt/ros/foxy/opt/yaml_cpp_vendor/lib:/opt/ros/foxy/opt/rviz_ogre_vendor/lib:/opt/ros/foxy/lib/x86_64-linux-gnu:/opt/ros/foxy/lib'), ('HOME', '/home/cale'), ('SNAP_LIBRARY_PATH', '/var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd/void'), ('OLDPWD', '/home/cale/thesis-code/ws/src/simulator'), ('DESKTOP_SESSION', 'ubuntu'), ('SNAP_USER_DATA', '/home/cale/snap/tmux/11'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('LC_MONETARY', 'nb_NO.UTF-8'), ('MANAGERPID', '1490'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('SNAP_REVISION', '11'), ('COLORTERM', 'truecolor'), ('IM_CONFIG_PHASE', '1'), ('COLCON_PREFIX_PATH', '/home/cale/thesis-code/ws/install'), ('ROS_DISTRO', 'foxy'), ('LOGNAME', 'cale'), ('SNAP_CONTEXT', '5rFTArxDeVztWap5qJ7-cC1PigRsn-87mkWt22gAypSe369qeC-h'), ('JOURNAL_STREAM', '8:43761'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_SESSION_CLASS', 'user'), ('SNAP_VERSION', '2.3'), ('USERNAME', 'cale'), ('TERM', 'xterm'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('SNAP_INSTANCE_NAME', 'tmux'), ('ROS_LOCALHOST_ONLY', '0'), ('WINDOWPATH', '2'), ('PATH', '/home/cale/.local/bin:/opt/ros/foxy/bin:/home/cale/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin'), ('SESSION_MANAGER', 'local/cale-GL503VM:@/tmp/.ICE-unix/1705,unix/cale-GL503VM:/tmp/.ICE-unix/1705'), ('INVOCATION_ID', '78c155d5685c42f7982b3d20a941ae8d'), ('XDG_MENU_PREFIX', 'gnome-'), ('LC_ADDRESS', 'nb_NO.UTF-8'), ('GNOME_TERMINAL_SCREEN', '/org/gnome/Terminal/screen/a566c6cd_098f_473d_a308_2fe8d3bf0ffe'), ('SNAP_DATA', '/var/snap/tmux/11'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':1'), ('LANG', 'en_US.UTF-8'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('LC_TELEPHONE', 'nb_NO.UTF-8'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/gdm/Xauthority'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('GNOME_TERMINAL_SERVICE', ':1.279'), ('SNAP_USER_COMMON', '/home/cale/snap/tmux/common'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('SNAP_ARCH', 'amd64'), ('AMENT_PREFIX_PATH', '/home/cale/thesis-code/ws/install/tuts:/home/cale/thesis-code/ws/install/simulator:/home/cale/thesis-code/ws/install/more_interfaces:/opt/ros/foxy'), ('SNAP_COOKIE', '5rFTArxDeVztWap5qJ7-cC1PigRsn-87mkWt22gAypSe369qeC-h'), ('SHELL', '/bin/bash'), ('LC_NAME', 'nb_NO.UTF-8'), ('QT_ACCESSIBILITY', '1'), ('SNAP_REEXEC', ''), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('SNAP_NAME', 'tmux'), ('LC_MEASUREMENT', 'nb_NO.UTF-8'), ('GPG_AGENT_INFO', '/run/user/1000/gnupg/S.gpg-agent:0:1'), ('LC_IDENTIFICATION', 'nb_NO.UTF-8'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/cale/thesis-code/ws/src/build/tuts'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('SNAP_REAL_HOME', '/home/cale'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('PYTHONPATH', '/home/cale/thesis-code/ws/install/tuts/lib/python3.8/site-packages:/home/cale/thesis-code/ws/install/simulator/lib/python3.8/site-packages:/home/cale/thesis-code/ws/install/more_interfaces/lib/python3.8/site-packages:/opt/ros/foxy/lib/python3.8/site-packages'), ('SNAP', '/snap/tmux/11'), ('LC_NUMERIC', 'nb_NO.UTF-8'), ('LC_PAPER', 'nb_NO.UTF-8'), ('COLCON', '1'), ('VTE_VERSION', '6003'), ('TMUX_PANE', '%0'), ('CMAKE_PREFIX_PATH', '/home/cale/thesis-code/ws/install/tuts:/home/cale/thesis-code/ws/install/simulator:/home/cale/thesis-code/ws/install/more_interfaces:/opt/ros/foxy')]), 'shell': False}
+[2.008017] (-) TimerEvent: {}
+[2.010993] (more_interfaces) StdoutLine: {'line': b'-- Found rosidl_default_generators: 1.0.0 (/opt/ros/foxy/share/rosidl_default_generators/cmake)\n'}
+[2.056507] (simulator) StdoutLine: {'line': b'-- Found PkgConfig: /usr/bin/pkg-config (found version "0.29.1") \n'}
+[2.062149] (simulator) StdoutLine: {'line': b"-- Checking for module 'bullet>=2.82'\n"}
+[2.065881] (tuts) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target my_node\x1b[0m\n'}
+[2.080863] (more_interfaces) StdoutLine: {'line': b'-- Found PythonInterp: /usr/bin/python3 (found version "3.8.5") \n'}
+[2.084012] (tuts) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target tuts__cpp\x1b[0m\n'}
+[2.086446] (tuts) StdoutLine: {'line': b'[  2%] \x1b[34m\x1b[1mGenerating C code for ROS interfaces\x1b[0m\n'}
+[2.092974] (tuts) StdoutLine: {'line': b'[  4%] \x1b[32mBuilding CXX object CMakeFiles/my_node.dir/src/my_node.cpp.o\x1b[0m\n'}
+[2.104840] (simulator) StdoutLine: {'line': b'--   Found bullet, version 2.88\n'}
+[2.108177] (-) TimerEvent: {}
+[2.127292] (tuts) StdoutLine: {'line': b'[  7%] \x1b[34m\x1b[1mGenerating C++ code for ROS interfaces\x1b[0m\n'}
+[2.153099] (tuts) StdoutLine: {'line': b'[  9%] \x1b[32m\x1b[1mLinking CXX executable my_node\x1b[0m\n'}
+[2.208267] (-) TimerEvent: {}
+[2.289588] (tuts) StdoutLine: {'line': b'[  9%] Built target my_node\n'}
+[2.308376] (-) TimerEvent: {}
+[2.326119] (more_interfaces) StdoutLine: {'line': b'-- Found ament_cmake_ros: 0.9.0 (/opt/ros/foxy/share/ament_cmake_ros/cmake)\n'}
+[2.408464] (-) TimerEvent: {}
+[2.511022] (-) TimerEvent: {}
+[2.512100] (simulator) StdoutLine: {'line': b'-- Found ccd: /usr/include (found suitable version "2.0", minimum required is "2.0") \n'}
+[2.535162] (more_interfaces) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[2.566325] (more_interfaces) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[2.611133] (-) TimerEvent: {}
+[2.613891] (more_interfaces) StdoutLine: {'line': b'-- Found PythonInterp: /usr/bin/python3 (found suitable version "3.8.5", minimum required is "3.5") \n'}
+[2.619356] (more_interfaces) StdoutLine: {'line': b'-- Found python_cmake_module: 0.8.0 (/opt/ros/foxy/share/python_cmake_module/cmake)\n'}
+[2.645161] (tuts) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target tuts__rosidl_generator_c\x1b[0m\n'}
+[2.654200] (more_interfaces) StdoutLine: {'line': b'-- Found PythonLibs: /usr/lib/x86_64-linux-gnu/libpython3.8.so (found suitable version "3.8.5", minimum required is "3.5") \n'}
+[2.654426] (more_interfaces) StdoutLine: {'line': b'-- Using PYTHON_EXECUTABLE: /usr/bin/python3\n'}
+[2.654514] (more_interfaces) StdoutLine: {'line': b'-- Using PYTHON_INCLUDE_DIRS: /usr/include/python3.8\n'}
+[2.654586] (more_interfaces) StdoutLine: {'line': b'-- Using PYTHON_LIBRARIES: /usr/lib/x86_64-linux-gnu/libpython3.8.so\n'}
+[2.667048] (tuts) StdoutLine: {'line': b'[ 12%] \x1b[32mBuilding C object CMakeFiles/tuts__rosidl_generator_c.dir/rosidl_generator_c/tuts/msg/detail/num__functions.c.o\x1b[0m\n'}
+[2.674848] (tuts) StdoutLine: {'line': b'[ 12%] Built target tuts__cpp\n'}
+[2.682903] (tuts) StdoutLine: {'line': b'[ 14%] \x1b[32mBuilding C object CMakeFiles/tuts__rosidl_generator_c.dir/rosidl_generator_c/tuts/srv/detail/add_ints__functions.c.o\x1b[0m\n'}
+[2.685026] (more_interfaces) StdoutLine: {'line': b'-- Found PythonExtra: .so  \n'}
+[2.690907] (tuts) StdoutLine: {'line': b'[ 17%] \x1b[34m\x1b[1mGenerating C++ type support dispatch for ROS interfaces\x1b[0m\n'}
+[2.694746] (tuts) StdoutLine: {'line': b'[ 19%] \x1b[34m\x1b[1mGenerating C++ type support for eProsima Fast-RTPS\x1b[0m\n'}
+[2.694924] (simulator) StdoutLine: {'line': b'-- Found fcl: /usr/include (found suitable version "0.5.0", minimum required is "0.3.2") \n'}
+[2.713308] (-) TimerEvent: {}
+[2.755019] (more_interfaces) StdoutLine: {'line': b'-- Found ament_lint_auto: 0.9.6 (/opt/ros/foxy/share/ament_lint_auto/cmake)\n'}
+[2.798391] (tuts) StdoutLine: {'line': b'[ 21%] \x1b[34m\x1b[1mGenerating C++ introspection for ROS interfaces\x1b[0m\n'}
+[2.798596] (tuts) StdoutLine: {'line': b'[ 24%] \x1b[32m\x1b[1mLinking C shared library libtuts__rosidl_generator_c.so\x1b[0m\n'}
+[2.813397] (-) TimerEvent: {}
+[2.827646] (more_interfaces) StdoutLine: {'line': b"-- Added test 'copyright' to check source files copyright and LICENSE\n"}
+[2.828971] (more_interfaces) StdoutLine: {'line': b"-- Added test 'cppcheck' to perform static code analysis on C / C++ code\n"}
+[2.831398] (more_interfaces) StdoutLine: {'line': b'-- Configured cppcheck include dirs: \n'}
+[2.831615] (more_interfaces) StdoutLine: {'line': b'-- Configured cppcheck exclude dirs and/or files: \n'}
+[2.835079] (more_interfaces) StdoutLine: {'line': b"-- Added test 'cpplint' to check C / C++ code against the Google style\n"}
+[2.835321] (more_interfaces) StdoutLine: {'line': b'-- Configured cpplint exclude dirs and/or files: \n'}
+[2.836388] (more_interfaces) StdoutLine: {'line': b"-- Added test 'lint_cmake' to check CMake code style\n"}
+[2.846343] (more_interfaces) StdoutLine: {'line': b"-- Added test 'uncrustify' to check C / C++ code style\n"}
+[2.846558] (more_interfaces) StdoutLine: {'line': b'-- Configured uncrustify additional arguments: \n'}
+[2.850856] (more_interfaces) StdoutLine: {'line': b"-- Added test 'xmllint' to check XML markup files\n"}
+[2.867354] (more_interfaces) StdoutLine: {'line': b'-- Configuring done\n'}
+[2.912642] (tuts) StdoutLine: {'line': b'[ 24%] Built target tuts__rosidl_generator_c\n'}
+[2.913924] (-) TimerEvent: {}
+[2.927840] (simulator) StdoutLine: {'line': b'-- Found assimp: /usr/include (found version "5.0.0") \n'}
+[2.948404] (more_interfaces) StdoutLine: {'line': b'-- Generating done\n'}
+[2.957677] (more_interfaces) StdoutLine: {'line': b'-- Build files have been written to: /home/cale/thesis-code/ws/src/build/more_interfaces\n'}
+[2.973616] (more_interfaces) CommandEnded: {'returncode': 0}
+[2.974688] (more_interfaces) JobProgress: {'identifier': 'more_interfaces', 'progress': 'build'}
+[2.974733] (more_interfaces) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/cale/thesis-code/ws/src/build/more_interfaces', '--', '-j4', '-l4'], 'cwd': '/home/cale/thesis-code/ws/src/build/more_interfaces', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('TMUX', '/tmp/tmux-1000/default,4037,0'), ('SNAP_INSTANCE_KEY', ''), ('USER', 'cale'), ('SNAP_COMMON', '/var/snap/tmux/common'), ('LC_TIME', 'nb_NO.UTF-8'), ('SSH_AGENT_PID', '1670'), ('XDG_SESSION_TYPE', 'x11'), ('SHLVL', '2'), ('LD_LIBRARY_PATH', '/home/cale/thesis-code/ws/install/tuts/lib:/home/cale/thesis-code/ws/install/simulator/lib:/home/cale/thesis-code/ws/install/more_interfaces/lib:/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/opt/ros/foxy/opt/yaml_cpp_vendor/lib:/opt/ros/foxy/opt/rviz_ogre_vendor/lib:/opt/ros/foxy/lib/x86_64-linux-gnu:/opt/ros/foxy/lib'), ('HOME', '/home/cale'), ('SNAP_LIBRARY_PATH', '/var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd/void'), ('OLDPWD', '/home/cale/thesis-code/ws/src/simulator'), ('DESKTOP_SESSION', 'ubuntu'), ('SNAP_USER_DATA', '/home/cale/snap/tmux/11'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('LC_MONETARY', 'nb_NO.UTF-8'), ('MANAGERPID', '1490'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('SNAP_REVISION', '11'), ('COLORTERM', 'truecolor'), ('IM_CONFIG_PHASE', '1'), ('COLCON_PREFIX_PATH', '/home/cale/thesis-code/ws/install'), ('ROS_DISTRO', 'foxy'), ('LOGNAME', 'cale'), ('SNAP_CONTEXT', '5rFTArxDeVztWap5qJ7-cC1PigRsn-87mkWt22gAypSe369qeC-h'), ('JOURNAL_STREAM', '8:43761'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_SESSION_CLASS', 'user'), ('SNAP_VERSION', '2.3'), ('USERNAME', 'cale'), ('TERM', 'xterm'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('SNAP_INSTANCE_NAME', 'tmux'), ('ROS_LOCALHOST_ONLY', '0'), ('WINDOWPATH', '2'), ('PATH', '/home/cale/.local/bin:/opt/ros/foxy/bin:/home/cale/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin'), ('SESSION_MANAGER', 'local/cale-GL503VM:@/tmp/.ICE-unix/1705,unix/cale-GL503VM:/tmp/.ICE-unix/1705'), ('INVOCATION_ID', '78c155d5685c42f7982b3d20a941ae8d'), ('XDG_MENU_PREFIX', 'gnome-'), ('LC_ADDRESS', 'nb_NO.UTF-8'), ('GNOME_TERMINAL_SCREEN', '/org/gnome/Terminal/screen/a566c6cd_098f_473d_a308_2fe8d3bf0ffe'), ('SNAP_DATA', '/var/snap/tmux/11'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':1'), ('LANG', 'en_US.UTF-8'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('LC_TELEPHONE', 'nb_NO.UTF-8'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/gdm/Xauthority'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('GNOME_TERMINAL_SERVICE', ':1.279'), ('SNAP_USER_COMMON', '/home/cale/snap/tmux/common'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('SNAP_ARCH', 'amd64'), ('AMENT_PREFIX_PATH', '/home/cale/thesis-code/ws/install/tuts:/home/cale/thesis-code/ws/install/simulator:/home/cale/thesis-code/ws/install/more_interfaces:/opt/ros/foxy'), ('SNAP_COOKIE', '5rFTArxDeVztWap5qJ7-cC1PigRsn-87mkWt22gAypSe369qeC-h'), ('SHELL', '/bin/bash'), ('LC_NAME', 'nb_NO.UTF-8'), ('QT_ACCESSIBILITY', '1'), ('SNAP_REEXEC', ''), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('SNAP_NAME', 'tmux'), ('LC_MEASUREMENT', 'nb_NO.UTF-8'), ('GPG_AGENT_INFO', '/run/user/1000/gnupg/S.gpg-agent:0:1'), ('LC_IDENTIFICATION', 'nb_NO.UTF-8'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/cale/thesis-code/ws/src/build/more_interfaces'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('SNAP_REAL_HOME', '/home/cale'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('PYTHONPATH', '/home/cale/thesis-code/ws/install/tuts/lib/python3.8/site-packages:/home/cale/thesis-code/ws/install/simulator/lib/python3.8/site-packages:/home/cale/thesis-code/ws/install/more_interfaces/lib/python3.8/site-packages:/opt/ros/foxy/lib/python3.8/site-packages'), ('SNAP', '/snap/tmux/11'), ('LC_NUMERIC', 'nb_NO.UTF-8'), ('LC_PAPER', 'nb_NO.UTF-8'), ('COLCON', '1'), ('VTE_VERSION', '6003'), ('TMUX_PANE', '%0'), ('CMAKE_PREFIX_PATH', '/home/cale/thesis-code/ws/install/tuts:/home/cale/thesis-code/ws/install/simulator:/home/cale/thesis-code/ws/install/more_interfaces:/opt/ros/foxy')]), 'shell': False}
+[2.984846] (tuts) StdoutLine: {'line': b'[ 26%] \x1b[34m\x1b[1mGenerating C introspection for ROS interfaces\x1b[0m\n'}
+[2.991189] (simulator) StdoutLine: {'line': b'-- Found DART: /usr/include (Required is at least version "6.6") found components: dart \n'}
+[3.014016] (-) TimerEvent: {}
+[3.051353] (simulator) StdoutLine: {'line': b'-- Found Boost: /usr/lib/x86_64-linux-gnu/cmake/Boost-1.71.0/BoostConfig.cmake (found suitable version "1.71.0", minimum required is "1.40.0") found components: thread system filesystem program_options regex iostreams date_time \n'}
+[3.094720] (more_interfaces) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target more_interfaces__cpp\x1b[0m\n'}
+[3.111303] (simulator) StdoutLine: {'line': b'-- Found Protobuf: /usr/lib/x86_64-linux-gnu/libprotobuf.so;-lpthread (found version "3.6.1") \n'}
+[3.114110] (-) TimerEvent: {}
+[3.115732] (more_interfaces) StdoutLine: {'line': b'[  3%] \x1b[34m\x1b[1mGenerating C++ code for ROS interfaces\x1b[0m\n'}
+[3.116120] (more_interfaces) StdoutLine: {'line': b'[  6%] \x1b[34m\x1b[1mGenerating C code for ROS interfaces\x1b[0m\n'}
+[3.123859] (simulator) StdoutLine: {'line': b'-- Looking for ignition-math6 -- found version 6.7.0\n'}
+[3.135487] (simulator) StdoutLine: {'line': b'-- Searching for dependencies of ignition-math6\n'}
+[3.137952] (simulator) StdoutLine: {'line': b'-- Looking for OGRE...\n'}
+[3.138800] (simulator) StdoutLine: {'line': b'-- OGRE_PREFIX_WATCH changed.\n'}
+[3.156461] (simulator) StdoutLine: {'line': b"-- Checking for module 'OGRE'\n"}
+[3.214941] (-) TimerEvent: {}
+[3.222438] (tuts) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target tuts__rosidl_typesupport_cpp\x1b[0m\n'}
+[3.230601] (simulator) StdoutLine: {'line': b'--   Found OGRE, version 1.9.0\n'}
+[3.275721] (tuts) StdoutLine: {'line': b'[ 29%] \x1b[32mBuilding CXX object CMakeFiles/tuts__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/tuts/msg/num__type_support.cpp.o\x1b[0m\n'}
+[3.295431] (tuts) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target tuts__rosidl_typesupport_fastrtps_cpp\x1b[0m\n'}
+[3.315030] (-) TimerEvent: {}
+[3.376051] (tuts) StdoutLine: {'line': b'[ 31%] \x1b[32mBuilding CXX object CMakeFiles/tuts__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/tuts/msg/detail/dds_fastrtps/num__type_support.cpp.o\x1b[0m\n'}
+[3.415128] (-) TimerEvent: {}
+[3.429558] (simulator) StdoutLine: {'line': b'-- Found Ogre Ghadamon (1.9.0)\n'}
+[3.448099] (simulator) StdoutLine: {'line': b'-- Found OGRE: optimized;/usr/lib/x86_64-linux-gnu/libOgreMain.so;debug;/usr/lib/x86_64-linux-gnu/libOgreMain.so\n'}
+[3.475386] (simulator) StdoutLine: {'line': b'-- Looking for OGRE_Paging...\n'}
+[3.481662] (tuts) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target tuts__rosidl_typesupport_introspection_cpp\x1b[0m\n'}
+[3.493420] (simulator) StdoutLine: {'line': b'-- Found OGRE_Paging: optimized;/usr/lib/x86_64-linux-gnu/libOgrePaging.so;debug;/usr/lib/x86_64-linux-gnu/libOgrePaging.so\n'}
+[3.493652] (simulator) StdoutLine: {'line': b'-- Looking for OGRE_Terrain...\n'}
+[3.509653] (simulator) StdoutLine: {'line': b'-- Found OGRE_Terrain: optimized;/usr/lib/x86_64-linux-gnu/libOgreTerrain.so;debug;/usr/lib/x86_64-linux-gnu/libOgreTerrain.so\n'}
+[3.509854] (simulator) StdoutLine: {'line': b'-- Looking for OGRE_Property...\n'}
+[3.515220] (-) TimerEvent: {}
+[3.521502] (simulator) StdoutLine: {'line': b'-- Found OGRE_Property: optimized;/usr/lib/x86_64-linux-gnu/libOgreProperty.so;debug;/usr/lib/x86_64-linux-gnu/libOgreProperty.so\n'}
+[3.521761] (simulator) StdoutLine: {'line': b'-- Looking for OGRE_RTShaderSystem...\n'}
+[3.538588] (more_interfaces) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target more_interfaces__rosidl_generator_c\x1b[0m\n'}
+[3.540668] (simulator) StdoutLine: {'line': b'-- Found OGRE_RTShaderSystem: optimized;/usr/lib/x86_64-linux-gnu/libOgreRTShaderSystem.so;debug;/usr/lib/x86_64-linux-gnu/libOgreRTShaderSystem.so\n'}
+[3.540852] (simulator) StdoutLine: {'line': b'-- Looking for OGRE_Volume...\n'}
+[3.551428] (simulator) StdoutLine: {'line': b'-- Found OGRE_Volume: optimized;/usr/lib/x86_64-linux-gnu/libOgreVolume.so;debug;/usr/lib/x86_64-linux-gnu/libOgreVolume.so\n'}
+[3.551639] (simulator) StdoutLine: {'line': b'-- Looking for OGRE_Overlay...\n'}
+[3.567796] (tuts) StdoutLine: {'line': b'[ 34%] \x1b[32mBuilding CXX object CMakeFiles/tuts__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/tuts/msg/detail/num__type_support.cpp.o\x1b[0m\n'}
+[3.572568] (more_interfaces) StdoutLine: {'line': b'[  6%] Built target more_interfaces__cpp\n'}
+[3.574720] (simulator) StdoutLine: {'line': b'-- Found OGRE_Overlay: optimized;/usr/lib/x86_64-linux-gnu/libOgreOverlay.so;debug;/usr/lib/x86_64-linux-gnu/libOgreOverlay.so\n'}
+[3.587580] (more_interfaces) StdoutLine: {'line': b'[  9%] \x1b[32mBuilding C object CMakeFiles/more_interfaces__rosidl_generator_c.dir/rosidl_generator_c/more_interfaces/msg/detail/address_book__functions.c.o\x1b[0m\n'}
+[3.606755] (more_interfaces) StdoutLine: {'line': b'[ 12%] \x1b[34m\x1b[1mGenerating C++ introspection for ROS interfaces\x1b[0m\n'}
+[3.615341] (-) TimerEvent: {}
+[3.634634] (more_interfaces) StdoutLine: {'line': b'[ 15%] \x1b[34m\x1b[1mGenerating C++ type support dispatch for ROS interfaces\x1b[0m\n'}
+[3.648021] (more_interfaces) StdoutLine: {'line': b'[ 18%] \x1b[34m\x1b[1mGenerating C++ type support for eProsima Fast-RTPS\x1b[0m\n'}
+[3.667496] (tuts) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target tuts__rosidl_typesupport_introspection_c\x1b[0m\n'}
+[3.713818] (more_interfaces) StdoutLine: {'line': b'[ 21%] \x1b[32m\x1b[1mLinking C shared library libmore_interfaces__rosidl_generator_c.so\x1b[0m\n'}
+[3.715433] (-) TimerEvent: {}
+[3.744989] (tuts) StdoutLine: {'line': b'[ 36%] \x1b[32mBuilding C object CMakeFiles/tuts__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/tuts/msg/detail/num__type_support.c.o\x1b[0m\n'}
+[3.815530] (-) TimerEvent: {}
+[3.840156] (tuts) StdoutLine: {'line': b'[ 39%] \x1b[32mBuilding C object CMakeFiles/tuts__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/tuts/srv/detail/add_ints__type_support.c.o\x1b[0m\n'}
+[3.858357] (more_interfaces) StdoutLine: {'line': b'[ 21%] Built target more_interfaces__rosidl_generator_c\n'}
+[3.915848] (-) TimerEvent: {}
+[3.935462] (more_interfaces) StdoutLine: {'line': b'[ 24%] \x1b[34m\x1b[1mGenerating C type support dispatch for ROS interfaces\x1b[0m\n'}
+[3.960614] (tuts) StdoutLine: {'line': b'[ 41%] \x1b[32m\x1b[1mLinking C shared library libtuts__rosidl_typesupport_introspection_c.so\x1b[0m\n'}
+[3.983477] (simulator) StdoutLine: {'line': b'-- Looking for ignition-math6 -- found version 6.7.0\n'}
+[3.987808] (simulator) StdoutLine: {'line': b'-- Looking for ignition-transport8 -- found version 8.2.0\n'}
+[3.988773] (simulator) StdoutLine: {'line': b'-- Searching for dependencies of ignition-transport8\n'}
+[4.015934] (-) TimerEvent: {}
+[4.026511] (simulator) StdoutLine: {'line': b'-- Found Protobuf: /usr/lib/x86_64-linux-gnu/libprotobuf.so;-lpthread (found suitable version "3.6.1", minimum required is "3") \n'}
+[4.070620] (simulator) StdoutLine: {'line': b'-- Config-file not installed for ZeroMQ -- checking for pkg-config\n'}
+[4.114099] (tuts) StdoutLine: {'line': b'[ 41%] Built target tuts__rosidl_typesupport_introspection_c\n'}
+[4.115068] (simulator) StdoutLine: {'line': b"-- Checking for module 'libzmq >= 4'\n"}
+[4.116010] (-) TimerEvent: {}
+[4.130474] (tuts) StdoutLine: {'line': b'[ 43%] \x1b[32mBuilding CXX object CMakeFiles/tuts__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/tuts/srv/add_ints__type_support.cpp.o\x1b[0m\n'}
+[4.146148] (tuts) StdoutLine: {'line': b'[ 46%] \x1b[32mBuilding CXX object CMakeFiles/tuts__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/tuts/srv/detail/add_ints__type_support.cpp.o\x1b[0m\n'}
+[4.187585] (simulator) StdoutLine: {'line': b'--   Found libzmq , version 4.3.2\n'}
+[4.211514] (more_interfaces) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target more_interfaces__rosidl_typesupport_cpp\x1b[0m\n'}
+[4.216134] (-) TimerEvent: {}
+[4.230503] (more_interfaces) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target more_interfaces__rosidl_typesupport_introspection_cpp\x1b[0m\n'}
+[4.257989] (tuts) StdoutLine: {'line': b'[ 48%] \x1b[32mBuilding CXX object CMakeFiles/tuts__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/tuts/srv/detail/dds_fastrtps/add_ints__type_support.cpp.o\x1b[0m\n'}
+[4.267922] (more_interfaces) StdoutLine: {'line': b'[ 27%] \x1b[32mBuilding CXX object CMakeFiles/more_interfaces__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/more_interfaces/msg/address_book__type_support.cpp.o\x1b[0m\n'}
+[4.285606] (more_interfaces) StdoutLine: {'line': b'[ 30%] \x1b[32mBuilding CXX object CMakeFiles/more_interfaces__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/more_interfaces/msg/detail/address_book__type_support.cpp.o\x1b[0m\n'}
+[4.316225] (-) TimerEvent: {}
+[4.389598] (simulator) StdoutLine: {'line': b'-- Found ZeroMQ: TRUE (Required is at least version "4") \n'}
+[4.411285] (simulator) StdoutLine: {'line': b"-- Checking for module 'uuid'\n"}
+[4.416351] (-) TimerEvent: {}
+[4.453194] (simulator) StdoutLine: {'line': b'--   Found uuid, version 2.34.0\n'}
+[4.483361] (more_interfaces) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target more_interfaces__rosidl_typesupport_c\x1b[0m\n'}
+[4.497386] (more_interfaces) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target more_interfaces__rosidl_typesupport_fastrtps_cpp\x1b[0m\n'}
+[4.517709] (-) TimerEvent: {}
+[4.539708] (more_interfaces) StdoutLine: {'line': b'[ 33%] \x1b[32mBuilding CXX object CMakeFiles/more_interfaces__rosidl_typesupport_c.dir/rosidl_typesupport_c/more_interfaces/msg/address_book__type_support.cpp.o\x1b[0m\n'}
+[4.580172] (more_interfaces) StdoutLine: {'line': b'[ 36%] \x1b[32mBuilding CXX object CMakeFiles/more_interfaces__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/more_interfaces/msg/detail/dds_fastrtps/address_book__type_support.cpp.o\x1b[0m\n'}
+[4.617877] (-) TimerEvent: {}
+[4.652399] (simulator) StdoutLine: {'line': b'-- Found UUID: TRUE  \n'}
+[4.655768] (simulator) StdoutLine: {'line': b'-- Looking for ignition-msgs5 -- found version 5.6.0\n'}
+[4.657153] (simulator) StdoutLine: {'line': b'-- Searching for dependencies of ignition-msgs5\n'}
+[4.672860] (more_interfaces) StdoutLine: {'line': b'[ 39%] \x1b[32m\x1b[1mLinking CXX shared library libmore_interfaces__rosidl_typesupport_c.so\x1b[0m\n'}
+[4.720027] (-) TimerEvent: {}
+[4.720381] (simulator) StdoutLine: {'line': b'-- Looking for ignition-math6 -- found version 6.7.0\n'}
+[4.734574] (simulator) StdoutLine: {'line': b"-- Checking for module 'tinyxml2'\n"}
+[4.804626] (tuts) StdoutLine: {'line': b'[ 51%] \x1b[34m\x1b[1mGenerating C type support dispatch for ROS interfaces\x1b[0m\n'}
+[4.824663] (-) TimerEvent: {}
+[4.825226] (more_interfaces) StdoutLine: {'line': b'[ 39%] Built target more_interfaces__rosidl_typesupport_c\n'}
+[4.834580] (simulator) StdoutLine: {'line': b'--   Found tinyxml2, version 6.2.0\n'}
+[4.856740] (more_interfaces) StdoutLine: {'line': b'[ 42%] \x1b[34m\x1b[1mGenerating C introspection for ROS interfaces\x1b[0m\n'}
+[4.890354] (simulator) StdoutLine: {'line': b'-- Looking for ignition-msgs5 -- found version 5.6.0\n'}
+[4.895713] (simulator) StdoutLine: {'line': b'-- Looking for ignition-common3 -- found version 3.10.0\n'}
+[4.898652] (simulator) StdoutLine: {'line': b'-- Searching for dependencies of ignition-common3\n'}
+[4.905208] (simulator) StdoutLine: {'line': b'-- Looking for dlfcn.h - found\n'}
+[4.908665] (simulator) StdoutLine: {'line': b'-- Looking for libdl - found\n'}
+[4.913000] (simulator) StdoutLine: {'line': b'-- Found DL: TRUE  \n'}
+[4.924763] (-) TimerEvent: {}
+[4.934458] (simulator) StdoutLine: {'line': b'-- Searching for <ignition-common3> component [graphics]\n'}
+[4.940654] (simulator) StdoutLine: {'line': b'-- Looking for ignition-common3-graphics -- found version 3.10.0\n'}
+[4.943697] (simulator) StdoutLine: {'line': b'-- Searching for dependencies of ignition-common3-graphics\n'}
+[4.947220] (simulator) StdoutLine: {'line': b'-- Looking for ignition-math6 -- found version 6.7.0\n'}
+[4.961782] (simulator) StdoutLine: {'line': b'-- Looking for ignition-fuel_tools4 -- found version 4.3.0\n'}
+[4.964917] (simulator) StdoutLine: {'line': b'-- Searching for dependencies of ignition-fuel_tools4\n'}
+[5.020408] (tuts) StdoutLine: {'line': b'[ 53%] \x1b[32m\x1b[1mLinking CXX shared library libtuts__rosidl_typesupport_introspection_cpp.so\x1b[0m\n'}
+[5.024852] (-) TimerEvent: {}
+[5.119785] (tuts) StdoutLine: {'line': b'[ 56%] \x1b[32m\x1b[1mLinking CXX shared library libtuts__rosidl_typesupport_cpp.so\x1b[0m\n'}
+[5.124960] (-) TimerEvent: {}
+[5.186448] (tuts) StdoutLine: {'line': b'[ 56%] Built target tuts__rosidl_typesupport_introspection_cpp\n'}
+[5.225169] (-) TimerEvent: {}
+[5.232928] (more_interfaces) StdoutLine: {'line': b'[ 45%] \x1b[32m\x1b[1mLinking CXX shared library libmore_interfaces__rosidl_typesupport_introspection_cpp.so\x1b[0m\n'}
+[5.272684] (tuts) StdoutLine: {'line': b'[ 56%] Built target tuts__rosidl_typesupport_cpp\n'}
+[5.325268] (-) TimerEvent: {}
+[5.380082] (simulator) StdoutLine: {'line': b'-- Found CURL: /usr/lib/x86_64-linux-gnu/libcurl.so (found version "7.68.0")  \n'}
+[5.392324] (simulator) StdoutLine: {'line': b"-- Checking for module 'jsoncpp'\n"}
+[5.407071] (more_interfaces) StdoutLine: {'line': b'[ 48%] \x1b[32m\x1b[1mLinking CXX shared library libmore_interfaces__rosidl_typesupport_cpp.so\x1b[0m\n'}
+[5.407437] (more_interfaces) StdoutLine: {'line': b'[ 48%] Built target more_interfaces__rosidl_typesupport_introspection_cpp\n'}
+[5.425362] (-) TimerEvent: {}
+[5.497862] (simulator) StdoutLine: {'line': b'--   Found jsoncpp, version 1.7.4\n'}
+[5.525460] (-) TimerEvent: {}
+[5.555450] (more_interfaces) StdoutLine: {'line': b'[ 48%] Built target more_interfaces__rosidl_typesupport_cpp\n'}
+[5.563180] (more_interfaces) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target more_interfaces__rosidl_typesupport_introspection_c\x1b[0m\n'}
+[5.606316] (tuts) StdoutLine: {'line': b'[ 58%] \x1b[32m\x1b[1mLinking CXX shared library libtuts__rosidl_typesupport_fastrtps_cpp.so\x1b[0m\n'}
+[5.614180] (simulator) StdoutLine: {'line': b'-- Found JSONCPP: TRUE  \n'}
+[5.623017] (simulator) StdoutLine: {'line': b"-- Checking for module 'libzip'\n"}
+[5.626107] (-) TimerEvent: {}
+[5.630052] (more_interfaces) StdoutLine: {'line': b'[ 51%] \x1b[32mBuilding C object CMakeFiles/more_interfaces__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/more_interfaces/msg/detail/address_book__type_support.c.o\x1b[0m\n'}
+[5.658903] (tuts) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target tuts__rosidl_typesupport_c\x1b[0m\n'}
+[5.682784] (tuts) StdoutLine: {'line': b'[ 60%] \x1b[32mBuilding CXX object CMakeFiles/tuts__rosidl_typesupport_c.dir/rosidl_typesupport_c/tuts/msg/num__type_support.cpp.o\x1b[0m\n'}
+[5.688866] (simulator) StdoutLine: {'line': b'--   Found libzip, version 1.5.1\n'}
+[5.700102] (tuts) StdoutLine: {'line': b'[ 63%] \x1b[32mBuilding CXX object CMakeFiles/tuts__rosidl_typesupport_c.dir/rosidl_typesupport_c/tuts/srv/add_ints__type_support.cpp.o\x1b[0m\n'}
+[5.726224] (-) TimerEvent: {}
+[5.742835] (more_interfaces) StdoutLine: {'line': b'[ 54%] \x1b[32m\x1b[1mLinking C shared library libmore_interfaces__rosidl_typesupport_introspection_c.so\x1b[0m\n'}
+[5.778110] (tuts) StdoutLine: {'line': b'[ 65%] \x1b[32m\x1b[1mLinking CXX shared library libtuts__rosidl_typesupport_c.so\x1b[0m\n'}
+[5.782211] (more_interfaces) StdoutLine: {'line': b'[ 57%] \x1b[32m\x1b[1mLinking CXX shared library libmore_interfaces__rosidl_typesupport_fastrtps_cpp.so\x1b[0m\n'}
+[5.803050] (tuts) StdoutLine: {'line': b'[ 65%] Built target tuts__rosidl_typesupport_fastrtps_cpp\n'}
+[5.816006] (simulator) StdoutLine: {'line': b'-- Found ZIP: TRUE  \n'}
+[5.824447] (simulator) StdoutLine: {'line': b'-- Looking for ignition-common3 -- found version 3.10.0\n'}
+[5.824581] (simulator) StdoutLine: {'line': b'-- Looking for ignition-msgs5 -- found version 5.6.0\n'}
+[5.824666] (simulator) StdoutLine: {'line': b'-- Gazebo version: 11.3\n'}
+[5.831296] (-) TimerEvent: {}
+[5.843565] (tuts) StdoutLine: {'line': b'[ 68%] \x1b[34m\x1b[1mGenerating C type support for eProsima Fast-RTPS\x1b[0m\n'}
+[5.845879] (simulator) StdoutLine: {'line': b'-- Found geometry_msgs: 2.0.3 (/opt/ros/foxy/share/geometry_msgs/cmake)\n'}
+[5.848387] (more_interfaces) StdoutLine: {'line': b'[ 57%] Built target more_interfaces__rosidl_typesupport_introspection_c\n'}
+[5.898670] (tuts) StdoutLine: {'line': b'[ 68%] Built target tuts__rosidl_typesupport_c\n'}
+[5.911277] (simulator) StdoutLine: {'line': b'-- Found rclpy: 1.0.5 (/opt/ros/foxy/share/rclpy/cmake)\n'}
+[5.915936] (simulator) StdoutLine: {'line': b'-- Found rosidl_default_generators: 1.0.0 (/opt/ros/foxy/share/rosidl_default_generators/cmake)\n'}
+[5.927918] (more_interfaces) StdoutLine: {'line': b'[ 57%] Built target more_interfaces__rosidl_typesupport_fastrtps_cpp\n'}
+[5.931386] (-) TimerEvent: {}
+[5.943482] (more_interfaces) StdoutLine: {'line': b'[ 60%] \x1b[34m\x1b[1mGenerating C type support for eProsima Fast-RTPS\x1b[0m\n'}
+[5.973023] (simulator) StdoutLine: {'line': b'-- Found PythonInterp: /usr/bin/python3 (found version "3.8.5") \n'}
+[6.031473] (-) TimerEvent: {}
+[6.133620] (-) TimerEvent: {}
+[6.139652] (simulator) StdoutLine: {'line': b'-- Found ament_cmake_ros: 0.9.0 (/opt/ros/foxy/share/ament_cmake_ros/cmake)\n'}
+[6.215085] (more_interfaces) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target more_interfaces__rosidl_typesupport_fastrtps_c\x1b[0m\n'}
+[6.233735] (-) TimerEvent: {}
+[6.240787] (more_interfaces) StdoutLine: {'line': b'[ 63%] \x1b[32mBuilding CXX object CMakeFiles/more_interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/more_interfaces/msg/detail/address_book__type_support_c.cpp.o\x1b[0m\n'}
+[6.272651] (tuts) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target tuts__rosidl_typesupport_fastrtps_c\x1b[0m\n'}
+[6.297700] (simulator) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[6.304444] (tuts) StdoutLine: {'line': b'[ 70%] \x1b[32mBuilding CXX object CMakeFiles/tuts__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/tuts/srv/detail/add_ints__type_support_c.cpp.o\x1b[0m\n'}
+[6.319378] (tuts) StdoutLine: {'line': b'[ 73%] \x1b[32mBuilding CXX object CMakeFiles/tuts__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/tuts/msg/detail/num__type_support_c.cpp.o\x1b[0m\n'}
+[6.323041] (simulator) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[6.333981] (-) TimerEvent: {}
+[6.382573] (simulator) StdoutLine: {'line': b'-- Found PythonInterp: /usr/bin/python3 (found suitable version "3.8.5", minimum required is "3.5") \n'}
+[6.386765] (simulator) StdoutLine: {'line': b'-- Found python_cmake_module: 0.8.0 (/opt/ros/foxy/share/python_cmake_module/cmake)\n'}
+[6.434081] (-) TimerEvent: {}
+[6.445717] (simulator) StdoutLine: {'line': b'-- Found PythonLibs: /usr/lib/x86_64-linux-gnu/libpython3.8.so (found suitable version "3.8.5", minimum required is "3.5") \n'}
+[6.448100] (simulator) StdoutLine: {'line': b'-- Using PYTHON_EXECUTABLE: /usr/bin/python3\n'}
+[6.449624] (simulator) StdoutLine: {'line': b'-- Using PYTHON_INCLUDE_DIRS: /usr/include/python3.8\n'}
+[6.451156] (simulator) StdoutLine: {'line': b'-- Using PYTHON_LIBRARIES: /usr/lib/x86_64-linux-gnu/libpython3.8.so\n'}
+[6.510307] (simulator) StdoutLine: {'line': b'-- Found PythonExtra: .so  \n'}
+[6.534179] (-) TimerEvent: {}
+[6.635307] (-) TimerEvent: {}
+[6.674329] (simulator) StdoutLine: {'line': b'-- Found ament_lint_auto: 0.9.6 (/opt/ros/foxy/share/ament_lint_auto/cmake)\n'}
+[6.736326] (-) TimerEvent: {}
+[6.739794] (simulator) StdoutLine: {'line': b"-- Added test 'copyright' to check source files copyright and LICENSE\n"}
+[6.742767] (simulator) StdoutLine: {'line': b"-- Added test 'cppcheck' to perform static code analysis on C / C++ code\n"}
+[6.753362] (simulator) StdoutLine: {'line': b'-- Configured cppcheck include dirs: /home/cale/thesis-code/ws/src/simulator/include\n'}
+[6.753548] (simulator) StdoutLine: {'line': b'-- Configured cppcheck exclude dirs and/or files: \n'}
+[6.759371] (simulator) StdoutLine: {'line': b"-- Added test 'cpplint' to check C / C++ code against the Google style\n"}
+[6.759564] (simulator) StdoutLine: {'line': b'-- Configured cpplint exclude dirs and/or files: \n'}
+[6.759656] (simulator) StdoutLine: {'line': b"-- Added test 'flake8' to check Python code syntax and style conventions\n"}
+[6.769492] (simulator) StdoutLine: {'line': b"-- Added test 'lint_cmake' to check CMake code style\n"}
+[6.769683] (simulator) StdoutLine: {'line': b"-- Added test 'pep257' to check Python code against some of the style conventions in PEP 257\n"}
+[6.769769] (simulator) StdoutLine: {'line': b"-- Added test 'uncrustify' to check C / C++ code style\n"}
+[6.782195] (simulator) StdoutLine: {'line': b'-- Configured uncrustify additional arguments: \n'}
+[6.782385] (simulator) StdoutLine: {'line': b"-- Added test 'xmllint' to check XML markup files\n"}
+[6.795456] (simulator) StdoutLine: {'line': b'-- Configuring done\n'}
+[6.836434] (-) TimerEvent: {}
+[6.876522] (more_interfaces) StdoutLine: {'line': b'[ 66%] \x1b[32m\x1b[1mLinking CXX shared library libmore_interfaces__rosidl_typesupport_fastrtps_c.so\x1b[0m\n'}
+[6.914184] (simulator) StdoutLine: {'line': b'-- Generating done\n'}
+[6.919225] (simulator) StdoutLine: {'line': b'-- Build files have been written to: /home/cale/thesis-code/ws/src/build/simulator\n'}
+[6.936532] (-) TimerEvent: {}
+[6.949600] (simulator) CommandEnded: {'returncode': 0}
+[6.950994] (simulator) JobProgress: {'identifier': 'simulator', 'progress': 'build'}
+[6.951064] (simulator) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/cale/thesis-code/ws/src/build/simulator', '--', '-j4', '-l4'], 'cwd': '/home/cale/thesis-code/ws/src/build/simulator', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('TMUX', '/tmp/tmux-1000/default,4037,0'), ('SNAP_INSTANCE_KEY', ''), ('USER', 'cale'), ('SNAP_COMMON', '/var/snap/tmux/common'), ('LC_TIME', 'nb_NO.UTF-8'), ('SSH_AGENT_PID', '1670'), ('XDG_SESSION_TYPE', 'x11'), ('SHLVL', '2'), ('LD_LIBRARY_PATH', '/home/cale/thesis-code/ws/install/tuts/lib:/home/cale/thesis-code/ws/install/simulator/lib:/home/cale/thesis-code/ws/install/more_interfaces/lib:/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/opt/ros/foxy/opt/yaml_cpp_vendor/lib:/opt/ros/foxy/opt/rviz_ogre_vendor/lib:/opt/ros/foxy/lib/x86_64-linux-gnu:/opt/ros/foxy/lib'), ('HOME', '/home/cale'), ('SNAP_LIBRARY_PATH', '/var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd/void'), ('OLDPWD', '/home/cale/thesis-code/ws/src/simulator'), ('DESKTOP_SESSION', 'ubuntu'), ('SNAP_USER_DATA', '/home/cale/snap/tmux/11'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('LC_MONETARY', 'nb_NO.UTF-8'), ('MANAGERPID', '1490'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('SNAP_REVISION', '11'), ('COLORTERM', 'truecolor'), ('IM_CONFIG_PHASE', '1'), ('COLCON_PREFIX_PATH', '/home/cale/thesis-code/ws/install'), ('ROS_DISTRO', 'foxy'), ('LOGNAME', 'cale'), ('SNAP_CONTEXT', '5rFTArxDeVztWap5qJ7-cC1PigRsn-87mkWt22gAypSe369qeC-h'), ('JOURNAL_STREAM', '8:43761'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_SESSION_CLASS', 'user'), ('SNAP_VERSION', '2.3'), ('USERNAME', 'cale'), ('TERM', 'xterm'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('SNAP_INSTANCE_NAME', 'tmux'), ('ROS_LOCALHOST_ONLY', '0'), ('WINDOWPATH', '2'), ('PATH', '/home/cale/.local/bin:/opt/ros/foxy/bin:/home/cale/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin'), ('SESSION_MANAGER', 'local/cale-GL503VM:@/tmp/.ICE-unix/1705,unix/cale-GL503VM:/tmp/.ICE-unix/1705'), ('INVOCATION_ID', '78c155d5685c42f7982b3d20a941ae8d'), ('XDG_MENU_PREFIX', 'gnome-'), ('LC_ADDRESS', 'nb_NO.UTF-8'), ('GNOME_TERMINAL_SCREEN', '/org/gnome/Terminal/screen/a566c6cd_098f_473d_a308_2fe8d3bf0ffe'), ('SNAP_DATA', '/var/snap/tmux/11'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':1'), ('LANG', 'en_US.UTF-8'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('LC_TELEPHONE', 'nb_NO.UTF-8'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/gdm/Xauthority'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('GNOME_TERMINAL_SERVICE', ':1.279'), ('SNAP_USER_COMMON', '/home/cale/snap/tmux/common'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('SNAP_ARCH', 'amd64'), ('AMENT_PREFIX_PATH', '/home/cale/thesis-code/ws/install/tuts:/home/cale/thesis-code/ws/install/simulator:/home/cale/thesis-code/ws/install/more_interfaces:/opt/ros/foxy'), ('SNAP_COOKIE', '5rFTArxDeVztWap5qJ7-cC1PigRsn-87mkWt22gAypSe369qeC-h'), ('SHELL', '/bin/bash'), ('LC_NAME', 'nb_NO.UTF-8'), ('QT_ACCESSIBILITY', '1'), ('SNAP_REEXEC', ''), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('SNAP_NAME', 'tmux'), ('LC_MEASUREMENT', 'nb_NO.UTF-8'), ('GPG_AGENT_INFO', '/run/user/1000/gnupg/S.gpg-agent:0:1'), ('LC_IDENTIFICATION', 'nb_NO.UTF-8'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/cale/thesis-code/ws/src/build/simulator'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('SNAP_REAL_HOME', '/home/cale'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('PYTHONPATH', '/home/cale/thesis-code/ws/install/tuts/lib/python3.8/site-packages:/home/cale/thesis-code/ws/install/simulator/lib/python3.8/site-packages:/home/cale/thesis-code/ws/install/more_interfaces/lib/python3.8/site-packages:/opt/ros/foxy/lib/python3.8/site-packages'), ('SNAP', '/snap/tmux/11'), ('LC_NUMERIC', 'nb_NO.UTF-8'), ('LC_PAPER', 'nb_NO.UTF-8'), ('COLCON', '1'), ('VTE_VERSION', '6003'), ('TMUX_PANE', '%0'), ('CMAKE_PREFIX_PATH', '/home/cale/thesis-code/ws/install/tuts:/home/cale/thesis-code/ws/install/simulator:/home/cale/thesis-code/ws/install/more_interfaces')]), 'shell': False}
+[7.036955] (-) TimerEvent: {}
+[7.042578] (simulator) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target simulator__cpp\x1b[0m\n'}
+[7.043749] (simulator) StdoutLine: {'line': b'[  3%] \x1b[34m\x1b[1mGenerating C code for ROS interfaces\x1b[0m\n'}
+[7.055920] (tuts) StdoutLine: {'line': b'[ 75%] \x1b[32m\x1b[1mLinking CXX shared library libtuts__rosidl_typesupport_fastrtps_c.so\x1b[0m\n'}
+[7.075484] (simulator) StdoutLine: {'line': b'[  6%] \x1b[34m\x1b[1mGenerating C++ code for ROS interfaces\x1b[0m\n'}
+[7.079013] (more_interfaces) StdoutLine: {'line': b'[ 66%] Built target more_interfaces__rosidl_typesupport_fastrtps_c\n'}
+[7.108807] (more_interfaces) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target more_interfaces\x1b[0m\n'}
+[7.137053] (-) TimerEvent: {}
+[7.143357] (more_interfaces) StdoutLine: {'line': b'[ 66%] Built target more_interfaces\n'}
+[7.159606] (more_interfaces) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target more_interfaces__py\x1b[0m\n'}
+[7.177034] (more_interfaces) StdoutLine: {'line': b'[ 69%] \x1b[34m\x1b[1mGenerating Python code for ROS interfaces\x1b[0m\n'}
+[7.191632] (more_interfaces) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target publish_address_book\x1b[0m\n'}
+[7.237149] (-) TimerEvent: {}
+[7.249212] (tuts) StdoutLine: {'line': b'[ 75%] Built target tuts__rosidl_typesupport_fastrtps_c\n'}
+[7.292280] (tuts) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target tuts\x1b[0m\n'}
+[7.342700] (-) TimerEvent: {}
+[7.343143] (tuts) StdoutLine: {'line': b'[ 75%] Built target tuts\n'}
+[7.429648] (more_interfaces) StdoutLine: {'line': b'[ 72%] \x1b[32mBuilding CXX object CMakeFiles/publish_address_book.dir/src/publish_address_book.cpp.o\x1b[0m\n'}
+[7.430556] (tuts) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target tuts__py\x1b[0m\n'}
+[7.442817] (-) TimerEvent: {}
+[7.464752] (tuts) StdoutLine: {'line': b'[ 78%] \x1b[34m\x1b[1mGenerating Python code for ROS interfaces\x1b[0m\n'}
+[7.496525] (simulator) StdoutLine: {'line': b'[  6%] Built target simulator__cpp\n'}
+[7.511374] (simulator) StdoutLine: {'line': b'[  9%] \x1b[34m\x1b[1mGenerating C++ type support for eProsima Fast-RTPS\x1b[0m\n'}
+[7.532216] (simulator) StdoutLine: {'line': b'[ 12%] \x1b[34m\x1b[1mGenerating C++ type support dispatch for ROS interfaces\x1b[0m\n'}
+[7.543325] (-) TimerEvent: {}
+[7.551455] (simulator) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target simulator__rosidl_generator_c\x1b[0m\n'}
+[7.566097] (simulator) StdoutLine: {'line': b'[ 15%] \x1b[34m\x1b[1mGenerating C++ introspection for ROS interfaces\x1b[0m\n'}
+[7.607684] (simulator) StdoutLine: {'line': b'[ 18%] \x1b[32mBuilding C object CMakeFiles/simulator__rosidl_generator_c.dir/rosidl_generator_c/simulator/msg/detail/float_array__functions.c.o\x1b[0m\n'}
+[7.643431] (-) TimerEvent: {}
+[7.743937] (-) TimerEvent: {}
+[7.782048] (simulator) StdoutLine: {'line': b'[ 21%] \x1b[32m\x1b[1mLinking C shared library libsimulator__rosidl_generator_c.so\x1b[0m\n'}
+[7.844057] (-) TimerEvent: {}
+[7.904626] (simulator) StdoutLine: {'line': b'[ 21%] Built target simulator__rosidl_generator_c\n'}
+[7.944155] (-) TimerEvent: {}
+[7.956630] (simulator) StdoutLine: {'line': b'[ 24%] \x1b[34m\x1b[1mGenerating C introspection for ROS interfaces\x1b[0m\n'}
+[8.025520] (simulator) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target simulator__rosidl_typesupport_cpp\x1b[0m\n'}
+[8.044247] (-) TimerEvent: {}
+[8.081673] (simulator) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target simulator__rosidl_typesupport_fastrtps_cpp\x1b[0m\n'}
+[8.085412] (simulator) StdoutLine: {'line': b'[ 27%] \x1b[32mBuilding CXX object CMakeFiles/simulator__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/simulator/msg/float_array__type_support.cpp.o\x1b[0m\n'}
+[8.144335] (-) TimerEvent: {}
+[8.162410] (simulator) StdoutLine: {'line': b'[ 30%] \x1b[32mBuilding CXX object CMakeFiles/simulator__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/simulator/msg/detail/dds_fastrtps/float_array__type_support.cpp.o\x1b[0m\n'}
+[8.244423] (-) TimerEvent: {}
+[8.344910] (-) TimerEvent: {}
+[8.423826] (simulator) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target simulator__rosidl_typesupport_introspection_cpp\x1b[0m\n'}
+[8.445018] (-) TimerEvent: {}
+[8.446941] (more_interfaces) StdoutLine: {'line': b'[ 72%] Built target more_interfaces__py\n'}
+[8.487792] (simulator) StdoutLine: {'line': b'[ 33%] \x1b[32mBuilding CXX object CMakeFiles/simulator__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/simulator/msg/detail/float_array__type_support.cpp.o\x1b[0m\n'}
+[8.508701] (more_interfaces) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target more_interfaces__python\x1b[0m\n'}
+[8.545120] (-) TimerEvent: {}
+[8.578255] (simulator) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target simulator__rosidl_typesupport_introspection_c\x1b[0m\n'}
+[8.645227] (-) TimerEvent: {}
+[8.655383] (simulator) StdoutLine: {'line': b'[ 36%] \x1b[32mBuilding C object CMakeFiles/simulator__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/simulator/msg/detail/float_array__type_support.c.o\x1b[0m\n'}
+[8.661824] (more_interfaces) StdoutLine: {'line': b'[ 75%] \x1b[32mBuilding C object CMakeFiles/more_interfaces__python.dir/rosidl_generator_py/more_interfaces/msg/_address_book_s.c.o\x1b[0m\n'}
+[8.688252] (tuts) StdoutLine: {'line': b'[ 78%] Built target tuts__py\n'}
+[8.747087] (-) TimerEvent: {}
+[8.767403] (tuts) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target tuts__python\x1b[0m\n'}
+[8.789868] (simulator) StdoutLine: {'line': b'[ 39%] \x1b[32m\x1b[1mLinking CXX shared library libsimulator__rosidl_typesupport_cpp.so\x1b[0m\n'}
+[8.815421] (simulator) StdoutLine: {'line': b'[ 42%] \x1b[32m\x1b[1mLinking C shared library libsimulator__rosidl_typesupport_introspection_c.so\x1b[0m\n'}
+[8.847200] (-) TimerEvent: {}
+[8.869478] (tuts) StdoutLine: {'line': b'[ 80%] \x1b[32mBuilding C object CMakeFiles/tuts__python.dir/rosidl_generator_py/tuts/msg/_num_s.c.o\x1b[0m\n'}
+[8.874960] (tuts) StdoutLine: {'line': b'[ 82%] \x1b[32mBuilding C object CMakeFiles/tuts__python.dir/rosidl_generator_py/tuts/srv/_add_ints_s.c.o\x1b[0m\n'}
+[8.947319] (-) TimerEvent: {}
+[8.995383] (simulator) StdoutLine: {'line': b'[ 42%] Built target simulator__rosidl_typesupport_introspection_c\n'}
+[8.999484] (more_interfaces) StdoutLine: {'line': b'[ 78%] \x1b[32m\x1b[1mLinking C shared library rosidl_generator_py/more_interfaces/libmore_interfaces__python.so\x1b[0m\n'}
+[9.047573] (simulator) StdoutLine: {'line': b'[ 42%] Built target simulator__rosidl_typesupport_cpp\n'}
+[9.047790] (-) TimerEvent: {}
+[9.062496] (simulator) StdoutLine: {'line': b'[ 45%] \x1b[34m\x1b[1mGenerating C type support dispatch for ROS interfaces\x1b[0m\n'}
+[9.137184] (more_interfaces) StdoutLine: {'line': b'[ 78%] Built target more_interfaces__python\n'}
+[9.148419] (tuts) StdoutLine: {'line': b'[ 85%] \x1b[32m\x1b[1mLinking C shared library rosidl_generator_py/tuts/libtuts__python.so\x1b[0m\n'}
+[9.148637] (-) TimerEvent: {}
+[9.174077] (more_interfaces) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target more_interfaces__rosidl_typesupport_introspection_c__pyext\x1b[0m\n'}
+[9.189662] (more_interfaces) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target more_interfaces__rosidl_typesupport_c__pyext\x1b[0m\n'}
+[9.217061] (more_interfaces) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target more_interfaces__rosidl_typesupport_fastrtps_c__pyext\x1b[0m\n'}
+[9.246875] (more_interfaces) StdoutLine: {'line': b'[ 81%] \x1b[32mBuilding C object CMakeFiles/more_interfaces__rosidl_typesupport_introspection_c__pyext.dir/rosidl_generator_py/more_interfaces/_more_interfaces_s.ep.rosidl_typesupport_introspection_c.c.o\x1b[0m\n'}
+[9.248933] (-) TimerEvent: {}
+[9.273362] (more_interfaces) StdoutLine: {'line': b'[ 84%] \x1b[32mBuilding C object CMakeFiles/more_interfaces__rosidl_typesupport_c__pyext.dir/rosidl_generator_py/more_interfaces/_more_interfaces_s.ep.rosidl_typesupport_c.c.o\x1b[0m\n'}
+[9.306768] (tuts) StdoutLine: {'line': b'[ 85%] Built target tuts__python\n'}
+[9.311861] (more_interfaces) StdoutLine: {'line': b'[ 87%] \x1b[32mBuilding C object CMakeFiles/more_interfaces__rosidl_typesupport_fastrtps_c__pyext.dir/rosidl_generator_py/more_interfaces/_more_interfaces_s.ep.rosidl_typesupport_fastrtps_c.c.o\x1b[0m\n'}
+[9.349035] (-) TimerEvent: {}
+[9.353984] (tuts) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target tuts__rosidl_typesupport_fastrtps_c__pyext\x1b[0m\n'}
+[9.391454] (tuts) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target tuts__rosidl_typesupport_c__pyext\x1b[0m\n'}
+[9.421821] (more_interfaces) StdoutLine: {'line': b'[ 90%] \x1b[32m\x1b[1mLinking C shared library rosidl_generator_py/more_interfaces/more_interfaces_s__rosidl_typesupport_introspection_c.cpython-38-x86_64-linux-gnu.so\x1b[0m\n'}
+[9.427323] (tuts) StdoutLine: {'line': b'[ 87%] \x1b[32mBuilding C object CMakeFiles/tuts__rosidl_typesupport_fastrtps_c__pyext.dir/rosidl_generator_py/tuts/_tuts_s.ep.rosidl_typesupport_fastrtps_c.c.o\x1b[0m\n'}
+[9.427558] (tuts) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target tuts__rosidl_typesupport_introspection_c__pyext\x1b[0m\n'}
+[9.449157] (-) TimerEvent: {}
+[9.505123] (tuts) StdoutLine: {'line': b'[ 90%] \x1b[32mBuilding C object CMakeFiles/tuts__rosidl_typesupport_c__pyext.dir/rosidl_generator_py/tuts/_tuts_s.ep.rosidl_typesupport_c.c.o\x1b[0m\n'}
+[9.550391] (-) TimerEvent: {}
+[9.585305] (tuts) StdoutLine: {'line': b'[ 92%] \x1b[32mBuilding C object CMakeFiles/tuts__rosidl_typesupport_introspection_c__pyext.dir/rosidl_generator_py/tuts/_tuts_s.ep.rosidl_typesupport_introspection_c.c.o\x1b[0m\n'}
+[9.615972] (more_interfaces) StdoutLine: {'line': b'[ 90%] Built target more_interfaces__rosidl_typesupport_introspection_c__pyext\n'}
+[9.631402] (simulator) StdoutLine: {'line': b'[ 48%] \x1b[32m\x1b[1mLinking CXX shared library libsimulator__rosidl_typesupport_introspection_cpp.so\x1b[0m\n'}
+[9.642655] (more_interfaces) StdoutLine: {'line': b'[ 93%] \x1b[32m\x1b[1mLinking CXX shared library rosidl_generator_py/more_interfaces/more_interfaces_s__rosidl_typesupport_fastrtps_c.cpython-38-x86_64-linux-gnu.so\x1b[0m\n'}
+[9.650492] (-) TimerEvent: {}
+[9.664772] (tuts) StdoutLine: {'line': b'[ 95%] \x1b[32m\x1b[1mLinking CXX shared library rosidl_generator_py/tuts/tuts_s__rosidl_typesupport_fastrtps_c.cpython-38-x86_64-linux-gnu.so\x1b[0m\n'}
+[9.666185] (more_interfaces) StdoutLine: {'line': b'[ 96%] \x1b[32m\x1b[1mLinking C shared library rosidl_generator_py/more_interfaces/more_interfaces_s__rosidl_typesupport_c.cpython-38-x86_64-linux-gnu.so\x1b[0m\n'}
+[9.750602] (-) TimerEvent: {}
+[9.751339] (simulator) StdoutLine: {'line': b'[ 51%] \x1b[32m\x1b[1mLinking CXX shared library libsimulator__rosidl_typesupport_fastrtps_cpp.so\x1b[0m\n'}
+[9.757986] (more_interfaces) StdoutLine: {'line': b'[ 96%] Built target more_interfaces__rosidl_typesupport_fastrtps_c__pyext\n'}
+[9.821396] (tuts) StdoutLine: {'line': b'[ 97%] \x1b[32m\x1b[1mLinking C shared library rosidl_generator_py/tuts/tuts_s__rosidl_typesupport_introspection_c.cpython-38-x86_64-linux-gnu.so\x1b[0m\n'}
+[9.841636] (more_interfaces) StdoutLine: {'line': b'[ 96%] Built target more_interfaces__rosidl_typesupport_c__pyext\n'}
+[9.848997] (tuts) StdoutLine: {'line': b'[ 97%] Built target tuts__rosidl_typesupport_fastrtps_c__pyext\n'}
+[9.850685] (-) TimerEvent: {}
+[9.908438] (tuts) StdoutLine: {'line': b'[ 97%] Built target tuts__rosidl_typesupport_introspection_c__pyext\n'}
+[9.942819] (simulator) StdoutLine: {'line': b'[ 51%] Built target simulator__rosidl_typesupport_fastrtps_cpp\n'}
+[9.950977] (tuts) StdoutLine: {'line': b'[100%] \x1b[32m\x1b[1mLinking C shared library rosidl_generator_py/tuts/tuts_s__rosidl_typesupport_c.cpython-38-x86_64-linux-gnu.so\x1b[0m\n'}
+[9.951164] (-) TimerEvent: {}
+[9.977474] (simulator) StdoutLine: {'line': b'[ 54%] \x1b[34m\x1b[1mGenerating C type support for eProsima Fast-RTPS\x1b[0m\n'}
+[10.007129] (simulator) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target simulator__rosidl_typesupport_c\x1b[0m\n'}
+[10.013258] (simulator) StdoutLine: {'line': b'[ 54%] Built target simulator__rosidl_typesupport_introspection_cpp\n'}
+[10.039048] (tuts) StdoutLine: {'line': b'[100%] Built target tuts__rosidl_typesupport_c__pyext\n'}
+[10.051292] (-) TimerEvent: {}
+[10.061125] (simulator) StdoutLine: {'line': b'[ 57%] \x1b[32mBuilding CXX object CMakeFiles/simulator__rosidl_typesupport_c.dir/rosidl_typesupport_c/simulator/msg/float_array__type_support.cpp.o\x1b[0m\n'}
+[10.073077] (tuts) CommandEnded: {'returncode': 0}
+[10.136028] (simulator) StdoutLine: {'line': b'[ 60%] \x1b[32m\x1b[1mLinking CXX shared library libsimulator__rosidl_typesupport_c.so\x1b[0m\n'}
+[10.151378] (-) TimerEvent: {}
+[10.230136] (simulator) StdoutLine: {'line': b'[ 60%] Built target simulator__rosidl_typesupport_c\n'}
+[10.247726] (tuts) JobProgress: {'identifier': 'tuts', 'progress': 'install'}
+[10.251485] (-) TimerEvent: {}
+[10.264120] (tuts) Command: {'cmd': ['/usr/bin/cmake', '--install', '/home/cale/thesis-code/ws/src/build/tuts'], 'cwd': '/home/cale/thesis-code/ws/src/build/tuts', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('TMUX', '/tmp/tmux-1000/default,4037,0'), ('SNAP_INSTANCE_KEY', ''), ('USER', 'cale'), ('SNAP_COMMON', '/var/snap/tmux/common'), ('LC_TIME', 'nb_NO.UTF-8'), ('SSH_AGENT_PID', '1670'), ('XDG_SESSION_TYPE', 'x11'), ('SHLVL', '2'), ('LD_LIBRARY_PATH', '/home/cale/thesis-code/ws/install/tuts/lib:/home/cale/thesis-code/ws/install/simulator/lib:/home/cale/thesis-code/ws/install/more_interfaces/lib:/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/opt/ros/foxy/opt/yaml_cpp_vendor/lib:/opt/ros/foxy/opt/rviz_ogre_vendor/lib:/opt/ros/foxy/lib/x86_64-linux-gnu:/opt/ros/foxy/lib'), ('HOME', '/home/cale'), ('SNAP_LIBRARY_PATH', '/var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd/void'), ('OLDPWD', '/home/cale/thesis-code/ws/src/simulator'), ('DESKTOP_SESSION', 'ubuntu'), ('SNAP_USER_DATA', '/home/cale/snap/tmux/11'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('LC_MONETARY', 'nb_NO.UTF-8'), ('MANAGERPID', '1490'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('SNAP_REVISION', '11'), ('COLORTERM', 'truecolor'), ('IM_CONFIG_PHASE', '1'), ('COLCON_PREFIX_PATH', '/home/cale/thesis-code/ws/install'), ('ROS_DISTRO', 'foxy'), ('LOGNAME', 'cale'), ('SNAP_CONTEXT', '5rFTArxDeVztWap5qJ7-cC1PigRsn-87mkWt22gAypSe369qeC-h'), ('JOURNAL_STREAM', '8:43761'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_SESSION_CLASS', 'user'), ('SNAP_VERSION', '2.3'), ('USERNAME', 'cale'), ('TERM', 'xterm'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('SNAP_INSTANCE_NAME', 'tmux'), ('ROS_LOCALHOST_ONLY', '0'), ('WINDOWPATH', '2'), ('PATH', '/home/cale/.local/bin:/opt/ros/foxy/bin:/home/cale/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin'), ('SESSION_MANAGER', 'local/cale-GL503VM:@/tmp/.ICE-unix/1705,unix/cale-GL503VM:/tmp/.ICE-unix/1705'), ('INVOCATION_ID', '78c155d5685c42f7982b3d20a941ae8d'), ('XDG_MENU_PREFIX', 'gnome-'), ('LC_ADDRESS', 'nb_NO.UTF-8'), ('GNOME_TERMINAL_SCREEN', '/org/gnome/Terminal/screen/a566c6cd_098f_473d_a308_2fe8d3bf0ffe'), ('SNAP_DATA', '/var/snap/tmux/11'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':1'), ('LANG', 'en_US.UTF-8'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('LC_TELEPHONE', 'nb_NO.UTF-8'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/gdm/Xauthority'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('GNOME_TERMINAL_SERVICE', ':1.279'), ('SNAP_USER_COMMON', '/home/cale/snap/tmux/common'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('SNAP_ARCH', 'amd64'), ('AMENT_PREFIX_PATH', '/home/cale/thesis-code/ws/install/tuts:/home/cale/thesis-code/ws/install/simulator:/home/cale/thesis-code/ws/install/more_interfaces:/opt/ros/foxy'), ('SNAP_COOKIE', '5rFTArxDeVztWap5qJ7-cC1PigRsn-87mkWt22gAypSe369qeC-h'), ('SHELL', '/bin/bash'), ('LC_NAME', 'nb_NO.UTF-8'), ('QT_ACCESSIBILITY', '1'), ('SNAP_REEXEC', ''), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('SNAP_NAME', 'tmux'), ('LC_MEASUREMENT', 'nb_NO.UTF-8'), ('GPG_AGENT_INFO', '/run/user/1000/gnupg/S.gpg-agent:0:1'), ('LC_IDENTIFICATION', 'nb_NO.UTF-8'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/cale/thesis-code/ws/src/build/tuts'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('SNAP_REAL_HOME', '/home/cale'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('PYTHONPATH', '/home/cale/thesis-code/ws/install/tuts/lib/python3.8/site-packages:/home/cale/thesis-code/ws/install/simulator/lib/python3.8/site-packages:/home/cale/thesis-code/ws/install/more_interfaces/lib/python3.8/site-packages:/opt/ros/foxy/lib/python3.8/site-packages'), ('SNAP', '/snap/tmux/11'), ('LC_NUMERIC', 'nb_NO.UTF-8'), ('LC_PAPER', 'nb_NO.UTF-8'), ('COLCON', '1'), ('VTE_VERSION', '6003'), ('TMUX_PANE', '%0'), ('CMAKE_PREFIX_PATH', '/home/cale/thesis-code/ws/install/tuts:/home/cale/thesis-code/ws/install/simulator:/home/cale/thesis-code/ws/install/more_interfaces:/opt/ros/foxy')]), 'shell': False}
+[10.272312] (simulator) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target simulator__rosidl_typesupport_fastrtps_c\x1b[0m\n'}
+[10.286255] (tuts) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[10.291997] (simulator) StdoutLine: {'line': b'[ 63%] \x1b[32mBuilding CXX object CMakeFiles/simulator__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/simulator/msg/detail/float_array__type_support_c.cpp.o\x1b[0m\n'}
+[10.292273] (tuts) StdoutLine: {'line': b'-- Execute custom install script\n'}
+[10.294466] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/share/ament_index/resource_index/rosidl_interfaces/tuts\n'}
+[10.309879] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/include/tuts/msg/detail/num__functions.h\n'}
+[10.335040] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/include/tuts/msg/detail/num__struct.h\n'}
+[10.354676] (-) TimerEvent: {}
+[10.355876] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/include/tuts/msg/detail/num__type_support.h\n'}
+[10.373975] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/include/tuts/msg/num.h\n'}
+[10.394275] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/include/tuts/msg/rosidl_generator_c__visibility_control.h\n'}
+[10.410900] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/include/tuts/srv/add_ints.h\n'}
+[10.432385] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/include/tuts/srv/detail/add_ints__functions.h\n'}
+[10.450470] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/include/tuts/srv/detail/add_ints__struct.h\n'}
+[10.454773] (-) TimerEvent: {}
+[10.471369] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/include/tuts/srv/detail/add_ints__type_support.h\n'}
+[10.494040] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/environment/library_path.sh\n'}
+[10.513428] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/environment/library_path.dsv\n'}
+[10.534107] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/include/tuts/msg/detail/num__rosidl_typesupport_fastrtps_c.h\n'}
+[10.556160] (-) TimerEvent: {}
+[10.556405] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/include/tuts/msg/rosidl_typesupport_fastrtps_c__visibility_control.h\n'}
+[10.589320] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/include/tuts/srv/detail/add_ints__rosidl_typesupport_fastrtps_c.h\n'}
+[10.616221] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/lib/libtuts__rosidl_typesupport_fastrtps_c.so\n'}
+[10.635541] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/include/tuts/msg/detail/num__rosidl_typesupport_fastrtps_cpp.hpp\n'}
+[10.655469] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/include/tuts/msg/rosidl_typesupport_fastrtps_cpp__visibility_control.h\n'}
+[10.661601] (-) TimerEvent: {}
+[10.681376] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/include/tuts/srv/detail/add_ints__rosidl_typesupport_fastrtps_cpp.hpp\n'}
+[10.696566] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/lib/libtuts__rosidl_typesupport_fastrtps_cpp.so\n'}
+[10.713131] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/include/tuts/msg/detail/num__rosidl_typesupport_introspection_c.h\n'}
+[10.715979] (simulator) StdoutLine: {'line': b'[ 66%] \x1b[32m\x1b[1mLinking CXX shared library libsimulator__rosidl_typesupport_fastrtps_c.so\x1b[0m\n'}
+[10.717246] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/include/tuts/msg/rosidl_typesupport_introspection_c__visibility_control.h\n'}
+[10.727394] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/include/tuts/srv/detail/add_ints__rosidl_typesupport_introspection_c.h\n'}
+[10.738978] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/include/tuts/msg/detail/num__builder.hpp\n'}
+[10.761730] (-) TimerEvent: {}
+[10.765651] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/include/tuts/msg/detail/num__struct.hpp\n'}
+[10.791022] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/include/tuts/msg/detail/num__traits.hpp\n'}
+[10.814561] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/include/tuts/msg/num.hpp\n'}
+[10.836656] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/include/tuts/srv/add_ints.hpp\n'}
+[10.849766] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/include/tuts/srv/detail/add_ints__builder.hpp\n'}
+[10.861794] (-) TimerEvent: {}
+[10.863375] (simulator) StdoutLine: {'line': b'[ 66%] Built target simulator__rosidl_typesupport_fastrtps_c\n'}
+[10.871357] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/include/tuts/srv/detail/add_ints__struct.hpp\n'}
+[10.881333] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/include/tuts/srv/detail/add_ints__traits.hpp\n'}
+[10.890677] (simulator) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target simulator\x1b[0m\n'}
+[10.902053] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/include/tuts/msg/detail/num__rosidl_typesupport_introspection_cpp.hpp\n'}
+[10.912069] (simulator) StdoutLine: {'line': b'[ 66%] Built target simulator\n'}
+[10.925732] (simulator) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target simple_car\x1b[0m\n'}
+[10.930248] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/include/tuts/srv/detail/add_ints__rosidl_typesupport_introspection_cpp.hpp\n'}
+[10.942572] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/environment/pythonpath.sh\n'}
+[10.949729] (simulator) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target simulator__py\x1b[0m\n'}
+[10.961889] (-) TimerEvent: {}
+[10.965221] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/environment/pythonpath.dsv\n'}
+[10.987419] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/lib/python3.8/site-packages/tuts/__init__.py\n'}
+[10.989264] (simulator) StdoutLine: {'line': b'[ 69%] \x1b[34m\x1b[1mGenerating Python code for ROS interfaces\x1b[0m\n'}
+[11.008676] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/lib/python3.8/site-packages/tuts/msg/__init__.py\n'}
+[11.031172] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/lib/python3.8/site-packages/tuts/msg/_num.py\n'}
+[11.040874] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/lib/python3.8/site-packages/tuts/srv/__init__.py\n'}
+[11.052890] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/lib/python3.8/site-packages/tuts/srv/_add_ints.py\n'}
+[11.062431] (-) TimerEvent: {}
+[11.063152] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/lib/python3.8/site-packages/tuts/tuts_s__rosidl_typesupport_fastrtps_c.cpython-38-x86_64-linux-gnu.so\n'}
+[11.075130] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/lib/python3.8/site-packages/tuts/tuts_s__rosidl_typesupport_introspection_c.cpython-38-x86_64-linux-gnu.so\n'}
+[11.085742] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/lib/python3.8/site-packages/tuts/tuts_s__rosidl_typesupport_c.cpython-38-x86_64-linux-gnu.so\n'}
+[11.096769] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/lib/libtuts__python.so\n'}
+[11.113465] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/msg/Num.idl\n'}
+[11.120581] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/srv/AddInts.idl\n'}
+[11.130599] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/msg/Num.msg\n'}
+[11.139945] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/srv/AddInts.srv\n'}
+[11.150898] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/srv/AddInts_Request.msg\n'}
+[11.161282] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/srv/AddInts_Response.msg\n'}
+[11.162516] (-) TimerEvent: {}
+[11.172533] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/lib/tuts/my_node\n'}
+[11.183397] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/share/ament_index/resource_index/package_run_dependencies/tuts\n'}
+[11.206741] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/share/ament_index/resource_index/parent_prefix_path/tuts\n'}
+[11.243121] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/environment/ament_prefix_path.sh\n'}
+[11.262626] (-) TimerEvent: {}
+[11.279925] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/environment/ament_prefix_path.dsv\n'}
+[11.304244] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/environment/path.sh\n'}
+[11.330252] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/environment/path.dsv\n'}
+[11.340847] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/local_setup.bash\n'}
+[11.342243] (simulator) StdoutLine: {'line': b'[ 72%] \x1b[32mBuilding CXX object CMakeFiles/simple_car.dir/src/gazebo_plugins/simple_car.cpp.o\x1b[0m\n'}
+[11.351843] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/local_setup.sh\n'}
+[11.362713] (-) TimerEvent: {}
+[11.364301] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/local_setup.zsh\n'}
+[11.384073] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/local_setup.dsv\n'}
+[11.403936] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/package.dsv\n'}
+[11.432561] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/share/ament_index/resource_index/packages/tuts\n'}
+[11.453984] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/cmake/rosidl_cmake-extras.cmake\n'}
+[11.462802] (-) TimerEvent: {}
+[11.472067] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/cmake/ament_cmake_export_dependencies-extras.cmake\n'}
+[11.498551] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/cmake/ament_cmake_export_libraries-extras.cmake\n'}
+[11.517445] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/cmake/ament_cmake_export_targets-extras.cmake\n'}
+[11.543397] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/cmake/ament_cmake_export_include_directories-extras.cmake\n'}
+[11.562890] (-) TimerEvent: {}
+[11.577342] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/cmake/rosidl_cmake_export_typesupport_libraries-extras.cmake\n'}
+[11.608353] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/cmake/rosidl_cmake_export_typesupport_targets-extras.cmake\n'}
+[11.637684] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/cmake/tutsConfig.cmake\n'}
+[11.662983] (-) TimerEvent: {}
+[11.668806] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/cmake/tutsConfig-version.cmake\n'}
+[11.698750] (tuts) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/package.xml\n'}
+[11.729995] (tuts) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/tuts/lib/libtuts__rosidl_generator_c.so\n'}
+[11.730712] (tuts) StdoutLine: {'line': b'-- Set runtime path of "/home/cale/thesis-code/ws/src/install/tuts/lib/libtuts__rosidl_generator_c.so" to ""\n'}
+[11.731040] (tuts) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/tuts/lib/libtuts__rosidl_typesupport_introspection_c.so\n'}
+[11.732001] (tuts) StdoutLine: {'line': b'-- Set runtime path of "/home/cale/thesis-code/ws/src/install/tuts/lib/libtuts__rosidl_typesupport_introspection_c.so" to ""\n'}
+[11.732441] (tuts) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/tuts/lib/libtuts__rosidl_typesupport_c.so\n'}
+[11.733229] (tuts) StdoutLine: {'line': b'-- Set runtime path of "/home/cale/thesis-code/ws/src/install/tuts/lib/libtuts__rosidl_typesupport_c.so" to ""\n'}
+[11.733715] (tuts) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/tuts/lib/libtuts__rosidl_typesupport_introspection_cpp.so\n'}
+[11.734602] (tuts) StdoutLine: {'line': b'-- Set runtime path of "/home/cale/thesis-code/ws/src/install/tuts/lib/libtuts__rosidl_typesupport_introspection_cpp.so" to ""\n'}
+[11.735084] (tuts) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/tuts/lib/libtuts__rosidl_typesupport_cpp.so\n'}
+[11.736080] (tuts) StdoutLine: {'line': b'-- Set runtime path of "/home/cale/thesis-code/ws/src/install/tuts/lib/libtuts__rosidl_typesupport_cpp.so" to ""\n'}
+[11.763073] (-) TimerEvent: {}
+[11.815089] (tuts) StdoutLine: {'line': b"Compiling '/home/cale/thesis-code/ws/src/install/tuts/lib/python3.8/site-packages/tuts/__init__.py'...\n"}
+[11.829778] (tuts) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/cmake/tuts__rosidl_generator_cExport.cmake\n'}
+[11.829957] (tuts) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/cmake/tuts__rosidl_generator_cExport-noconfig.cmake\n'}
+[11.830042] (tuts) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/cmake/tuts__rosidl_typesupport_introspection_cExport.cmake\n'}
+[11.830116] (tuts) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/cmake/tuts__rosidl_typesupport_introspection_cExport-noconfig.cmake\n'}
+[11.836671] (tuts) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/cmake/tuts__rosidl_typesupport_cExport.cmake\n'}
+[11.836898] (tuts) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/cmake/tuts__rosidl_typesupport_cExport-noconfig.cmake\n'}
+[11.836992] (tuts) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/cmake/tuts__rosidl_generator_cppExport.cmake\n'}
+[11.837072] (tuts) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/cmake/tuts__rosidl_typesupport_introspection_cppExport.cmake\n'}
+[11.837151] (tuts) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/cmake/tuts__rosidl_typesupport_introspection_cppExport-noconfig.cmake\n'}
+[11.837241] (tuts) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/cmake/tuts__rosidl_typesupport_cppExport.cmake\n'}
+[11.837332] (tuts) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/tuts/share/tuts/cmake/tuts__rosidl_typesupport_cppExport-noconfig.cmake\n'}
+[11.840875] (tuts) CommandEnded: {'returncode': 0}
+[11.866622] (-) TimerEvent: {}
+[11.897330] (simulator) StdoutLine: {'line': b'[ 72%] Built target simulator__py\n'}
+[11.910997] (simulator) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target simulator__python\x1b[0m\n'}
+[11.966129] (simulator) StdoutLine: {'line': b'[ 75%] \x1b[32mBuilding C object CMakeFiles/simulator__python.dir/rosidl_generator_py/simulator/msg/_float_array_s.c.o\x1b[0m\n'}
+[11.966353] (-) TimerEvent: {}
+[12.066676] (-) TimerEvent: {}
+[12.099669] (simulator) StdoutLine: {'line': b'[ 78%] \x1b[32m\x1b[1mLinking C shared library rosidl_generator_py/simulator/libsimulator__python.so\x1b[0m\n'}
+[12.148171] (simulator) StdoutLine: {'line': b'[ 78%] Built target simulator__python\n'}
+[12.160029] (simulator) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target simulator__rosidl_typesupport_c__pyext\x1b[0m\n'}
+[12.166767] (-) TimerEvent: {}
+[12.187753] (simulator) StdoutLine: {'line': b'[ 81%] \x1b[32mBuilding C object CMakeFiles/simulator__rosidl_typesupport_c__pyext.dir/rosidl_generator_py/simulator/_simulator_s.ep.rosidl_typesupport_c.c.o\x1b[0m\n'}
+[12.196878] (simulator) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target simulator__rosidl_typesupport_fastrtps_c__pyext\x1b[0m\n'}
+[12.207412] (tuts) JobEnded: {'identifier': 'tuts', 'rc': 0}
+[12.237196] (simulator) StdoutLine: {'line': b'\x1b[35m\x1b[1mScanning dependencies of target simulator__rosidl_typesupport_introspection_c__pyext\x1b[0m\n'}
+[12.266869] (-) TimerEvent: {}
+[12.276966] (simulator) StdoutLine: {'line': b'[ 84%] \x1b[32mBuilding C object CMakeFiles/simulator__rosidl_typesupport_fastrtps_c__pyext.dir/rosidl_generator_py/simulator/_simulator_s.ep.rosidl_typesupport_fastrtps_c.c.o\x1b[0m\n'}
+[12.316914] (simulator) StdoutLine: {'line': b'[ 87%] \x1b[32mBuilding C object CMakeFiles/simulator__rosidl_typesupport_introspection_c__pyext.dir/rosidl_generator_py/simulator/_simulator_s.ep.rosidl_typesupport_introspection_c.c.o\x1b[0m\n'}
+[12.345599] (simulator) StdoutLine: {'line': b'[ 90%] \x1b[32m\x1b[1mLinking C shared library rosidl_generator_py/simulator/simulator_s__rosidl_typesupport_c.cpython-38-x86_64-linux-gnu.so\x1b[0m\n'}
+[12.366974] (-) TimerEvent: {}
+[12.441590] (simulator) StdoutLine: {'line': b'[ 90%] Built target simulator__rosidl_typesupport_c__pyext\n'}
+[12.460240] (simulator) StdoutLine: {'line': b'[ 93%] \x1b[32m\x1b[1mLinking C shared library rosidl_generator_py/simulator/simulator_s__rosidl_typesupport_introspection_c.cpython-38-x86_64-linux-gnu.so\x1b[0m\n'}
+[12.467084] (-) TimerEvent: {}
+[12.489541] (simulator) StdoutLine: {'line': b'[ 96%] \x1b[32m\x1b[1mLinking CXX shared library rosidl_generator_py/simulator/simulator_s__rosidl_typesupport_fastrtps_c.cpython-38-x86_64-linux-gnu.so\x1b[0m\n'}
+[12.567181] (-) TimerEvent: {}
+[12.577652] (simulator) StdoutLine: {'line': b'[ 96%] Built target simulator__rosidl_typesupport_fastrtps_c__pyext\n'}
+[12.579452] (simulator) StdoutLine: {'line': b'[ 96%] Built target simulator__rosidl_typesupport_introspection_c__pyext\n'}
+[12.667326] (-) TimerEvent: {}
+[12.767648] (-) TimerEvent: {}
+[12.867969] (-) TimerEvent: {}
+[12.968337] (-) TimerEvent: {}
+[12.995158] (more_interfaces) StdoutLine: {'line': b'[100%] \x1b[32m\x1b[1mLinking CXX executable publish_address_book\x1b[0m\n'}
+[13.068440] (-) TimerEvent: {}
+[13.168811] (-) TimerEvent: {}
+[13.196811] (more_interfaces) StdoutLine: {'line': b'[100%] Built target publish_address_book\n'}
+[13.211177] (more_interfaces) CommandEnded: {'returncode': 0}
+[13.268939] (-) TimerEvent: {}
+[13.270787] (more_interfaces) JobProgress: {'identifier': 'more_interfaces', 'progress': 'install'}
+[13.273190] (more_interfaces) Command: {'cmd': ['/usr/bin/cmake', '--install', '/home/cale/thesis-code/ws/src/build/more_interfaces'], 'cwd': '/home/cale/thesis-code/ws/src/build/more_interfaces', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('TMUX', '/tmp/tmux-1000/default,4037,0'), ('SNAP_INSTANCE_KEY', ''), ('USER', 'cale'), ('SNAP_COMMON', '/var/snap/tmux/common'), ('LC_TIME', 'nb_NO.UTF-8'), ('SSH_AGENT_PID', '1670'), ('XDG_SESSION_TYPE', 'x11'), ('SHLVL', '2'), ('LD_LIBRARY_PATH', '/home/cale/thesis-code/ws/install/tuts/lib:/home/cale/thesis-code/ws/install/simulator/lib:/home/cale/thesis-code/ws/install/more_interfaces/lib:/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/opt/ros/foxy/opt/yaml_cpp_vendor/lib:/opt/ros/foxy/opt/rviz_ogre_vendor/lib:/opt/ros/foxy/lib/x86_64-linux-gnu:/opt/ros/foxy/lib'), ('HOME', '/home/cale'), ('SNAP_LIBRARY_PATH', '/var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd/void'), ('OLDPWD', '/home/cale/thesis-code/ws/src/simulator'), ('DESKTOP_SESSION', 'ubuntu'), ('SNAP_USER_DATA', '/home/cale/snap/tmux/11'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('LC_MONETARY', 'nb_NO.UTF-8'), ('MANAGERPID', '1490'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('SNAP_REVISION', '11'), ('COLORTERM', 'truecolor'), ('IM_CONFIG_PHASE', '1'), ('COLCON_PREFIX_PATH', '/home/cale/thesis-code/ws/install'), ('ROS_DISTRO', 'foxy'), ('LOGNAME', 'cale'), ('SNAP_CONTEXT', '5rFTArxDeVztWap5qJ7-cC1PigRsn-87mkWt22gAypSe369qeC-h'), ('JOURNAL_STREAM', '8:43761'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_SESSION_CLASS', 'user'), ('SNAP_VERSION', '2.3'), ('USERNAME', 'cale'), ('TERM', 'xterm'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('SNAP_INSTANCE_NAME', 'tmux'), ('ROS_LOCALHOST_ONLY', '0'), ('WINDOWPATH', '2'), ('PATH', '/home/cale/.local/bin:/opt/ros/foxy/bin:/home/cale/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin'), ('SESSION_MANAGER', 'local/cale-GL503VM:@/tmp/.ICE-unix/1705,unix/cale-GL503VM:/tmp/.ICE-unix/1705'), ('INVOCATION_ID', '78c155d5685c42f7982b3d20a941ae8d'), ('XDG_MENU_PREFIX', 'gnome-'), ('LC_ADDRESS', 'nb_NO.UTF-8'), ('GNOME_TERMINAL_SCREEN', '/org/gnome/Terminal/screen/a566c6cd_098f_473d_a308_2fe8d3bf0ffe'), ('SNAP_DATA', '/var/snap/tmux/11'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':1'), ('LANG', 'en_US.UTF-8'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('LC_TELEPHONE', 'nb_NO.UTF-8'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/gdm/Xauthority'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('GNOME_TERMINAL_SERVICE', ':1.279'), ('SNAP_USER_COMMON', '/home/cale/snap/tmux/common'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('SNAP_ARCH', 'amd64'), ('AMENT_PREFIX_PATH', '/home/cale/thesis-code/ws/install/tuts:/home/cale/thesis-code/ws/install/simulator:/home/cale/thesis-code/ws/install/more_interfaces:/opt/ros/foxy'), ('SNAP_COOKIE', '5rFTArxDeVztWap5qJ7-cC1PigRsn-87mkWt22gAypSe369qeC-h'), ('SHELL', '/bin/bash'), ('LC_NAME', 'nb_NO.UTF-8'), ('QT_ACCESSIBILITY', '1'), ('SNAP_REEXEC', ''), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('SNAP_NAME', 'tmux'), ('LC_MEASUREMENT', 'nb_NO.UTF-8'), ('GPG_AGENT_INFO', '/run/user/1000/gnupg/S.gpg-agent:0:1'), ('LC_IDENTIFICATION', 'nb_NO.UTF-8'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/cale/thesis-code/ws/src/build/more_interfaces'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('SNAP_REAL_HOME', '/home/cale'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('PYTHONPATH', '/home/cale/thesis-code/ws/install/tuts/lib/python3.8/site-packages:/home/cale/thesis-code/ws/install/simulator/lib/python3.8/site-packages:/home/cale/thesis-code/ws/install/more_interfaces/lib/python3.8/site-packages:/opt/ros/foxy/lib/python3.8/site-packages'), ('SNAP', '/snap/tmux/11'), ('LC_NUMERIC', 'nb_NO.UTF-8'), ('LC_PAPER', 'nb_NO.UTF-8'), ('COLCON', '1'), ('VTE_VERSION', '6003'), ('TMUX_PANE', '%0'), ('CMAKE_PREFIX_PATH', '/home/cale/thesis-code/ws/install/tuts:/home/cale/thesis-code/ws/install/simulator:/home/cale/thesis-code/ws/install/more_interfaces:/opt/ros/foxy')]), 'shell': False}
+[13.290366] (more_interfaces) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[13.290559] (more_interfaces) StdoutLine: {'line': b'-- Execute custom install script\n'}
+[13.290650] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/ament_index/resource_index/rosidl_interfaces/more_interfaces\n'}
+[13.297810] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/include/more_interfaces/msg/address_book.h\n'}
+[13.311301] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/include/more_interfaces/msg/detail/address_book__functions.h\n'}
+[13.318292] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/include/more_interfaces/msg/detail/address_book__struct.h\n'}
+[13.328722] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/include/more_interfaces/msg/detail/address_book__type_support.h\n'}
+[13.340822] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/include/more_interfaces/msg/rosidl_generator_c__visibility_control.h\n'}
+[13.349752] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/environment/library_path.sh\n'}
+[13.361741] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/environment/library_path.dsv\n'}
+[13.369041] (-) TimerEvent: {}
+[13.373827] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/include/more_interfaces/msg/detail/address_book__rosidl_typesupport_fastrtps_c.h\n'}
+[13.385566] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/include/more_interfaces/msg/rosidl_typesupport_fastrtps_c__visibility_control.h\n'}
+[13.398865] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/lib/libmore_interfaces__rosidl_typesupport_fastrtps_c.so\n'}
+[13.413618] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/include/more_interfaces/msg/detail/address_book__rosidl_typesupport_fastrtps_cpp.hpp\n'}
+[13.425328] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/include/more_interfaces/msg/rosidl_typesupport_fastrtps_cpp__visibility_control.h\n'}
+[13.434622] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/lib/libmore_interfaces__rosidl_typesupport_fastrtps_cpp.so\n'}
+[13.445004] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/include/more_interfaces/msg/detail/address_book__rosidl_typesupport_introspection_c.h\n'}
+[13.455032] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/include/more_interfaces/msg/rosidl_typesupport_introspection_c__visibility_control.h\n'}
+[13.465653] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/include/more_interfaces/msg/address_book.hpp\n'}
+[13.471311] (-) TimerEvent: {}
+[13.476323] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/include/more_interfaces/msg/detail/address_book__builder.hpp\n'}
+[13.487329] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/include/more_interfaces/msg/detail/address_book__struct.hpp\n'}
+[13.499336] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/include/more_interfaces/msg/detail/address_book__traits.hpp\n'}
+[13.508705] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/include/more_interfaces/msg/detail/address_book__rosidl_typesupport_introspection_cpp.hpp\n'}
+[13.518920] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/environment/pythonpath.sh\n'}
+[13.530914] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/environment/pythonpath.dsv\n'}
+[13.542453] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/lib/python3.8/site-packages/more_interfaces/__init__.py\n'}
+[13.553679] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/lib/python3.8/site-packages/more_interfaces/msg/__init__.py\n'}
+[13.564178] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/lib/python3.8/site-packages/more_interfaces/msg/_address_book.py\n'}
+[13.575287] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/lib/python3.8/site-packages/more_interfaces/more_interfaces_s__rosidl_typesupport_fastrtps_c.cpython-38-x86_64-linux-gnu.so\n'}
+[13.575469] (-) TimerEvent: {}
+[13.585472] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/lib/python3.8/site-packages/more_interfaces/more_interfaces_s__rosidl_typesupport_introspection_c.cpython-38-x86_64-linux-gnu.so\n'}
+[13.600266] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/lib/python3.8/site-packages/more_interfaces/more_interfaces_s__rosidl_typesupport_c.cpython-38-x86_64-linux-gnu.so\n'}
+[13.624370] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/lib/libmore_interfaces__python.so\n'}
+[13.640103] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/msg/AddressBook.idl\n'}
+[13.655927] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/msg/AddressBook.msg\n'}
+[13.666748] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/lib/more_interfaces/publish_address_book\n'}
+[13.675601] (-) TimerEvent: {}
+[13.677878] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/ament_index/resource_index/package_run_dependencies/more_interfaces\n'}
+[13.692062] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/ament_index/resource_index/parent_prefix_path/more_interfaces\n'}
+[13.705842] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/environment/ament_prefix_path.sh\n'}
+[13.716467] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/environment/ament_prefix_path.dsv\n'}
+[13.726863] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/environment/path.sh\n'}
+[13.737428] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/environment/path.dsv\n'}
+[13.748344] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/local_setup.bash\n'}
+[13.758905] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/local_setup.sh\n'}
+[13.769262] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/local_setup.zsh\n'}
+[13.776391] (-) TimerEvent: {}
+[13.780101] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/local_setup.dsv\n'}
+[13.790705] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/package.dsv\n'}
+[13.801589] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/ament_index/resource_index/packages/more_interfaces\n'}
+[13.812717] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/rosidl_cmake-extras.cmake\n'}
+[13.823541] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/ament_cmake_export_dependencies-extras.cmake\n'}
+[13.834314] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/ament_cmake_export_libraries-extras.cmake\n'}
+[13.845194] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/ament_cmake_export_targets-extras.cmake\n'}
+[13.855861] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/ament_cmake_export_include_directories-extras.cmake\n'}
+[13.866848] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/rosidl_cmake_export_typesupport_libraries-extras.cmake\n'}
+[13.876490] (-) TimerEvent: {}
+[13.878292] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/rosidl_cmake_export_typesupport_targets-extras.cmake\n'}
+[13.889287] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/more_interfacesConfig.cmake\n'}
+[13.899735] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/more_interfacesConfig-version.cmake\n'}
+[13.910722] (more_interfaces) StdoutLine: {'line': b'-- Symlinking: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/package.xml\n'}
+[13.921624] (more_interfaces) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/more_interfaces/lib/libmore_interfaces__rosidl_generator_c.so\n'}
+[13.922436] (more_interfaces) StdoutLine: {'line': b'-- Set runtime path of "/home/cale/thesis-code/ws/src/install/more_interfaces/lib/libmore_interfaces__rosidl_generator_c.so" to ""\n'}
+[13.922816] (more_interfaces) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/more_interfaces/lib/libmore_interfaces__rosidl_typesupport_introspection_c.so\n'}
+[13.923480] (more_interfaces) StdoutLine: {'line': b'-- Set runtime path of "/home/cale/thesis-code/ws/src/install/more_interfaces/lib/libmore_interfaces__rosidl_typesupport_introspection_c.so" to ""\n'}
+[13.923827] (more_interfaces) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/more_interfaces/lib/libmore_interfaces__rosidl_typesupport_c.so\n'}
+[13.924440] (more_interfaces) StdoutLine: {'line': b'-- Set runtime path of "/home/cale/thesis-code/ws/src/install/more_interfaces/lib/libmore_interfaces__rosidl_typesupport_c.so" to ""\n'}
+[13.924781] (more_interfaces) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/more_interfaces/lib/libmore_interfaces__rosidl_typesupport_introspection_cpp.so\n'}
+[13.925444] (more_interfaces) StdoutLine: {'line': b'-- Set runtime path of "/home/cale/thesis-code/ws/src/install/more_interfaces/lib/libmore_interfaces__rosidl_typesupport_introspection_cpp.so" to ""\n'}
+[13.925767] (more_interfaces) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/more_interfaces/lib/libmore_interfaces__rosidl_typesupport_cpp.so\n'}
+[13.926369] (more_interfaces) StdoutLine: {'line': b'-- Set runtime path of "/home/cale/thesis-code/ws/src/install/more_interfaces/lib/libmore_interfaces__rosidl_typesupport_cpp.so" to ""\n'}
+[13.962272] (more_interfaces) StdoutLine: {'line': b"Compiling '/home/cale/thesis-code/ws/src/install/more_interfaces/lib/python3.8/site-packages/more_interfaces/__init__.py'...\n"}
+[13.967643] (more_interfaces) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/more_interfaces__rosidl_generator_cExport.cmake\n'}
+[13.968171] (more_interfaces) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/more_interfaces__rosidl_generator_cExport-noconfig.cmake\n'}
+[13.968617] (more_interfaces) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/more_interfaces__rosidl_typesupport_introspection_cExport.cmake\n'}
+[13.969002] (more_interfaces) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/more_interfaces__rosidl_typesupport_introspection_cExport-noconfig.cmake\n'}
+[13.969416] (more_interfaces) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/more_interfaces__rosidl_typesupport_cExport.cmake\n'}
+[13.969796] (more_interfaces) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/more_interfaces__rosidl_typesupport_cExport-noconfig.cmake\n'}
+[13.970206] (more_interfaces) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/more_interfaces__rosidl_generator_cppExport.cmake\n'}
+[13.970617] (more_interfaces) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/more_interfaces__rosidl_typesupport_introspection_cppExport.cmake\n'}
+[13.970971] (more_interfaces) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/more_interfaces__rosidl_typesupport_introspection_cppExport-noconfig.cmake\n'}
+[13.971392] (more_interfaces) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/more_interfaces__rosidl_typesupport_cppExport.cmake\n'}
+[13.971729] (more_interfaces) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/more_interfaces/share/more_interfaces/cmake/more_interfaces__rosidl_typesupport_cppExport-noconfig.cmake\n'}
+[13.979416] (more_interfaces) CommandEnded: {'returncode': 0}
+[13.979817] (-) TimerEvent: {}
+[14.085281] (-) TimerEvent: {}
+[14.086721] (more_interfaces) JobEnded: {'identifier': 'more_interfaces', 'rc': 0}
+[14.185399] (-) TimerEvent: {}
+[14.285700] (-) TimerEvent: {}
+[14.386008] (-) TimerEvent: {}
+[14.486335] (-) TimerEvent: {}
+[14.586655] (-) TimerEvent: {}
+[14.686991] (-) TimerEvent: {}
+[14.787324] (-) TimerEvent: {}
+[14.887648] (-) TimerEvent: {}
+[14.987985] (-) TimerEvent: {}
+[15.088317] (-) TimerEvent: {}
+[15.188623] (-) TimerEvent: {}
+[15.288930] (-) TimerEvent: {}
+[15.389234] (-) TimerEvent: {}
+[15.489535] (-) TimerEvent: {}
+[15.589870] (-) TimerEvent: {}
+[15.690205] (-) TimerEvent: {}
+[15.790534] (-) TimerEvent: {}
+[15.890867] (-) TimerEvent: {}
+[15.991167] (-) TimerEvent: {}
+[16.091443] (-) TimerEvent: {}
+[16.191767] (-) TimerEvent: {}
+[16.292078] (-) TimerEvent: {}
+[16.392378] (-) TimerEvent: {}
+[16.492707] (-) TimerEvent: {}
+[16.593033] (-) TimerEvent: {}
+[16.693350] (-) TimerEvent: {}
+[16.793679] (-) TimerEvent: {}
+[16.894033] (-) TimerEvent: {}
+[16.994321] (-) TimerEvent: {}
+[17.094641] (-) TimerEvent: {}
+[17.194919] (-) TimerEvent: {}
+[17.295221] (-) TimerEvent: {}
+[17.395514] (-) TimerEvent: {}
+[17.495802] (-) TimerEvent: {}
+[17.596122] (-) TimerEvent: {}
+[17.696414] (-) TimerEvent: {}
+[17.796736] (-) TimerEvent: {}
+[17.897092] (-) TimerEvent: {}
+[17.997408] (-) TimerEvent: {}
+[18.097703] (-) TimerEvent: {}
+[18.198516] (-) TimerEvent: {}
+[18.298830] (-) TimerEvent: {}
+[18.399151] (-) TimerEvent: {}
+[18.499452] (-) TimerEvent: {}
+[18.599798] (-) TimerEvent: {}
+[18.700260] (-) TimerEvent: {}
+[18.800560] (-) TimerEvent: {}
+[18.900881] (-) TimerEvent: {}
+[19.001155] (-) TimerEvent: {}
+[19.101467] (-) TimerEvent: {}
+[19.201754] (-) TimerEvent: {}
+[19.302065] (-) TimerEvent: {}
+[19.402394] (-) TimerEvent: {}
+[19.502664] (-) TimerEvent: {}
+[19.602970] (-) TimerEvent: {}
+[19.703269] (-) TimerEvent: {}
+[19.803548] (-) TimerEvent: {}
+[19.903862] (-) TimerEvent: {}
+[20.004137] (-) TimerEvent: {}
+[20.104457] (-) TimerEvent: {}
+[20.204757] (-) TimerEvent: {}
+[20.305061] (-) TimerEvent: {}
+[20.405336] (-) TimerEvent: {}
+[20.505618] (-) TimerEvent: {}
+[20.605924] (-) TimerEvent: {}
+[20.706229] (-) TimerEvent: {}
+[20.806523] (-) TimerEvent: {}
+[20.906832] (-) TimerEvent: {}
+[21.007141] (-) TimerEvent: {}
+[21.107414] (-) TimerEvent: {}
+[21.207739] (-) TimerEvent: {}
+[21.308060] (-) TimerEvent: {}
+[21.408354] (-) TimerEvent: {}
+[21.508643] (-) TimerEvent: {}
+[21.608910] (-) TimerEvent: {}
+[21.709255] (-) TimerEvent: {}
+[21.809541] (-) TimerEvent: {}
+[21.909873] (-) TimerEvent: {}
+[22.010274] (-) TimerEvent: {}
+[22.110647] (-) TimerEvent: {}
+[22.210922] (-) TimerEvent: {}
+[22.311254] (-) TimerEvent: {}
+[22.411629] (-) TimerEvent: {}
+[22.511905] (-) TimerEvent: {}
+[22.612192] (-) TimerEvent: {}
+[22.712497] (-) TimerEvent: {}
+[22.813005] (-) TimerEvent: {}
+[22.913284] (-) TimerEvent: {}
+[23.013566] (-) TimerEvent: {}
+[23.113866] (-) TimerEvent: {}
+[23.214180] (-) TimerEvent: {}
+[23.314464] (-) TimerEvent: {}
+[23.414751] (-) TimerEvent: {}
+[23.515049] (-) TimerEvent: {}
+[23.615327] (-) TimerEvent: {}
+[23.715636] (-) TimerEvent: {}
+[23.815950] (-) TimerEvent: {}
+[23.916261] (-) TimerEvent: {}
+[24.016538] (-) TimerEvent: {}
+[24.116842] (-) TimerEvent: {}
+[24.217149] (-) TimerEvent: {}
+[24.317463] (-) TimerEvent: {}
+[24.417771] (-) TimerEvent: {}
+[24.518072] (-) TimerEvent: {}
+[24.618350] (-) TimerEvent: {}
+[24.718648] (-) TimerEvent: {}
+[24.818931] (-) TimerEvent: {}
+[24.919216] (-) TimerEvent: {}
+[25.019494] (-) TimerEvent: {}
+[25.119772] (-) TimerEvent: {}
+[25.220071] (-) TimerEvent: {}
+[25.320357] (-) TimerEvent: {}
+[25.420626] (-) TimerEvent: {}
+[25.520904] (-) TimerEvent: {}
+[25.621185] (-) TimerEvent: {}
+[25.721470] (-) TimerEvent: {}
+[25.821814] (-) TimerEvent: {}
+[25.922099] (-) TimerEvent: {}
+[26.022395] (-) TimerEvent: {}
+[26.122753] (-) TimerEvent: {}
+[26.189890] (simulator) StdoutLine: {'line': b'[100%] \x1b[32m\x1b[1mLinking CXX shared library libsimple_car.so\x1b[0m\n'}
+[26.222872] (-) TimerEvent: {}
+[26.323410] (-) TimerEvent: {}
+[26.423774] (-) TimerEvent: {}
+[26.524081] (-) TimerEvent: {}
+[26.624430] (-) TimerEvent: {}
+[26.724890] (-) TimerEvent: {}
+[26.825374] (-) TimerEvent: {}
+[26.925804] (-) TimerEvent: {}
+[27.026094] (-) TimerEvent: {}
+[27.106659] (simulator) StdoutLine: {'line': b'[100%] Built target simple_car\n'}
+[27.120349] (simulator) CommandEnded: {'returncode': 0}
+[27.126262] (-) TimerEvent: {}
+[27.181602] (simulator) JobProgress: {'identifier': 'simulator', 'progress': 'install'}
+[27.182519] (simulator) Command: {'cmd': ['/usr/bin/cmake', '--install', '/home/cale/thesis-code/ws/src/build/simulator'], 'cwd': '/home/cale/thesis-code/ws/src/build/simulator', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('TMUX', '/tmp/tmux-1000/default,4037,0'), ('SNAP_INSTANCE_KEY', ''), ('USER', 'cale'), ('SNAP_COMMON', '/var/snap/tmux/common'), ('LC_TIME', 'nb_NO.UTF-8'), ('SSH_AGENT_PID', '1670'), ('XDG_SESSION_TYPE', 'x11'), ('SHLVL', '2'), ('LD_LIBRARY_PATH', '/home/cale/thesis-code/ws/install/tuts/lib:/home/cale/thesis-code/ws/install/simulator/lib:/home/cale/thesis-code/ws/install/more_interfaces/lib:/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/opt/ros/foxy/opt/yaml_cpp_vendor/lib:/opt/ros/foxy/opt/rviz_ogre_vendor/lib:/opt/ros/foxy/lib/x86_64-linux-gnu:/opt/ros/foxy/lib'), ('HOME', '/home/cale'), ('SNAP_LIBRARY_PATH', '/var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd/void'), ('OLDPWD', '/home/cale/thesis-code/ws/src/simulator'), ('DESKTOP_SESSION', 'ubuntu'), ('SNAP_USER_DATA', '/home/cale/snap/tmux/11'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('LC_MONETARY', 'nb_NO.UTF-8'), ('MANAGERPID', '1490'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('SNAP_REVISION', '11'), ('COLORTERM', 'truecolor'), ('IM_CONFIG_PHASE', '1'), ('COLCON_PREFIX_PATH', '/home/cale/thesis-code/ws/install'), ('ROS_DISTRO', 'foxy'), ('LOGNAME', 'cale'), ('SNAP_CONTEXT', '5rFTArxDeVztWap5qJ7-cC1PigRsn-87mkWt22gAypSe369qeC-h'), ('JOURNAL_STREAM', '8:43761'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_SESSION_CLASS', 'user'), ('SNAP_VERSION', '2.3'), ('USERNAME', 'cale'), ('TERM', 'xterm'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('SNAP_INSTANCE_NAME', 'tmux'), ('ROS_LOCALHOST_ONLY', '0'), ('WINDOWPATH', '2'), ('PATH', '/home/cale/.local/bin:/opt/ros/foxy/bin:/home/cale/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin'), ('SESSION_MANAGER', 'local/cale-GL503VM:@/tmp/.ICE-unix/1705,unix/cale-GL503VM:/tmp/.ICE-unix/1705'), ('INVOCATION_ID', '78c155d5685c42f7982b3d20a941ae8d'), ('XDG_MENU_PREFIX', 'gnome-'), ('LC_ADDRESS', 'nb_NO.UTF-8'), ('GNOME_TERMINAL_SCREEN', '/org/gnome/Terminal/screen/a566c6cd_098f_473d_a308_2fe8d3bf0ffe'), ('SNAP_DATA', '/var/snap/tmux/11'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':1'), ('LANG', 'en_US.UTF-8'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('LC_TELEPHONE', 'nb_NO.UTF-8'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/gdm/Xauthority'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('GNOME_TERMINAL_SERVICE', ':1.279'), ('SNAP_USER_COMMON', '/home/cale/snap/tmux/common'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('SNAP_ARCH', 'amd64'), ('AMENT_PREFIX_PATH', '/home/cale/thesis-code/ws/install/tuts:/home/cale/thesis-code/ws/install/simulator:/home/cale/thesis-code/ws/install/more_interfaces:/opt/ros/foxy'), ('SNAP_COOKIE', '5rFTArxDeVztWap5qJ7-cC1PigRsn-87mkWt22gAypSe369qeC-h'), ('SHELL', '/bin/bash'), ('LC_NAME', 'nb_NO.UTF-8'), ('QT_ACCESSIBILITY', '1'), ('SNAP_REEXEC', ''), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('SNAP_NAME', 'tmux'), ('LC_MEASUREMENT', 'nb_NO.UTF-8'), ('GPG_AGENT_INFO', '/run/user/1000/gnupg/S.gpg-agent:0:1'), ('LC_IDENTIFICATION', 'nb_NO.UTF-8'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/cale/thesis-code/ws/src/build/simulator'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('SNAP_REAL_HOME', '/home/cale'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('PYTHONPATH', '/home/cale/thesis-code/ws/install/tuts/lib/python3.8/site-packages:/home/cale/thesis-code/ws/install/simulator/lib/python3.8/site-packages:/home/cale/thesis-code/ws/install/more_interfaces/lib/python3.8/site-packages:/opt/ros/foxy/lib/python3.8/site-packages'), ('SNAP', '/snap/tmux/11'), ('LC_NUMERIC', 'nb_NO.UTF-8'), ('LC_PAPER', 'nb_NO.UTF-8'), ('COLCON', '1'), ('VTE_VERSION', '6003'), ('TMUX_PANE', '%0'), ('CMAKE_PREFIX_PATH', '/home/cale/thesis-code/ws/install/tuts:/home/cale/thesis-code/ws/install/simulator:/home/cale/thesis-code/ws/install/more_interfaces')]), 'shell': False}
+[27.194024] (simulator) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[27.195532] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/share/ament_index/resource_index/rosidl_interfaces/simulator\n'}
+[27.195680] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/include/simulator\n'}
+[27.195767] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/include/simulator/msg\n'}
+[27.195843] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/include/simulator/msg/rosidl_generator_c__visibility_control.h\n'}
+[27.195914] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/include/simulator/msg/float_array.h\n'}
+[27.195986] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/include/simulator/msg/detail\n'}
+[27.196053] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/include/simulator/msg/detail/float_array__functions.c\n'}
+[27.196120] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/include/simulator/msg/detail/float_array__type_support.h\n'}
+[27.196187] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/include/simulator/msg/detail/float_array__functions.h\n'}
+[27.196253] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/include/simulator/msg/detail/float_array__struct.h\n'}
+[27.199689] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/share/simulator/environment/library_path.sh\n'}
+[27.199905] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/share/simulator/environment/library_path.dsv\n'}
+[27.200079] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/lib/libsimulator__rosidl_generator_c.so\n'}
+[27.200197] (simulator) StdoutLine: {'line': b'-- Set runtime path of "/home/cale/thesis-code/ws/src/install/simulator/lib/libsimulator__rosidl_generator_c.so" to ""\n'}
+[27.200341] (simulator) StdoutLine: {'line': b'-- Up-to-date: /home/cale/thesis-code/ws/src/install/simulator/include/simulator\n'}
+[27.200456] (simulator) StdoutLine: {'line': b'-- Up-to-date: /home/cale/thesis-code/ws/src/install/simulator/include/simulator/msg\n'}
+[27.200559] (simulator) StdoutLine: {'line': b'-- Up-to-date: /home/cale/thesis-code/ws/src/install/simulator/include/simulator/msg/detail\n'}
+[27.200637] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/include/simulator/msg/detail/float_array__rosidl_typesupport_fastrtps_c.h\n'}
+[27.200711] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/include/simulator/msg/rosidl_typesupport_fastrtps_c__visibility_control.h\n'}
+[27.200788] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/lib/libsimulator__rosidl_typesupport_fastrtps_c.so\n'}
+[27.200976] (simulator) StdoutLine: {'line': b'-- Set runtime path of "/home/cale/thesis-code/ws/src/install/simulator/lib/libsimulator__rosidl_typesupport_fastrtps_c.so" to ""\n'}
+[27.201070] (simulator) StdoutLine: {'line': b'-- Up-to-date: /home/cale/thesis-code/ws/src/install/simulator/include/simulator\n'}
+[27.201146] (simulator) StdoutLine: {'line': b'-- Up-to-date: /home/cale/thesis-code/ws/src/install/simulator/include/simulator/msg\n'}
+[27.201219] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/include/simulator/msg/rosidl_typesupport_fastrtps_cpp__visibility_control.h\n'}
+[27.201290] (simulator) StdoutLine: {'line': b'-- Up-to-date: /home/cale/thesis-code/ws/src/install/simulator/include/simulator/msg/detail\n'}
+[27.201359] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/include/simulator/msg/detail/float_array__rosidl_typesupport_fastrtps_cpp.hpp\n'}
+[27.201428] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/include/simulator/msg/detail/dds_fastrtps\n'}
+[27.201506] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/lib/libsimulator__rosidl_typesupport_fastrtps_cpp.so\n'}
+[27.201576] (simulator) StdoutLine: {'line': b'-- Set runtime path of "/home/cale/thesis-code/ws/src/install/simulator/lib/libsimulator__rosidl_typesupport_fastrtps_cpp.so" to ""\n'}
+[27.201645] (simulator) StdoutLine: {'line': b'-- Up-to-date: /home/cale/thesis-code/ws/src/install/simulator/include/simulator\n'}
+[27.201713] (simulator) StdoutLine: {'line': b'-- Up-to-date: /home/cale/thesis-code/ws/src/install/simulator/include/simulator/msg\n'}
+[27.201792] (simulator) StdoutLine: {'line': b'-- Up-to-date: /home/cale/thesis-code/ws/src/install/simulator/include/simulator/msg/detail\n'}
+[27.201858] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/include/simulator/msg/detail/float_array__type_support.c\n'}
+[27.201924] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/include/simulator/msg/detail/float_array__rosidl_typesupport_introspection_c.h\n'}
+[27.201991] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/include/simulator/msg/rosidl_typesupport_introspection_c__visibility_control.h\n'}
+[27.202055] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/lib/libsimulator__rosidl_typesupport_introspection_c.so\n'}
+[27.202140] (simulator) StdoutLine: {'line': b'-- Set runtime path of "/home/cale/thesis-code/ws/src/install/simulator/lib/libsimulator__rosidl_typesupport_introspection_c.so" to ""\n'}
+[27.202209] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/lib/libsimulator__rosidl_typesupport_c.so\n'}
+[27.202278] (simulator) StdoutLine: {'line': b'-- Set runtime path of "/home/cale/thesis-code/ws/src/install/simulator/lib/libsimulator__rosidl_typesupport_c.so" to ""\n'}
+[27.202358] (simulator) StdoutLine: {'line': b'-- Up-to-date: /home/cale/thesis-code/ws/src/install/simulator/include/simulator\n'}
+[27.202424] (simulator) StdoutLine: {'line': b'-- Up-to-date: /home/cale/thesis-code/ws/src/install/simulator/include/simulator/msg\n'}
+[27.202489] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/include/simulator/msg/float_array.hpp\n'}
+[27.202568] (simulator) StdoutLine: {'line': b'-- Up-to-date: /home/cale/thesis-code/ws/src/install/simulator/include/simulator/msg/detail\n'}
+[27.202636] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/include/simulator/msg/detail/float_array__struct.hpp\n'}
+[27.202704] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/include/simulator/msg/detail/float_array__builder.hpp\n'}
+[27.202772] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/include/simulator/msg/detail/float_array__traits.hpp\n'}
+[27.202844] (simulator) StdoutLine: {'line': b'-- Up-to-date: /home/cale/thesis-code/ws/src/install/simulator/include/simulator\n'}
+[27.202911] (simulator) StdoutLine: {'line': b'-- Up-to-date: /home/cale/thesis-code/ws/src/install/simulator/include/simulator/msg\n'}
+[27.202978] (simulator) StdoutLine: {'line': b'-- Up-to-date: /home/cale/thesis-code/ws/src/install/simulator/include/simulator/msg/detail\n'}
+[27.203046] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/include/simulator/msg/detail/float_array__type_support.cpp\n'}
+[27.203186] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/include/simulator/msg/detail/float_array__rosidl_typesupport_introspection_cpp.hpp\n'}
+[27.203419] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/lib/libsimulator__rosidl_typesupport_introspection_cpp.so\n'}
+[27.203502] (simulator) StdoutLine: {'line': b'-- Set runtime path of "/home/cale/thesis-code/ws/src/install/simulator/lib/libsimulator__rosidl_typesupport_introspection_cpp.so" to ""\n'}
+[27.203579] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/lib/libsimulator__rosidl_typesupport_cpp.so\n'}
+[27.203652] (simulator) StdoutLine: {'line': b'-- Set runtime path of "/home/cale/thesis-code/ws/src/install/simulator/lib/libsimulator__rosidl_typesupport_cpp.so" to ""\n'}
+[27.203724] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/share/simulator/environment/pythonpath.sh\n'}
+[27.203793] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/share/simulator/environment/pythonpath.dsv\n'}
+[27.203862] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/lib/python3.8/site-packages/simulator/__init__.py\n'}
+[27.226349] (-) TimerEvent: {}
+[27.236445] (simulator) StdoutLine: {'line': b"Compiling '/home/cale/thesis-code/ws/src/install/simulator/lib/python3.8/site-packages/simulator/__init__.py'...\n"}
+[27.241132] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/lib/python3.8/site-packages/simulator/msg\n'}
+[27.241382] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/lib/python3.8/site-packages/simulator/msg/_float_array.py\n'}
+[27.241499] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/lib/python3.8/site-packages/simulator/msg/__init__.py\n'}
+[27.241574] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/lib/python3.8/site-packages/simulator/msg/_float_array_s.c\n'}
+[27.241765] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/lib/python3.8/site-packages/simulator/simulator_s__rosidl_typesupport_fastrtps_c.cpython-38-x86_64-linux-gnu.so\n'}
+[27.242334] (simulator) StdoutLine: {'line': b'-- Set runtime path of "/home/cale/thesis-code/ws/src/install/simulator/lib/python3.8/site-packages/simulator/simulator_s__rosidl_typesupport_fastrtps_c.cpython-38-x86_64-linux-gnu.so" to ""\n'}
+[27.242635] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/lib/python3.8/site-packages/simulator/simulator_s__rosidl_typesupport_introspection_c.cpython-38-x86_64-linux-gnu.so\n'}
+[27.243165] (simulator) StdoutLine: {'line': b'-- Set runtime path of "/home/cale/thesis-code/ws/src/install/simulator/lib/python3.8/site-packages/simulator/simulator_s__rosidl_typesupport_introspection_c.cpython-38-x86_64-linux-gnu.so" to ""\n'}
+[27.244553] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/lib/python3.8/site-packages/simulator/simulator_s__rosidl_typesupport_c.cpython-38-x86_64-linux-gnu.so\n'}
+[27.245107] (simulator) StdoutLine: {'line': b'-- Set runtime path of "/home/cale/thesis-code/ws/src/install/simulator/lib/python3.8/site-packages/simulator/simulator_s__rosidl_typesupport_c.cpython-38-x86_64-linux-gnu.so" to ""\n'}
+[27.245258] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/lib/libsimulator__python.so\n'}
+[27.245731] (simulator) StdoutLine: {'line': b'-- Set runtime path of "/home/cale/thesis-code/ws/src/install/simulator/lib/libsimulator__python.so" to ""\n'}
+[27.245853] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/share/simulator/msg/FloatArray.idl\n'}
+[27.246070] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/share/simulator/msg/FloatArray.msg\n'}
+[27.246236] (simulator) StdoutLine: {'line': b'-- Installing: /home/cale/thesis-code/ws/src/install/simulator/lib/libsimple_car.so\n'}
+[27.254659] (simulator) StdoutLine: {'line': b'-- Set runtime path of "/home/cale/thesis-code/ws/src/install/simulator/lib/libsimple_car.so" to ""\n'}
+[27.255353] (simulator) StderrLine: {'line': b'CMake Error at cmake_install.cmake:385 (file):\n'}
+[27.255514] (simulator) StderrLine: {'line': b'  file INSTALL cannot find\n'}
+[27.255596] (simulator) StderrLine: {'line': b'  "/home/cale/thesis-code/ws/src/simulator/scripts/spawn_vehicle.py": No such\n'}
+[27.255669] (simulator) StderrLine: {'line': b'  file or directory.\n'}
+[27.255738] (simulator) StderrLine: {'line': b'\n'}
+[27.255807] (simulator) StderrLine: {'line': b'\n'}
+[27.255883] (simulator) CommandEnded: {'returncode': 1}
+[27.256317] (simulator) JobEnded: {'identifier': 'simulator', 'rc': 1}
+[27.266803] (-) EventReactorShutdown: {}

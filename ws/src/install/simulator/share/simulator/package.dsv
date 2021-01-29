@@ -1,0 +1,14 @@
+source;share/simulator/hook/cmake_prefix_path.ps1
+source;share/simulator/hook/cmake_prefix_path.dsv
+source;share/simulator/hook/cmake_prefix_path.sh
+source;share/simulator/hook/ld_library_path_lib.ps1
+source;share/simulator/hook/ld_library_path_lib.dsv
+source;share/simulator/hook/ld_library_path_lib.sh
+source;share/simulator/hook/pythonpath.ps1
+source;share/simulator/hook/pythonpath.dsv
+source;share/simulator/hook/pythonpath.sh
+source;share/simulator/local_setup.bash
+source;share/simulator/local_setup.dsv
+source;share/simulator/local_setup.ps1
+source;share/simulator/local_setup.sh
+source;share/simulator/local_setup.zsh

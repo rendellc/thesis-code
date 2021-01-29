@@ -20,14 +20,13 @@ def generate_launch_description():
     # TODO: don't hardcode path
     modelfile = "/home/cale/thesis-code/ws/src/simulator/models/simple_car/model.urdf"
     
-    spawn_entity = Node(
-        package="gazebo_ros",
-        executable="spawn_entity.py",
-        arguments=["-entity", "vehicle", "-file", modelfile]
-    )
+    # spawn_entity = Node(
+    #     package="gazebo_ros",
+    #     executable="spawn_entity.py",
+    #     arguments=["-entity", "vehicle", "-file", modelfile]
+    # )
 
     return LaunchDescription([
         gazebo,
-        spawn_entity
     ])    
     

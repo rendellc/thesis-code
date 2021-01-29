@@ -1,0 +1,1 @@
+ament_cmake_symlink_install_targets("TARGET_FILES" "/home/cale/thesis-code/ws/src/build/tuts/rosidl_generator_py/tuts/libtuts__python.so" "TARGETS" "tuts__python" "ARCHIVE_DESTINATION" "lib" "LIBRARY_DESTINATION" "lib" "RUNTIME_DESTINATION" "bin")

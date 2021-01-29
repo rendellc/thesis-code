@@ -1,0 +1,4 @@
+source;share/simulator/environment/ament_prefix_path.sh
+source;share/simulator/environment/library_path.sh
+source;share/simulator/environment/path.sh
+source;share/simulator/environment/pythonpath.sh
