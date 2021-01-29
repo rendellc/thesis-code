@@ -19,6 +19,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(gazebo_ros REQUIRED)
 find_package(gazebo_dev REQUIRED)
+find_package(geometry_msgs REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 
@@ -35,6 +36,7 @@ target_include_directories(simple_car PUBLIC include)
 ament_target_dependencies(simple_car
   "gazebo_dev"
   "gazebo_ros"
+  "geometry_msgs"
   "rclcpp"
 )
 rosidl_target_interfaces(simple_car
