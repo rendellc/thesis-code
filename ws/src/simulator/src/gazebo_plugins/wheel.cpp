@@ -7,8 +7,8 @@
 
 #include <rcpputils/asserts.hpp>
 
-#include "simulator/msg/wheel_command.hpp"
-#include "simulator/msg/wheel_state.hpp"
+#include "vehicle_interface/msg/wheel_command.hpp"
+#include "vehicle_interface/msg/wheel_state.hpp"
 
 #include <memory>
 
@@ -25,8 +25,8 @@ private:
     gazebo::physics::JointPtr drive_joint_p, steer_joint_p;
 
     gazebo_ros::Node::SharedPtr ros_node_p;
-    rclcpp::Subscription<simulator::msg::WheelCommand>::SharedPtr command_sub_p;
-    rclcpp::Publisher<simulator::msg::WheelState>::SharedPtr wheel_state_pub_p;
+    rclcpp::Subscription<vehicle_interface::msg::WheelCommand>::SharedPtr command_sub_p;
+    rclcpp::Publisher<vehicle_interface::msg::WheelState>::SharedPtr wheel_state_pub_p;
 
     std::string name = "";
     double drive_torque = 0.0;
@@ -39,7 +39,7 @@ private:
         drive_joint_p->SetForce(z_axis_index, drive_torque);
         steer_joint_p->SetForce(z_axis_index, steer_torque);
         
-        simulator::msg::WheelState wheel_state_msg;
+        vehicle_interface::msg::WheelState wheel_state_msg;
         wheel_state_msg.angular_velocity = drive_joint_p->GetVelocity(z_axis_index);
         
         wheel_state_msg.steering_angle = steer_joint_p->Position();
@@ -49,7 +49,7 @@ private:
         wheel_state_pub_p->publish(wheel_state_msg);
     }
 
-    void OnCommand(simulator::msg::WheelCommand::SharedPtr msg_p)
+    void OnCommand(vehicle_interface::msg::WheelCommand::SharedPtr msg_p)
     {
         drive_torque = msg_p->drive_torque;
         steer_torque = msg_p->steer_torque;
@@ -100,13 +100,13 @@ void WheelPrivate::Load(gazebo::physics::ModelPtr model_p, sdf::ElementPtr sdf_p
     
     // ros_node_p->create_subscriber()
     const auto command_topic = name + "/command";
-    command_sub_p = ros_node_p->create_subscription<simulator::msg::WheelCommand>(
+    command_sub_p = ros_node_p->create_subscription<vehicle_interface::msg::WheelCommand>(
         command_topic, qos.get_subscription_qos(command_topic, rclcpp::QoS(1)),
         std::bind(&WheelPrivate::OnCommand, this, std::placeholders::_1)
     );
     
     const auto state_topic = name + "/state";
-    wheel_state_pub_p = ros_node_p->create_publisher<simulator::msg::WheelState>(
+    wheel_state_pub_p = ros_node_p->create_publisher<vehicle_interface::msg::WheelState>(
         state_topic, qos.get_publisher_qos(state_topic, rclcpp::QoS(1))
     );
 

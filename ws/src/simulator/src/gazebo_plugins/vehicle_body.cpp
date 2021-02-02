@@ -12,8 +12,6 @@
 
 #include <geometry_msgs/msg/pose.h>
 
-#include "simulator/msg/float_array.hpp"
-
 #include <iostream>
 #include <array>
 
