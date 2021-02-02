@@ -19,9 +19,9 @@ def main(args=None):
     request = SpawnEntity.Request()
     request.name = "vehicle"
     request.xml = urdf
-    request.robot_namespace = "vehicle_namespace"
-    request.initial_pose.position.x = 5.0
-    request.initial_pose.position.y = 5.0
+    request.robot_namespace = "vehicle"
+    request.initial_pose.position.x = 2.0
+    request.initial_pose.position.y = 2.0
     request.initial_pose.position.z = 1.3
 
     request.reference_frame = "map"

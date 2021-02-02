@@ -1,6 +1,0 @@
-{
-  "package_name": "simulator",
-  "non_idl_tuples": [
-    "/home/cale/thesis-code/ws/src/simulator:msg/FloatArray.msg"
-  ]
-}

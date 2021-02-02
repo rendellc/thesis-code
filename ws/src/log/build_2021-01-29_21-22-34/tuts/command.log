@@ -1,6 +1,0 @@
-Invoking command in '/home/cale/thesis-code/ws/src/build/tuts': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/foxy /usr/bin/cmake /home/cale/thesis-code/ws/src/tuts -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/cale/thesis-code/ws/src/install/tuts
-Invoked command in '/home/cale/thesis-code/ws/src/build/tuts' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/foxy /usr/bin/cmake /home/cale/thesis-code/ws/src/tuts -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/cale/thesis-code/ws/src/install/tuts
-Invoking command in '/home/cale/thesis-code/ws/src/build/tuts': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/foxy /usr/bin/cmake --build /home/cale/thesis-code/ws/src/build/tuts -- -j4 -l4
-Invoked command in '/home/cale/thesis-code/ws/src/build/tuts' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/foxy /usr/bin/cmake --build /home/cale/thesis-code/ws/src/build/tuts -- -j4 -l4
-Invoking command in '/home/cale/thesis-code/ws/src/build/tuts': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/foxy /usr/bin/cmake --install /home/cale/thesis-code/ws/src/build/tuts
-Invoked command in '/home/cale/thesis-code/ws/src/build/tuts' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/foxy /usr/bin/cmake --install /home/cale/thesis-code/ws/src/build/tuts

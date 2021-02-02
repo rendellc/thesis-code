@@ -25,28 +25,59 @@ find_package(rclcpp REQUIRED)
 find_package(rclpy REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 
-rosidl_generate_interfaces(${PROJECT_NAME}
+
+set(MSG_FILES
   "msg/FloatArray.msg"
+  "msg/WheelCommand.msg"
+  "msg/WheelState.msg"
+)
+
+rosidl_generate_interfaces(${PROJECT_NAME}
+  ${MSG_FILES}
 )
 
 link_directories(${gazebo_dev_LIBRARY_DIRS})
 
-add_library(simple_car SHARED
-  src/gazebo_plugins/simple_car.cpp
+
+add_executable(wheel_controller_node src/wheel_controller_node.cpp)
+ament_target_dependencies(wheel_controller_node rclcpp std_msgs)
+install(TARGETS
+  wheel_controller_node
+  DESTINATION lib/${PROJECT_NAME}
 )
-target_include_directories(simple_car PUBLIC include)
-ament_target_dependencies(simple_car
+rosidl_target_interfaces(wheel_controller_node ${PROJECT_NAME} "rosidl_typesupport_cpp")
+
+
+add_library(vehicle_body SHARED
+  src/gazebo_plugins/vehicle_body.cpp
+)
+target_include_directories(vehicle_body PUBLIC include)
+ament_target_dependencies(vehicle_body
   "gazebo_dev"
   "gazebo_ros"
   "geometry_msgs"
   "rclcpp"
 )
-rosidl_target_interfaces(simple_car
+rosidl_target_interfaces(vehicle_body
   ${PROJECT_NAME} "rosidl_typesupport_cpp"
 )
-ament_export_libraries(simple_car)
+
+add_library(wheel SHARED
+  src/gazebo_plugins/wheel.cpp
+)
+target_include_directories(wheel PUBLIC include)
+ament_target_dependencies(wheel
+  "gazebo_dev"
+  "gazebo_ros"
+  "rclcpp"
+)
+rosidl_target_interfaces(wheel
+  ${PROJECT_NAME} "rosidl_typesupport_cpp"
+)
+
+ament_export_libraries(vehicle_body wheel)
 install(TARGETS
-  simple_car
+  vehicle_body wheel
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)

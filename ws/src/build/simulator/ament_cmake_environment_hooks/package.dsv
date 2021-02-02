@@ -1,4 +1,0 @@
-source;share/simulator/local_setup.bash
-source;share/simulator/local_setup.dsv
-source;share/simulator/local_setup.sh
-source;share/simulator/local_setup.zsh

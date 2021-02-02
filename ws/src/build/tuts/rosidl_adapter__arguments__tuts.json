@@ -1,7 +1,0 @@
-{
-  "package_name": "tuts",
-  "non_idl_tuples": [
-    "/home/cale/thesis-code/ws/src/tuts:msg/Num.msg",
-    "/home/cale/thesis-code/ws/src/tuts:srv/AddInts.srv"
-  ]
-}

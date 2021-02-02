@@ -6,12 +6,14 @@
                 "limitSymbolsToIncludedHeaders": true
             },
             "includePath": [
+                "${workspaceFolder}/install/simulator/include",
                 "${workspaceFolder}/src/**",
                 "${workspaceFolder}/install/**",
                 "/opt/ros/foxy/include",
                 "/usr/include/**"
             ],
-            "name": "ROS"
+            "name": "ROS",
+            "cppStandard": "c++17"
         }
     ],
     "version": 4

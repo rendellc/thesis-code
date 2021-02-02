@@ -1,1 +1,0 @@
-/home/cale/thesis-code/ws/src/simulator/simulator/spawn_vehicle.py

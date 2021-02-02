@@ -1,1 +1,0 @@
-ament_cmake_symlink_install_targets("TARGET_FILES" "/home/cale/thesis-code/ws/src/build/more_interfaces/libmore_interfaces__rosidl_typesupport_fastrtps_cpp.so" "TARGETS" "more_interfaces__rosidl_typesupport_fastrtps_cpp" "ARCHIVE_DESTINATION" "lib" "LIBRARY_DESTINATION" "lib" "RUNTIME_DESTINATION" "bin")

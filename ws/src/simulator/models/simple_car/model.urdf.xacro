@@ -27,7 +27,7 @@
             </collision>
         </link>
     </xacro:macro>
-    <xacro:macro name="wheel" params="name parent mass radius length xyz">
+    <xacro:macro name="wheel_macro" params="name parent mass radius length xyz">
         <link name="${name}_base">
             <inertial>
                 <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -96,15 +96,17 @@
             <child link="${name}_tire"/>
             <axis xyz="0 0 1"/>
         </joint>
-        <transmission name="${name}_steer_transmission">
-            <type>transmission_interface/SimpleTransmission</type>
-            <actuator name="$${name}_steer_motor">
-                <mechanicalReduction>1</mechanicalReduction>
-            </actuator>
-            <joint name="joint_${name}_base_to_${name}_steer">
-                <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-            </joint>
-        </transmission>
+        <!--
+            <transmission name="${name}_steer_transmission">
+                <type>transmission_interface/SimpleTransmission</type>
+                <actuator name="$${name}_steer_motor">
+                    <mechanicalReduction>1</mechanicalReduction>
+                </actuator>
+                <joint name="joint_${name}_base_to_${name}_steer">
+                    <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+                </joint>
+            </transmission>
+        -->
         <gazebo reference="${name}_steer">
             <material>Gazebo/Blue</material>
         </gazebo>
@@ -113,21 +115,22 @@
             <mu1>0.8</mu1>
             <mu2>0.5</mu2>
         </gazebo>
-    </xacro:macro>
-    <xacro:macro name="wheel_joint" params="parent child xyz">
+        <gazebo>
+            <plugin name="${name}" filename="libwheel.so">
+                <steer_joint name="joint_${name}_base_to_${name}_steer"/> 
+                <drive_joint name="joint_${name}_steer_to_${name}_tire"/> 
+            </plugin>
+        </gazebo>
     </xacro:macro>
 
     <xacro:link_box name="base_link" mass="${body_mass}" length="1" width="1" height="1"/>
-    <xacro:wheel name="wheel_fl" parent="base_link" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}" xyz="0.2 1 0"/>
-    <xacro:wheel name="wheel_rl" parent="base_link" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}" xyz="-3 1 0"/>
-    <xacro:wheel name="wheel_rr" parent="base_link" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}" xyz="-3 -1 0"/>
-    <xacro:wheel name="wheel_fr" parent="base_link" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}" xyz="0.2 -1 0"/>
+    <xacro:wheel_macro name="wheel_fl" parent="base_link" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}" xyz="0.2 1 0"/>
+    <xacro:wheel_macro name="wheel_rl" parent="base_link" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}" xyz="-3 1 0"/>
+    <xacro:wheel_macro name="wheel_rr" parent="base_link" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}" xyz="-3 -1 0"/>
+    <xacro:wheel_macro name="wheel_fr" parent="base_link" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}" xyz="0.2 -1 0"/>
         
     <gazebo>
-        <plugin name="simple_car" filename="libsimple_car.so">
-            <ros>
-                <namespace>/vehicle_namespace</namespace>
-            </ros>
+        <plugin name="vehicle" filename="libvehicle_body.so">
         </plugin>
     </gazebo>
 </robot>

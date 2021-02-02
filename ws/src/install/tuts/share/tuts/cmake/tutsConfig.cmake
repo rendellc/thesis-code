@@ -1,1 +1,0 @@
-/home/cale/thesis-code/ws/src/build/tuts/ament_cmake_core/tutsConfig.cmake
