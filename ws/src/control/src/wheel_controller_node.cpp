@@ -4,7 +4,11 @@
 #include "vehicle_interface/msg/wheel_command.hpp"
 #include "vehicle_interface/msg/wheel_state.hpp"
 
+#include "control/PID.hpp"
+
 #include <chrono>
+
+#include <cmath>
 
 using std::placeholders::_1;
 
@@ -16,9 +20,8 @@ public:
     rclcpp::TimerBase::SharedPtr timer_p;
 
     WheelControllerNode() 
-    : Node("wheel_controller_node") 
+    : Node("wheel_controller_node")
     {
-        // const rclcpp::Qos& qos = this->get_qos();
         command_pub_p = this->create_publisher<vehicle_interface::msg::WheelCommand>("command", 10);
         state_sub_p = this->create_subscription<vehicle_interface::msg::WheelState>(
             "state", 1, std::bind(&WheelControllerNode::state_callback, this, _1)
@@ -34,10 +37,11 @@ public:
                 std::bind(&WheelControllerNode::update_command, this)
         );
         
-         this->declare_parameter<double>("P_omega", 100);
-         this->declare_parameter<double>("P_delta", 100);
-         this->get_parameter("P_omega", P_omega);
-         this->get_parameter("P_delta", P_delta);
+        this->declare_parameter<double>("P_omega", 100);
+        this->declare_parameter<double>("P_delta", 100);
+        
+        this->get_parameter("P_omega", angular_velocity_pid.P);
+        this->get_parameter("P_delta", steering_angle_pid.P);
         
         RCLCPP_INFO(this->get_logger(), "wheel_controller_node initialized");
     }
@@ -48,18 +52,50 @@ private:
     
     vehicle_interface::msg::WheelCommand command_msg;
     double update_rate; 
-    double P_omega; 
-    double P_delta;
+    PID angular_velocity_pid;
+    PID steering_angle_pid;
     
     void update_command() 
     {
         if (wheel_state_p && wheel_reference_p) {
-            const double omega = wheel_state_p->angular_velocity;
-            const double omega_ref = wheel_reference_p->angular_velocity;
-            const double delta = wheel_state_p->steering_angle;
-            const double delta_ref = wheel_reference_p->steering_angle;
-            command_msg.drive_torque = P_omega*(omega_ref - omega);
-            command_msg.steer_torque = P_delta*(delta_ref - delta);
+            const auto time_now = this->now();
+
+            // Shorter names
+            const auto& x_p = wheel_state_p;
+            const auto& xr_p = wheel_reference_p;
+            
+            // Angular velocity control law
+            const auto omega_error = xr_p->angular_velocity - x_p->angular_velocity;
+            command_msg.drive_torque = angular_velocity_pid.update(omega_error, time_now);
+            
+            // Steering angle control law
+            // calculation in goodnotes
+            const auto x1 = x_p->steering_angle - xr_p->steering_angle;
+            const auto x2 = x_p->steering_angle_rate - xr_p->steering_angle_rate;
+            
+            const double wheel_mass = 200.0, wheel_radius = 0.505, wheel_width=0.4;
+            const double a1 = 0.5;
+            const double steer_inertia = wheel_mass*(3*wheel_radius*wheel_radius + wheel_width*wheel_width)/12;
+            // const double max_steer_resistance = 15000.0; // found by experimenting in gazebo, should actually be different for each wheel and load dependent
+            const double max_steer_resistance = 15000.0; 
+            const double beta_0 = 0.1; 
+            const double rho = steer_inertia*a1*fabs(x2) + max_steer_resistance;
+            const double beta = rho + beta_0;
+            const double s = a1*x2 + x1;
+            
+
+            const auto sign = [](double x){
+                double eps = 10.0;
+                if (x < -eps) {
+                    return -1.0;
+                } else if (fabs(x) <= eps) {
+                    return x/eps;
+                } else {
+                    return 1.0;
+                }
+            };
+            
+            command_msg.steer_torque = -beta*sign(s);
 
             command_pub_p->publish(command_msg);
         }
@@ -75,12 +111,6 @@ private:
         RCLCPP_INFO_ONCE(this->get_logger(), "reference message recieved");
         wheel_reference_p = msg_p;
     }
-};
-
-class TestNode : public rclcpp::Node
-{
-public:
-    TestNode(const std::string& name) : Node(name) {}
 };
 
 int main(int argc, char* argv[]) 
