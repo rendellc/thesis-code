@@ -11,13 +11,23 @@ def generate_launch_description():
             name="controller",
             namespace="vehicle/" + wheel,
             parameters=[
-                {"update_rate": 60.0},
+                {"update_rate": 100.0},
                 {"P_omega": 100.0},
                 {"P_delta": 100.0},
             ],
         )
         for wheel in wheels
     ]
-    return LaunchDescription(
-        wheel_controller_nodes
+    vehicle_controller_node = Node(
+        package="control",
+        executable="vehicle_controller_node",
+        name="controller",
+        namespace="vehicle",
+        parameters=[
+            {"update_rate": 50.0},
+        ],
     )
+    return LaunchDescription([
+        *wheel_controller_nodes,
+        vehicle_controller_node
+    ])

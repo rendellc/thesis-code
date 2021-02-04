@@ -19,6 +19,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(vehicle_interface REQUIRED)
+find_package(geometry_msgs REQUIRED)
 
 
 add_library(pid SHARED
@@ -29,15 +30,18 @@ ament_target_dependencies(pid
   "rclcpp"
 )
 
-
 add_executable(wheel_controller_node src/wheel_controller_node.cpp)
 target_include_directories(wheel_controller_node PUBLIC include)
 target_link_libraries(wheel_controller_node pid)
 ament_target_dependencies(wheel_controller_node rclcpp vehicle_interface)
 
+add_executable(vehicle_controller_node src/vehicle_controller_node.cpp)
+target_include_directories(vehicle_controller_node PUBLIC include)
+ament_target_dependencies(vehicle_controller_node rclcpp geometry_msgs vehicle_interface)
+
 
 install(TARGETS
-  wheel_controller_node pid
+  wheel_controller_node vehicle_controller_node pid
   DESTINATION lib/${PROJECT_NAME}
 )
 

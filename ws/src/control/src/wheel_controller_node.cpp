@@ -15,10 +15,6 @@ using std::placeholders::_1;
 class WheelControllerNode : public rclcpp::Node
 {
 public:
-    rclcpp::Publisher<vehicle_interface::msg::WheelCommand>::SharedPtr command_pub_p;
-    rclcpp::Subscription<vehicle_interface::msg::WheelState>::SharedPtr state_sub_p, reference_sub_p;
-    rclcpp::TimerBase::SharedPtr timer_p;
-
     WheelControllerNode() 
     : Node("wheel_controller_node")
     {
@@ -30,7 +26,7 @@ public:
             "reference", 1, std::bind(&WheelControllerNode::reference_callback, this, _1)
         );
         
-        this->declare_parameter<double>("update_rate", 60);
+        this->declare_parameter<double>("update_rate", 100);
         this->get_parameter("update_rate", update_rate);
         timer_p = this->create_wall_timer(
                 std::chrono::duration<double>(1/update_rate),
@@ -43,10 +39,14 @@ public:
         this->get_parameter("P_omega", angular_velocity_pid.P);
         this->get_parameter("P_delta", steering_angle_pid.P);
         
-        RCLCPP_INFO(this->get_logger(), "wheel_controller_node initialized");
+        RCLCPP_INFO(this->get_logger(), "%s initialized", this->get_name());
     }
     
 private:
+    rclcpp::Publisher<vehicle_interface::msg::WheelCommand>::SharedPtr command_pub_p;
+    rclcpp::Subscription<vehicle_interface::msg::WheelState>::SharedPtr state_sub_p, reference_sub_p;
+    rclcpp::TimerBase::SharedPtr timer_p;
+
     vehicle_interface::msg::WheelState::SharedPtr wheel_state_p;
     vehicle_interface::msg::WheelState::SharedPtr wheel_reference_p;
     
