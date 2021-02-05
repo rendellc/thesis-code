@@ -15,8 +15,8 @@ using std::placeholders::_1;
 class WheelControllerNode : public rclcpp::Node
 {
 public:
-    WheelControllerNode() 
-    : Node("wheel_controller_node")
+    WheelControllerNode(const rclcpp::NodeOptions& options) 
+    : Node("wheel_controller_node", options)
     {
         command_pub_p = this->create_publisher<vehicle_interface::msg::WheelCommand>("command", 10);
         state_sub_p = this->create_subscription<vehicle_interface::msg::WheelState>(
@@ -113,10 +113,15 @@ private:
     }
 };
 
-int main(int argc, char* argv[]) 
-{
-    rclcpp::init(argc, argv);
-    rclcpp::spin(std::make_shared<WheelControllerNode>());
-    rclcpp::shutdown();
-    return 0;
-}
+
+#include <rclcpp_components/register_node_macro.hpp>
+
+RCLCPP_COMPONENTS_REGISTER_NODE(WheelControllerNode)
+
+// int main(int argc, char* argv[]) 
+// {
+//     rclcpp::init(argc, argv);
+//     rclcpp::spin(std::make_shared<WheelControllerNode>());
+//     rclcpp::shutdown();
+//     return 0;
+// }

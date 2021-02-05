@@ -13,8 +13,8 @@ using std::placeholders::_1;
 class VehicleControllerNode : public rclcpp::Node
 {
 public:
-    VehicleControllerNode()
-    : Node("vehicle_controller_node")
+    VehicleControllerNode(const rclcpp::NodeOptions& options)
+    : Node("vehicle_controller_node", options)
     {
         reference_sub_p = this->create_subscription<geometry_msgs::msg::Twist>(
             "reference", 1, std::bind(&VehicleControllerNode::reference_callback, this, _1)
@@ -56,17 +56,20 @@ private:
             constexpr double L = 3.2;
             constexpr double W = 2.0;
             const double delta_f = reference_p->angular.z; // this isn't correct considering what twist represents
-            fl_msg.steering_angle = atan(
+
+            const double delta_l = atan(
                 (2*L*sin(delta_f))/(2*L*cos(delta_f) - W*sin(delta_f))
-            );
-            fl_msg.steering_angle_rate = 0.0;
-            fr_msg.steering_angle = atan(
+            )/2;
+            const double delta_r = atan(
                 (2*L*sin(delta_f))/(2*L*cos(delta_f) + W*sin(delta_f))
-            );
+            )/2;
+            fl_msg.steering_angle = delta_l;
+            fl_msg.steering_angle_rate = 0.0;
+            fr_msg.steering_angle = delta_r;
             fr_msg.steering_angle_rate = 0.0;
-            rl_msg.steering_angle = 0.0;
+            rl_msg.steering_angle = -delta_l;
             rl_msg.steering_angle_rate = 0.0;
-            rr_msg.steering_angle = 0.0;
+            rr_msg.steering_angle = -delta_r;
             rr_msg.steering_angle_rate = 0.0;
             
 
@@ -94,11 +97,14 @@ private:
     }
 };
 
+#include <rclcpp_components/register_node_macro.hpp>
 
-int main(int argc, char* argv[]) 
-{
-    rclcpp::init(argc, argv);
-    rclcpp::spin(std::make_shared<VehicleControllerNode>());
-    rclcpp::shutdown();
-    return 0;
-}
+RCLCPP_COMPONENTS_REGISTER_NODE(VehicleControllerNode)
+
+// int main(int argc, char* argv[]) 
+// {
+//     rclcpp::init(argc, argv);
+//     rclcpp::spin(std::make_shared<VehicleControllerNode>());
+//     rclcpp::shutdown();
+//     return 0;
+// }

@@ -1,33 +1,55 @@
 from launch import LaunchDescription
-from launch_ros.actions import Node
+from launch_ros.actions import ComposableNodeContainer
+from launch_ros.descriptions import ComposableNode
 
 def generate_launch_description():
-    # must match namespace of wheel plugin
-    wheels = ["wheel_fl", "wheel_rl", "wheel_rr", "wheel_fr"]
-    wheel_controller_nodes = [
-        Node(
-            package="control",
-            executable="wheel_controller_node",
-            name="controller",
-            namespace="vehicle/" + wheel,
-            parameters=[
-                {"update_rate": 100.0},
-                {"P_omega": 100.0},
-                {"P_delta": 100.0},
-            ],
-        )
-        for wheel in wheels
-    ]
-    vehicle_controller_node = Node(
-        package="control",
-        executable="vehicle_controller_node",
-        name="controller",
+    
+    container = ComposableNodeContainer(
+        name="controller_container",
         namespace="vehicle",
-        parameters=[
-            {"update_rate": 50.0},
-        ],
+        package="rclcpp_components",
+        executable="component_container",
+        composable_node_descriptions=[
+            ComposableNode(
+                package="control",
+                plugin="VehicleControllerNode",
+                parameters=[
+                    {"update_rate": 50.0}
+                ]
+            ),
+            ComposableNode(
+                package="control",
+                plugin="WheelControllerNode",
+                namespace="wheel_fl",
+                parameters=[
+                    {"update_rate": 100.0}
+                ]
+            ),
+            ComposableNode(
+                package="control",
+                plugin="WheelControllerNode",
+                namespace="wheel_rl",
+                parameters=[
+                    {"update_rate": 100.0}
+                ]
+            ),
+            ComposableNode(
+                package="control",
+                plugin="WheelControllerNode",
+                namespace="wheel_rr",
+                parameters=[
+                    {"update_rate": 100.0}
+                ]
+            ),
+            ComposableNode(
+                package="control",
+                plugin="WheelControllerNode",
+                namespace="wheel_fr",
+                parameters=[
+                    {"update_rate": 100.0}
+                ]
+            ),
+        ]
     )
-    return LaunchDescription([
-        *wheel_controller_nodes,
-        vehicle_controller_node
-    ])
+
+    return LaunchDescription([container])
