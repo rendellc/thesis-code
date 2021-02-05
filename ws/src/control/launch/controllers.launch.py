@@ -5,7 +5,7 @@ from launch_ros.descriptions import ComposableNode
 def generate_launch_description():
     
     container = ComposableNodeContainer(
-        name="controller_container",
+        name="controllers_container",
         namespace="vehicle",
         package="rclcpp_components",
         executable="component_container",
@@ -13,6 +13,8 @@ def generate_launch_description():
             ComposableNode(
                 package="control",
                 plugin="VehicleControllerNode",
+                name="controller",
+                namespace="vehicle",
                 parameters=[
                     {"update_rate": 50.0}
                 ]
@@ -20,7 +22,8 @@ def generate_launch_description():
             ComposableNode(
                 package="control",
                 plugin="WheelControllerNode",
-                namespace="wheel_fl",
+                namespace="vehicle/wheel_fl",
+                name="controller",
                 parameters=[
                     {"update_rate": 100.0}
                 ]
@@ -28,7 +31,8 @@ def generate_launch_description():
             ComposableNode(
                 package="control",
                 plugin="WheelControllerNode",
-                namespace="wheel_rl",
+                namespace="vehicle/wheel_rl",
+                name="controller",
                 parameters=[
                     {"update_rate": 100.0}
                 ]
@@ -36,7 +40,8 @@ def generate_launch_description():
             ComposableNode(
                 package="control",
                 plugin="WheelControllerNode",
-                namespace="wheel_rr",
+                namespace="vehicle/wheel_rr",
+                name="controller",
                 parameters=[
                     {"update_rate": 100.0}
                 ]
@@ -44,7 +49,8 @@ def generate_launch_description():
             ComposableNode(
                 package="control",
                 plugin="WheelControllerNode",
-                namespace="wheel_fr",
+                namespace="vehicle/wheel_fr",
+                name="controller",
                 parameters=[
                     {"update_rate": 100.0}
                 ]
