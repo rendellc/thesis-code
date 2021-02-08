@@ -10,7 +10,9 @@
                 "${workspaceFolder}/src/**",
                 "${workspaceFolder}/install/**",
                 "/opt/ros/foxy/include",
-                "/usr/include/**"
+                "/usr/include/**",
+                "/usr/include/*",
+                "/usr/include/SDL2"
             ],
             "name": "ROS",
             "cppStandard": "c++17"

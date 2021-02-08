@@ -18,18 +18,29 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(joy REQUIRED)
+find_package(rclcpp_components REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 
-
-add_executable(manual_joy src/manual_operation_joy.cpp)
+add_library(manual_joy SHARED src/manual_operation_joy.cpp)
 target_include_directories(manual_joy PUBLIC include)
-ament_target_dependencies(manual_joy rclcpp joy sensor_msgs geometry_msgs)
+ament_target_dependencies(manual_joy 
+  "rclcpp"
+  "rclcpp_components"
+  "sensor_msgs"
+)
+rclcpp_components_register_nodes(manual_joy "ManualOperationJoyNode")
+
+install(TARGETS
+  manual_joy
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
 
 install(
-  TARGETS manual_joy
-  DESTINATION lib/${PROJECT_NAME}
+  DIRECTORY launch
+  DESTINATION share/${PROJECT_NAME}
 )
 
 if(BUILD_TESTING)

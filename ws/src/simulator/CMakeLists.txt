@@ -64,6 +64,12 @@ install(PROGRAMS
   DESTINATION bin
 )
 
+install(
+  DIRECTORY launch
+  DESTINATION share/${PROJECT_NAME}
+)
+
+
 
 # Export package dependencies
 ament_export_dependencies(ament_cmake)

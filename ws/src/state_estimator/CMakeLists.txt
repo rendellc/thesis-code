@@ -42,10 +42,9 @@ install(TARGETS
 )
 
 install(
-  FILES launch/state_estimator.launch.py
+  DIRECTORY launch
   DESTINATION share/${PROJECT_NAME}
 )
-
 
 
 if(BUILD_TESTING)
