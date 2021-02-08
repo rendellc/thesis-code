@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(vehicle_interface)
+project(state_estimator)
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
@@ -17,19 +17,35 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-find_package(rosidl_default_generators REQUIRED)
-# uncomment the following section in order to fill in
-# further dependencies manually.
-# find_package(<dependency> REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(rclcpp_components REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(vehicle_interface REQUIRED)
 
-set(MSG_FILES
-  "msg/WheelCommand.msg"
-  "msg/WheelState.msg"
-  "msg/WheelLoads.msg"
+add_library(load_transfer SHARED src/load_transfer.cpp)
+target_include_directories(load_transfer PUBLIC include)
+ament_target_dependencies(load_transfer 
+  "rclcpp"
+  "rcpputils"
+  "rclcpp_components"
+  "vehicle_interface"
+  "geometry_msgs"
 )
-rosidl_generate_interfaces(${PROJECT_NAME}
-  ${MSG_FILES}
+rclcpp_components_register_nodes(load_transfer "LoadTransferNode")
+
+
+install(TARGETS
+  load_transfer
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
 )
+
+install(
+  FILES launch/state_estimator.launch.py
+  DESTINATION share/${PROJECT_NAME}
+)
+
 
 
 if(BUILD_TESTING)
