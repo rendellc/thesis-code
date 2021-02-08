@@ -1,4 +1,4 @@
-float64 front_left
-float64 rear_left
-float64 rear_right
-float64 front_right
+WheelLoad front_left
+WheelLoad rear_left
+WheelLoad rear_right
+WheelLoad front_right

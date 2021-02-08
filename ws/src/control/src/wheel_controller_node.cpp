@@ -3,6 +3,7 @@
 
 #include "vehicle_interface/msg/wheel_command.hpp"
 #include "vehicle_interface/msg/wheel_state.hpp"
+#include "vehicle_interface/msg/wheel_load.hpp"
 
 #include "control/PID.hpp"
 
@@ -25,6 +26,10 @@ public:
         reference_sub_p = this->create_subscription<vehicle_interface::msg::WheelState>(
             "reference", 1, std::bind(&WheelControllerNode::reference_callback, this, _1)
         );
+        wheel_load_sub_p = this->create_subscription<vehicle_interface::msg::WheelLoad>(
+            "load", 1, std::bind(&WheelControllerNode::load_callback, this, _1)
+        );
+        
         
         this->declare_parameter<double>("update_rate", 100);
         this->get_parameter("update_rate", update_rate);
@@ -45,10 +50,12 @@ public:
 private:
     rclcpp::Publisher<vehicle_interface::msg::WheelCommand>::SharedPtr command_pub_p;
     rclcpp::Subscription<vehicle_interface::msg::WheelState>::SharedPtr state_sub_p, reference_sub_p;
+    rclcpp::Subscription<vehicle_interface::msg::WheelLoad>::SharedPtr wheel_load_sub_p;
     rclcpp::TimerBase::SharedPtr timer_p;
 
     vehicle_interface::msg::WheelState::SharedPtr wheel_state_p;
     vehicle_interface::msg::WheelState::SharedPtr wheel_reference_p;
+    vehicle_interface::msg::WheelLoad::SharedPtr wheel_load_p;
     
     vehicle_interface::msg::WheelCommand command_msg;
     double update_rate; 
@@ -57,12 +64,13 @@ private:
     
     void update_command() 
     {
-        if (wheel_state_p && wheel_reference_p) {
+        if (wheel_state_p && wheel_reference_p && wheel_load_p) {
             const auto time_now = this->now();
 
             // Shorter names
             const auto& x_p = wheel_state_p;
             const auto& xr_p = wheel_reference_p;
+            const auto& F_z = wheel_load_p->load;
             
             // Angular velocity control law
             const auto omega_error = xr_p->angular_velocity - x_p->angular_velocity;
@@ -77,7 +85,7 @@ private:
             const double a1 = 0.5;
             const double steer_inertia = wheel_mass*(3*wheel_radius*wheel_radius + wheel_width*wheel_width)/12;
             // const double max_steer_resistance = 15000.0; // found by experimenting in gazebo, should actually be different for each wheel and load dependent
-            const double max_steer_resistance = 15000.0; 
+            const double max_steer_resistance = 2*F_z;
             const double beta_0 = 0.1; 
             const double rho = steer_inertia*a1*fabs(x2) + max_steer_resistance;
             const double beta = rho + beta_0;
@@ -110,6 +118,11 @@ private:
     {
         RCLCPP_INFO_ONCE(this->get_logger(), "reference message recieved");
         wheel_reference_p = msg_p;
+    }
+    void load_callback(vehicle_interface::msg::WheelLoad::SharedPtr msg_p)
+    {
+        RCLCPP_INFO_ONCE(this->get_logger(), "load message recieved");
+        wheel_load_p = msg_p;
     }
 };
 

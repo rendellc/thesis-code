@@ -25,6 +25,7 @@ find_package(rosidl_default_generators REQUIRED)
 set(MSG_FILES
   "msg/WheelCommand.msg"
   "msg/WheelState.msg"
+  "msg/WheelLoad.msg"
   "msg/WheelLoads.msg"
 )
 rosidl_generate_interfaces(${PROJECT_NAME}

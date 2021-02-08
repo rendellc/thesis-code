@@ -3,6 +3,7 @@
 #include <rcpputils/asserts.hpp>
 
 #include <vehicle_interface/msg/wheel_loads.hpp>
+#include <vehicle_interface/msg/wheel_load.hpp>
 #include <geometry_msgs/msg/twist.hpp>
 
 using std::placeholders::_1;
@@ -36,6 +37,10 @@ public:
         );
         
         load_pub_p = this->create_publisher<vehicle_interface::msg::WheelLoads>("wheel_loads", 1);
+        load_fl_pub_p = this->create_publisher<vehicle_interface::msg::WheelLoad>("wheel_fl/load", 1);
+        load_rl_pub_p = this->create_publisher<vehicle_interface::msg::WheelLoad>("wheel_rl/load", 1);
+        load_rr_pub_p = this->create_publisher<vehicle_interface::msg::WheelLoad>("wheel_rr/load", 1);
+        load_fr_pub_p = this->create_publisher<vehicle_interface::msg::WheelLoad>("wheel_fr/load", 1);
         
         double update_rate;
         load_double("update_rate", update_rate);
@@ -50,6 +55,11 @@ private:
 
     rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr twist_sub_p;
     rclcpp::Publisher<vehicle_interface::msg::WheelLoads>::SharedPtr load_pub_p;
+    rclcpp::Publisher<vehicle_interface::msg::WheelLoad>::SharedPtr load_fl_pub_p;
+    rclcpp::Publisher<vehicle_interface::msg::WheelLoad>::SharedPtr load_rl_pub_p;
+    rclcpp::Publisher<vehicle_interface::msg::WheelLoad>::SharedPtr load_rr_pub_p;
+    rclcpp::Publisher<vehicle_interface::msg::WheelLoad>::SharedPtr load_fr_pub_p;
+
     rclcpp::TimerBase::SharedPtr timer_p;
 
     geometry_msgs::msg::Twist::SharedPtr twist_p;
@@ -75,14 +85,18 @@ private:
         const auto& hcg = height_cog;
         const auto& bf = width_front;
         const auto& br = width_rear;
-        const auto l = cog_to_front + cog_to_rear;;
+        const auto l = cog_to_front + cog_to_rear;
         
-        wheel_loads.front_left = m*g*(lr/l - hcg*ax_ch/(l*g))*(0.5 - hcg*ay_ch/(bf*g));
-        wheel_loads.rear_left = m*g*(lf/l + hcg*ax_ch/(l*g))*(0.5 - hcg*ay_ch/(br*g));
-        wheel_loads.rear_right = m*g*(lf/l + hcg*ax_ch/(l*g))*(0.5 + hcg*ay_ch/(br*g));
-        wheel_loads.front_right = m*g*(lr/l - hcg*ax_ch/(l*g))*(0.5 + hcg*ay_ch/(bf*g));
+        wheel_loads.front_left.load = m*g*(lr/l - hcg*ax_ch/(l*g))*(0.5 - hcg*ay_ch/(bf*g));
+        wheel_loads.rear_left.load = m*g*(lf/l + hcg*ax_ch/(l*g))*(0.5 - hcg*ay_ch/(br*g));
+        wheel_loads.rear_right.load = m*g*(lf/l + hcg*ax_ch/(l*g))*(0.5 + hcg*ay_ch/(br*g));
+        wheel_loads.front_right.load = m*g*(lr/l - hcg*ax_ch/(l*g))*(0.5 + hcg*ay_ch/(bf*g));
         
         load_pub_p->publish(wheel_loads);
+        load_fl_pub_p->publish(wheel_loads.front_left);
+        load_rl_pub_p->publish(wheel_loads.rear_left);
+        load_rr_pub_p->publish(wheel_loads.rear_right);
+        load_fr_pub_p->publish(wheel_loads.front_right);
     }
 };
 

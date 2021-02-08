@@ -17,8 +17,8 @@ def generate_launch_description():
                 parameters=[
                     {"vehicle_mass": 2500.0},
                     {"cog_to_rear": 2.0},
-                    {"cog_to_front": 1.0},
-                    {"width_rear": 2.0},
+                    {"cog_to_front": 0.5},
+                    {"width_rear": 2.7},
                     {"width_front": 2.0},
                     {"height_cog": 1.0},
                     {"update_rate": 100.0},
