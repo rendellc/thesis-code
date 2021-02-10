@@ -21,6 +21,7 @@ find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(vehicle_interface REQUIRED)
 
 add_library(manual_joy SHARED src/manual_operation_joy.cpp)
 target_include_directories(manual_joy PUBLIC include)
@@ -28,6 +29,7 @@ ament_target_dependencies(manual_joy
   "rclcpp"
   "rclcpp_components"
   "sensor_msgs"
+  "vehicle_interface"
 )
 rclcpp_components_register_nodes(manual_joy "ManualOperationJoyNode")
 

@@ -4,6 +4,7 @@
 #include <geometry_msgs/msg/twist.hpp>
 
 #include "vehicle_interface/msg/wheel_state.hpp"
+#include "vehicle_interface/msg/drive_mode.hpp"
 
 #include <memory>
 #include <cmath>
@@ -16,7 +17,7 @@ public:
     VehicleControllerNode(const rclcpp::NodeOptions& options)
     : Node("vehicle_controller_node", options)
     {
-        reference_sub_p = this->create_subscription<geometry_msgs::msg::Twist>(
+        reference_sub_p = this->create_subscription<vehicle_interface::msg::DriveMode>(
             "reference", 1, std::bind(&VehicleControllerNode::reference_callback, this, _1)
         );
 
@@ -34,47 +35,63 @@ public:
         
 
         // TODO: remove this
-        reference_p = std::make_shared<geometry_msgs::msg::Twist>();
+        // reference_p = std::make_shared<geometry_msgs::msg::Twist>();
     }
 
 private:
-    rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr reference_sub_p;
+    rclcpp::Subscription<vehicle_interface::msg::DriveMode>::SharedPtr reference_sub_p;
+    //rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr reference_sub_p;
     rclcpp::Publisher<vehicle_interface::msg::WheelState>::SharedPtr fl_pub_p, rl_pub_p, rr_pub_p, fr_pub_p;
     vehicle_interface::msg::WheelState fl_msg, rl_msg, rr_msg, fr_msg;
     rclcpp::TimerBase::SharedPtr timer_p;
     
-    geometry_msgs::msg::Twist::SharedPtr reference_p;
+    // geometry_msgs::msg::Twist::SharedPtr reference_p;
+    vehicle_interface::msg::DriveMode::SharedPtr reference_p;
     
     double update_rate;
+    
 
-    void update_command() 
+    void update_command()
     {
         if (reference_p)
         {
-
-            // Ackermann steering
+            // Wheel layout
             constexpr double L = 3.2;
             constexpr double W = 2.0;
-            const double delta_f = reference_p->angular.z; // this isn't correct considering what twist represents
 
-            const double delta_l = atan(
-                (2*L*sin(delta_f))/(2*L*cos(delta_f) - W*sin(delta_f))
-            )/2;
-            const double delta_r = atan(
-                (2*L*sin(delta_f))/(2*L*cos(delta_f) + W*sin(delta_f))
-            )/2;
-            fl_msg.steering_angle = delta_l;
+            double delta_fl = 0.0;
+            double delta_rl = 0.0;
+            double delta_rr = 0.0;
+            double delta_fr = 0.0;
+            switch (reference_p->mode)
+            {
+            case vehicle_interface::msg::DriveMode::ACKERMANN:{
+                const auto& delta_f = reference_p->turn;
+                delta_rl = delta_rr = 0.0;
+                delta_fl = atan2(
+                    2*L*sin(delta_f), 2*L*cos(delta_f) - W*sin(delta_f)
+                );
+                delta_fr = atan2(
+                    2*L*sin(delta_f), 2*L*cos(delta_f) + W*sin(delta_f)
+                );
+                break;
+            } default:
+                RCLCPP_WARN(this->get_logger(), "unknown mode supplied: %i", reference_p->mode);
+            }
+                
+            fl_msg.steering_angle = delta_fl;
             fl_msg.steering_angle_rate = 0.0;
-            fr_msg.steering_angle = delta_r;
-            fr_msg.steering_angle_rate = 0.0;
-            rl_msg.steering_angle = -delta_l;
+            rl_msg.steering_angle = delta_rl;
             rl_msg.steering_angle_rate = 0.0;
-            rr_msg.steering_angle = -delta_r;
+            fr_msg.steering_angle = delta_fr;
+            fr_msg.steering_angle_rate = 0.0;
+            rr_msg.steering_angle = delta_rr;
             rr_msg.steering_angle_rate = 0.0;
             
 
             // TODO: scale speeds depending on wheel radius and distance to ICR
-            const double omega = reference_p->linear.x; // this isn't correct considering what twist represents
+            constexpr double R = 0.505;
+            const double omega = R*reference_p->speed; 
 
             fl_msg.angular_velocity = omega;
             rl_msg.angular_velocity = omega;
@@ -90,7 +107,7 @@ private:
         }
     }
     
-    void reference_callback(geometry_msgs::msg::Twist::SharedPtr msg_p)
+    void reference_callback(vehicle_interface::msg::DriveMode::SharedPtr msg_p)
     {
         reference_p = msg_p;
         RCLCPP_INFO_ONCE(this->get_logger(), "reference message recieved");

@@ -23,6 +23,8 @@ find_package(rosidl_default_generators REQUIRED)
 # find_package(<dependency> REQUIRED)
 
 set(MSG_FILES
+  "msg/Rotation.msg"
+  "msg/DriveMode.msg"
   "msg/WheelCommand.msg"
   "msg/WheelState.msg"
   "msg/WheelLoad.msg"

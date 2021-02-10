@@ -8,8 +8,8 @@
             "includePath": [
                 "/opt/ros/foxy/include",
                 "/usr/include/**",
-                "${workspaceFolder}/*/include",
-                "${workspaceFolder}/../install/*/include"
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/../install/**"
             ],
             "name": "ROS"
         }

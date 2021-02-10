@@ -78,6 +78,10 @@ private:
             
             // Steering angle control law
             // calculation in goodnotes
+            const std::function<double(double)> ssa = [](double dtheta){
+                return atan2(sin(dtheta), cos(dtheta));
+            };
+
             const auto x1 = x_p->steering_angle - xr_p->steering_angle;
             const auto x2 = x_p->steering_angle_rate - xr_p->steering_angle_rate;
             

@@ -12,6 +12,8 @@
 #include <sensor_msgs/msg/joy.hpp>
 #include <geometry_msgs/msg/twist.hpp>
 
+#include "vehicle_interface/msg/drive_mode.hpp"
+
 using std::placeholders::_1;
 
 class ManualOperationJoyNode : public rclcpp::Node
@@ -24,7 +26,7 @@ public:
             "joy", 1, std::bind(&ManualOperationJoyNode::joy_callback, this, _1)
         );
         
-        reference_pub_p = this->create_publisher<geometry_msgs::msg::Twist>(
+        reference_pub_p = this->create_publisher<vehicle_interface::msg::DriveMode>(
             "reference", 1
         );
         
@@ -46,8 +48,10 @@ private:
     rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr joy_sub_p;
     sensor_msgs::msg::Joy::SharedPtr joy_p;
     
-    rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr reference_pub_p;
-    geometry_msgs::msg::Twist reference;
+    //rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr reference_pub_p;
+    rclcpp::Publisher<vehicle_interface::msg::DriveMode>::SharedPtr reference_pub_p;
+    // geometry_msgs::msg::Twist reference;
+    vehicle_interface::msg::DriveMode reference;
     
     rclcpp::TimerBase::SharedPtr timer_p;
 
@@ -62,12 +66,9 @@ private:
         using std::to_string;
         if (joy_p)
         {
-            // const std::string message = 
-            //     "LEFT(" + to_string(joy_p->axes[LEFT_LR]) + "," + to_string(joy_p->axes[LEFT_UD]) + "), " + 
-            //     "RIGHT(" + to_string(joy_p->axes[RIGHT_LR]) + "," + to_string(joy_p->axes[RIGHT_UD]) + ")";
-            // RCLCPP_INFO(this->get_logger(), message);
-            reference.linear.x = joy_p->axes[LEFT_UD]* 15.0/3.6;
-            reference.angular.z = joy_p->axes[RIGHT_LR];
+            reference.speed = joy_p->axes[LEFT_UD]* 15.0/3.6;
+            reference.mode = vehicle_interface::msg::DriveMode::ACKERMANN;
+            reference.turn = 1.57*joy_p->axes[RIGHT_LR];
             
             reference_pub_p->publish(reference);
         }
