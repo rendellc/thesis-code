@@ -38,12 +38,17 @@ public:
 
 private:
     // Joy message indices
-    enum JOY : size_t {
+    enum AXES : size_t {
         LEFT_LR = 0,
         LEFT_UD = 1,
         RIGHT_LR = 3,
-        RIGHT_UD = 4
+        RIGHT_UD = 4,
+        PAD_LR = 6
     };
+    enum BUTTONS : size_t {
+        TRIANGLE = 2
+    };
+    bool triangle_pressed = false;
     
     rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr joy_sub_p;
     sensor_msgs::msg::Joy::SharedPtr joy_p;
@@ -66,8 +71,18 @@ private:
         using std::to_string;
         if (joy_p)
         {
+            if (joy_p->buttons[TRIANGLE] == 1)
+            {
+                triangle_pressed = true;
+            }
+            if (joy_p->buttons[TRIANGLE] == 0 && triangle_pressed)
+            {
+                // TODO: implement mode transition better
+                reference.mode = (reference.mode + 1) % (vehicle_interface::msg::DriveMode::CRAB + 1);
+                triangle_pressed = false;
+            }
+
             reference.speed = joy_p->axes[LEFT_UD]* 15.0/3.6;
-            reference.mode = vehicle_interface::msg::DriveMode::ACKERMANN;
             reference.turn = 1.57*joy_p->axes[RIGHT_LR];
             
             reference_pub_p->publish(reference);

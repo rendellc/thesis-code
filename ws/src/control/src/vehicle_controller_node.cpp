@@ -75,7 +75,42 @@ private:
                     2*L*sin(delta_f), 2*L*cos(delta_f) + W*sin(delta_f)
                 );
                 break;
-            } default:
+            } case vehicle_interface::msg::DriveMode::AFAR:{
+                const auto& delta = reference_p->turn;
+                delta_fl = atan2(
+                    2*L*sin(delta), 2*L*cos(delta) - W*sin(delta)
+                )/2;
+                delta_rl = -atan2(
+                    2*L*sin(delta), 2*L*cos(delta) - W*sin(delta)
+                )/2;
+                delta_rr = -atan2(
+                    2*L*sin(delta), 2*L*cos(delta) + W*sin(delta)
+                )/2;
+                delta_fr = atan2(
+                    2*L*sin(delta), 2*L*cos(delta) + W*sin(delta)
+                )/2;
+                break;
+             } case vehicle_interface::msg::DriveMode::SPIN:{
+                constexpr double delta = 3.1415/2;
+                delta_fl = atan2(
+                    2*L*sin(delta), 2*L*cos(delta) - W*sin(delta)
+                )/2;
+                delta_rl = -atan2(
+                    2*L*sin(delta), 2*L*cos(delta) - W*sin(delta)
+                )/2;
+                delta_rr = -atan2(
+                    2*L*sin(delta), 2*L*cos(delta) + W*sin(delta)
+                )/2;
+                delta_fr = atan2(
+                    2*L*sin(delta), 2*L*cos(delta) + W*sin(delta)
+                )/2;
+                break;
+             } case vehicle_interface::msg::DriveMode::CRAB:{
+                const auto& delta = reference_p->turn;
+                delta_fl = delta_rl = delta_rr = delta_fr = delta;
+                break;
+            } 
+            default:
                 RCLCPP_WARN(this->get_logger(), "unknown mode supplied: %i", reference_p->mode);
             }
                 
