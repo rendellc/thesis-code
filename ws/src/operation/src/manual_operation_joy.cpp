@@ -7,12 +7,15 @@
 
 
 #include <rclcpp/rclcpp.hpp>
-#include <memory>
+#include <rcpputils/asserts.hpp>
 
 #include <sensor_msgs/msg/joy.hpp>
 #include <geometry_msgs/msg/twist.hpp>
 
 #include "vehicle_interface/msg/drive_mode.hpp"
+
+#include <memory>
+#include <algorithm>
 
 using std::placeholders::_1;
 
@@ -30,8 +33,10 @@ public:
             "reference", 1
         );
         
+        reference.mode = vehicle_interface::msg::DriveMode::ACKERMANN;
+        
         timer_p = this->create_wall_timer(
-                std::chrono::duration<double>(1.0/30.0),
+                std::chrono::duration<double>(1.0/update_rate),
                 std::bind(&ManualOperationJoyNode::update, this)
         );
     }
@@ -46,9 +51,16 @@ private:
         PAD_LR = 6
     };
     enum BUTTONS : size_t {
-        TRIANGLE = 2
+        CIRCLE = 1,
+        TRIANGLE = 2,
+        NUM_BUTTONS = 13
     };
-    bool triangle_pressed = false;
+    
+    std::array<bool,NUM_BUTTONS> button_pressed;
+    std::array<bool,NUM_BUTTONS> button_released;
+    
+    double update_rate = 30.0;
+    double turn_angle = 0.0;
     
     rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr joy_sub_p;
     sensor_msgs::msg::Joy::SharedPtr joy_p;
@@ -63,27 +75,84 @@ private:
     void joy_callback(sensor_msgs::msg::Joy::SharedPtr msg_p)
     {
         joy_p = msg_p;
+        update_buttons(joy_p);
         RCLCPP_INFO_ONCE(this->get_logger(), "joy message recieved");
+
+        // Store pressed buttons
+        for (size_t i = 0; i < NUM_BUTTONS; i++)
+        {
+            if (joy_p->buttons[i] == 1)
+            {
+                button_pressed[i] = true;
+            }
+        }
+        // std::copy_if(joy_p->buttons.cbegin(), joy_p->buttons.cend(), 
+        //     button_pressed.begin(),
+        //     [](int32_t button){ return button == 1; }
+        // );
+
+        // Check for released buttons
+        for (size_t i = 0; i < NUM_BUTTONS; i++)
+        {
+            if (joy_p->buttons[i] == 0 && button_pressed[i])
+            {
+                button_released[i] = true;
+                button_pressed[i] = false;
+            }
+        }
+
     }
     
+    std::string next_drive_mode(const std::string& mode)
+    {
+        if (mode == vehicle_interface::msg::DriveMode::ACKERMANN)
+        {
+            return vehicle_interface::msg::DriveMode::AFAR;
+        } else if (mode == vehicle_interface::msg::DriveMode::AFAR)
+        {
+            return vehicle_interface::msg::DriveMode::CRAB;
+        } else if (mode == vehicle_interface::msg::DriveMode::CRAB)
+        {
+            return vehicle_interface::msg::DriveMode::SPIN;
+        } else 
+        {
+            return vehicle_interface::msg::DriveMode::ACKERMANN;
+        }
+    }
+    
+    void update_buttons(sensor_msgs::msg::Joy::ConstSharedPtr joy_p)
+    {
+        rcpputils::assert_true(joy_p->buttons.size() == NUM_BUTTONS, "Size mismatch between joy msg and NUM_BUTTONS");
+        
+        // Remember all pressed buttons
+    }
+
     void update()
     {
         using std::to_string;
         if (joy_p)
         {
-            if (joy_p->buttons[TRIANGLE] == 1)
+            if (button_released[TRIANGLE])
             {
-                triangle_pressed = true;
+                const auto previous_mode = reference.mode;
+                reference.mode = next_drive_mode(reference.mode);
+                
+                RCLCPP_INFO(this->get_logger(), 
+                    "Changed drive mode from " + previous_mode + " to " + reference.mode
+                );
             }
-            if (joy_p->buttons[TRIANGLE] == 0 && triangle_pressed)
+            if (button_released[CIRCLE])
             {
-                // TODO: implement mode transition better
-                reference.mode = (reference.mode + 1) % (vehicle_interface::msg::DriveMode::CRAB + 1);
-                triangle_pressed = false;
+                reference.turn = 0.0;
+                RCLCPP_INFO(this->get_logger(), "Reset turn to zero");
             }
 
+            // reset released buttons
+            button_released.fill(false);
+
+            // update reference message
             reference.speed = joy_p->axes[LEFT_UD]* 15.0/3.6;
-            reference.turn = 1.57*joy_p->axes[RIGHT_LR];
+            reference.turn = reference.turn + joy_p->axes[RIGHT_LR]/update_rate;
             
             reference_pub_p->publish(reference);
         }

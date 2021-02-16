@@ -78,15 +78,13 @@
                 </geometry>
             </collision>
         </link>
-        <joint name="joint_${parent}_to_${name}_base" type="fixed">
+        <joint name="joint_${parent}_to_${name}_base" type="prismatic">
             <origin xyz="${xyz}" rpy="0 0 0"/>
             <parent link="${parent}"/>
             <child link="${name}_base"/>
             <axis xyz="0 0 1"/>
-            <!--
-            <dynamics damping="1000" friction="1000"/>
             <limit lower="-0.15" upper="0.15" effort="1" velocity="0.01"/>
-            -->
+            <safety_controller k_position="100" k_velocity="1"/>
         </joint>
         <joint name="joint_${name}_base_to_${name}_steer" type="continuous">
             <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -116,8 +114,8 @@
         </gazebo>
         <gazebo reference="${name}_tire">
             <material>Gazebo/Orange</material>
-            <mu1>0.8</mu1>
-            <mu2>0.5</mu2>
+            <mu1>0.9</mu1>
+            <mu2>0.8</mu2>
         </gazebo>
         <gazebo>
             <plugin name="${name}" filename="libwheel.so">
@@ -128,10 +126,10 @@
     </xacro:macro>
 
     <xacro:link_box name="base_link" mass="${body_mass}" length="1" width="1" height="1"/>
-    <xacro:wheel_macro name="wheel_fl" parent="base_link" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}" xyz="0.2 1 0"/>
-    <xacro:wheel_macro name="wheel_rl" parent="base_link" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}" xyz="-3 1 0"/>
-    <xacro:wheel_macro name="wheel_rr" parent="base_link" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}" xyz="-3 -1 0"/>
-    <xacro:wheel_macro name="wheel_fr" parent="base_link" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}" xyz="0.2 -1 0"/>
+    <xacro:wheel_macro name="wheel_fl" parent="base_link" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}" xyz="0.2 1.2 0"/>
+    <xacro:wheel_macro name="wheel_rl" parent="base_link" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}" xyz="-3 1.2 0"/>
+    <xacro:wheel_macro name="wheel_rr" parent="base_link" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}" xyz="-3 -1.2 0"/>
+    <xacro:wheel_macro name="wheel_fr" parent="base_link" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}" xyz="0.2 -1.2 0"/>
         
     <gazebo>
         <plugin name="vehicle" filename="libvehicle_body.so">

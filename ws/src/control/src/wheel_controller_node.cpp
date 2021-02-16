@@ -89,7 +89,7 @@ private:
             const double a1 = 0.5;
             const double steer_inertia = wheel_mass*(3*wheel_radius*wheel_radius + wheel_width*wheel_width)/12;
             // const double max_steer_resistance = 15000.0; // found by experimenting in gazebo, should actually be different for each wheel and load dependent
-            const double max_steer_resistance = 2*F_z;
+            const double max_steer_resistance = 2.5*F_z;
             const double beta_0 = 0.1; 
             const double rho = steer_inertia*a1*fabs(x2) + max_steer_resistance;
             const double beta = rho + beta_0;

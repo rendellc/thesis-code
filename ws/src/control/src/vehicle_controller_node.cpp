@@ -63,9 +63,8 @@ private:
             double delta_rl = 0.0;
             double delta_rr = 0.0;
             double delta_fr = 0.0;
-            switch (reference_p->mode)
+            if (reference_p->mode == vehicle_interface::msg::DriveMode::ACKERMANN) 
             {
-            case vehicle_interface::msg::DriveMode::ACKERMANN:{
                 const auto& delta_f = reference_p->turn;
                 delta_rl = delta_rr = 0.0;
                 delta_fl = atan2(
@@ -74,44 +73,37 @@ private:
                 delta_fr = atan2(
                     2*L*sin(delta_f), 2*L*cos(delta_f) + W*sin(delta_f)
                 );
-                break;
-            } case vehicle_interface::msg::DriveMode::AFAR:{
+            } else if (reference_p->mode == vehicle_interface::msg::DriveMode::AFAR) 
+            {
                 const auto& delta = reference_p->turn;
                 delta_fl = atan2(
-                    2*L*sin(delta), 2*L*cos(delta) - W*sin(delta)
-                )/2;
-                delta_rl = -atan2(
-                    2*L*sin(delta), 2*L*cos(delta) - W*sin(delta)
-                )/2;
-                delta_rr = -atan2(
-                    2*L*sin(delta), 2*L*cos(delta) + W*sin(delta)
-                )/2;
+                    L*sin(delta), L*cos(delta) - W*sin(delta)
+                );
+                delta_rl = -delta_fl;
+
                 delta_fr = atan2(
-                    2*L*sin(delta), 2*L*cos(delta) + W*sin(delta)
-                )/2;
-                break;
-             } case vehicle_interface::msg::DriveMode::SPIN:{
+                    L*sin(delta), L*cos(delta) + W*sin(delta)
+                );
+                delta_rr = -delta_fr;
+            } else if (reference_p->mode == vehicle_interface::msg::DriveMode::SPIN) 
+            {
                 constexpr double delta = 3.1415/2;
                 delta_fl = atan2(
-                    2*L*sin(delta), 2*L*cos(delta) - W*sin(delta)
-                )/2;
-                delta_rl = -atan2(
-                    2*L*sin(delta), 2*L*cos(delta) - W*sin(delta)
-                )/2;
-                delta_rr = -atan2(
-                    2*L*sin(delta), 2*L*cos(delta) + W*sin(delta)
-                )/2;
+                    L*sin(delta), L*cos(delta) - W*sin(delta)
+                );
+                delta_rl = -delta_fl;
+
                 delta_fr = atan2(
-                    2*L*sin(delta), 2*L*cos(delta) + W*sin(delta)
-                )/2;
-                break;
-             } case vehicle_interface::msg::DriveMode::CRAB:{
+                    L*sin(delta), L*cos(delta) + W*sin(delta)
+                );
+                delta_rr = -delta_fr;
+            } else if (reference_p->mode == vehicle_interface::msg::DriveMode::CRAB) 
+            {
                 const auto& delta = reference_p->turn;
                 delta_fl = delta_rl = delta_rr = delta_fr = delta;
-                break;
-            } 
-            default:
-                RCLCPP_WARN(this->get_logger(), "unknown mode supplied: %i", reference_p->mode);
+            } else 
+            {
+                RCLCPP_WARN(this->get_logger(), "unknown mode supplied: " + reference_p->mode);
             }
                 
             fl_msg.steering_angle = delta_fl;
