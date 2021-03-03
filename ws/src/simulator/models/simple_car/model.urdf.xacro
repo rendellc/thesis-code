@@ -78,13 +78,13 @@
                 </geometry>
             </collision>
         </link>
-        <joint name="joint_${parent}_to_${name}_base" type="prismatic">
+        <joint name="joint_${parent}_to_${name}_base" type="fixed">
             <origin xyz="${xyz}" rpy="0 0 0"/>
             <parent link="${parent}"/>
             <child link="${name}_base"/>
             <axis xyz="0 0 1"/>
-            <limit lower="-0.15" upper="0.15" effort="1" velocity="0.01"/>
-            <safety_controller k_position="100" k_velocity="1"/>
+            <limit lower="-1" upper="1" effort="10000000000000000" velocity="100"/>
+            <safety_controller soft_lower_limit="0" soft_upper_limit="0" k_position="1" k_velocity="1"/>
         </joint>
         <joint name="joint_${name}_base_to_${name}_steer" type="continuous">
             <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -116,6 +116,10 @@
             <material>Gazebo/Orange</material>
             <mu1>0.9</mu1>
             <mu2>0.8</mu2>
+                <!--
+            <mu1>0.0</mu1>
+            <mu2>0.0</mu2>
+                -->
         </gazebo>
         <gazebo>
             <plugin name="${name}" filename="libwheel.so">

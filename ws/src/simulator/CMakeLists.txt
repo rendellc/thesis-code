@@ -59,6 +59,7 @@ install(TARGETS
 
 # install python modules
 ament_python_install_package(${PROJECT_NAME})
+# install python scripts
 install(PROGRAMS
   simulator/spawn_vehicle.py
   DESTINATION bin

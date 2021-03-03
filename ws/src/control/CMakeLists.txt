@@ -21,7 +21,7 @@ find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(vehicle_interface REQUIRED)
 find_package(geometry_msgs REQUIRED)
-
+find_package(Eigen3 REQUIRED)
 
 add_library(pid SHARED
   src/PID.cpp
@@ -43,7 +43,7 @@ ament_target_dependencies(wheel_controller
 rclcpp_components_register_nodes(wheel_controller "WheelControllerNode")
 
 add_library(vehicle_controller SHARED src/vehicle_controller_node.cpp)
-target_include_directories(vehicle_controller PUBLIC include)
+target_include_directories(vehicle_controller PUBLIC include ${Eigen3_INCLUDE_DIRS})
 ament_target_dependencies(vehicle_controller 
   "rclcpp"
   "rclcpp_components"

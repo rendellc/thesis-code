@@ -95,9 +95,8 @@ private:
             const double beta = rho + beta_0;
             const double s = a1*x2 + x1;
             
-
             const auto sign = [](double x){
-                double eps = 10.0;
+                double eps = 2.5;
                 if (x < -eps) {
                     return -1.0;
                 } else if (fabs(x) <= eps) {
@@ -134,11 +133,3 @@ private:
 #include <rclcpp_components/register_node_macro.hpp>
 
 RCLCPP_COMPONENTS_REGISTER_NODE(WheelControllerNode)
-
-// int main(int argc, char* argv[]) 
-// {
-//     rclcpp::init(argc, argv);
-//     rclcpp::spin(std::make_shared<WheelControllerNode>());
-//     rclcpp::shutdown();
-//     return 0;
-// }
