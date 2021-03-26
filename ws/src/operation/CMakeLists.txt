@@ -33,8 +33,19 @@ ament_target_dependencies(manual_joy
 )
 rclcpp_components_register_nodes(manual_joy "ManualOperationJoyNode")
 
+add_library(waypoint_publisher SHARED src/waypoint_publisher.cpp)
+target_include_directories(waypoint_publisher PUBLIC include)
+ament_target_dependencies(waypoint_publisher
+  "rclcpp"
+  "rclcpp_components"
+  "geometry_msgs"
+  "vehicle_interface"
+)
+rclcpp_components_register_nodes(waypoint_publisher "WaypointPublisherNode")
+
+
 install(TARGETS
-  manual_joy
+  manual_joy waypoint_publisher
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin

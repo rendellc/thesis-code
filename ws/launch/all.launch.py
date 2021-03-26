@@ -17,7 +17,7 @@ def include_launch_file(package, launchfile):
 def generate_launch_description():
     
     simulator = include_launch_file("simulator", "launch/simulator.launch.py")
-    operation = include_launch_file("operation", "launch/manual.launch.py")
+    operation = include_launch_file("operation", "launch/waypoints.launch.py")
     state_estimator = include_launch_file("state_estimator", "launch/state_estimator.launch.py")
     controllers = include_launch_file("control", "launch/controllers.launch.py")
     

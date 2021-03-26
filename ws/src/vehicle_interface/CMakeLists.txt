@@ -20,11 +20,12 @@ find_package(ament_cmake REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
-# find_package(<dependency> REQUIRED)
+find_package(geometry_msgs REQUIRED)
 
 set(MSG_FILES
   "msg/Rotation.msg"
   "msg/DriveMode.msg"
+  "msg/Waypoints.msg"
   "msg/WheelCommand.msg"
   "msg/WheelState.msg"
   "msg/WheelLoad.msg"
@@ -32,6 +33,7 @@ set(MSG_FILES
 )
 rosidl_generate_interfaces(${PROJECT_NAME}
   ${MSG_FILES}
+  DEPENDENCIES geometry_msgs
 )
 
 
