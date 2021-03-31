@@ -1,0 +1,257 @@
+[0.163s] DEBUG:colcon:Command line arguments: ['/usr/bin/colcon', 'list', '-p', '--base-paths', '/home/cale/thesis-code']
+[0.163s] DEBUG:colcon:Parsed command line arguments: Namespace(base_paths=['/home/cale/thesis-code'], build_base='build', ignore_user_meta=False, log_base=None, log_level=None, main=<bound method ListVerb.main of <colcon_package_information.verb.list.ListVerb object at 0x7f8a3f5da610>>, metas=['./colcon.meta'], names_only=False, packages_above=None, packages_above_and_dependencies=None, packages_above_depth=None, packages_end=None, packages_ignore=None, packages_ignore_regex=None, packages_select=None, packages_select_build_failed=False, packages_select_by_dep=None, packages_select_regex=None, packages_select_test_failures=False, packages_skip=None, packages_skip_build_finished=False, packages_skip_by_dep=None, packages_skip_regex=None, packages_skip_test_passed=False, packages_skip_up_to=None, packages_start=None, packages_up_to=None, packages_up_to_regex=None, paths=None, paths_only=True, topological_graph=False, topological_graph_density=False, topological_graph_dot=False, topological_graph_dot_cluster=False, topological_graph_dot_include_skipped=False, topological_graph_legend=False, topological_order=False, verb_extension=<colcon_package_information.verb.list.ListVerb object at 0x7f8a3f5da610>, verb_name='list', verb_parser=<colcon_defaults.argument_parser.defaults.DefaultArgumentsDecorator object at 0x7f8a3f572af0>)
+[0.194s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) check parameters
+[0.194s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) check parameters
+[0.194s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) check parameters
+[0.194s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) check parameters
+[0.194s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) discover
+[0.194s] INFO:colcon.colcon_core.package_discovery:Crawling recursively for packages in '/home/cale/thesis-code'
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code) by extensions ['ignore', 'ignore_ament_install']
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code) by extension 'ignore'
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code) by extension 'ignore_ament_install'
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code) by extensions ['colcon_pkg']
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code) by extension 'colcon_pkg'
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code) by extensions ['colcon_meta']
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code) by extension 'colcon_meta'
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code) by extensions ['ros']
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code) by extension 'ros'
+[0.207s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code) by extensions ['cmake', 'python']
+[0.207s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code) by extension 'cmake'
+[0.207s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code) by extension 'python'
+[0.207s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code) by extensions ['python_setup_py']
+[0.207s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code) by extension 'python_setup_py'
+[0.207s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments) by extensions ['ignore', 'ignore_ament_install']
+[0.208s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments) by extension 'ignore'
+[0.208s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments) by extension 'ignore_ament_install'
+[0.208s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments) by extensions ['colcon_pkg']
+[0.208s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments) by extension 'colcon_pkg'
+[0.208s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments) by extensions ['colcon_meta']
+[0.208s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments) by extension 'colcon_meta'
+[0.208s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments) by extensions ['ros']
+[0.208s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments) by extension 'ros'
+[0.208s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments) by extensions ['cmake', 'python']
+[0.208s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments) by extension 'cmake'
+[0.208s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments) by extension 'python'
+[0.208s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments) by extensions ['python_setup_py']
+[0.208s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments) by extension 'python_setup_py'
+[0.208s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/controllers) by extensions ['ignore', 'ignore_ament_install']
+[0.208s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/controllers) by extension 'ignore'
+[0.209s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/controllers) by extension 'ignore_ament_install'
+[0.209s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/controllers) by extensions ['colcon_pkg']
+[0.209s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/controllers) by extension 'colcon_pkg'
+[0.209s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/controllers) by extensions ['colcon_meta']
+[0.209s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/controllers) by extension 'colcon_meta'
+[0.209s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/controllers) by extensions ['ros']
+[0.209s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/controllers) by extension 'ros'
+[0.209s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/controllers) by extensions ['cmake', 'python']
+[0.209s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/controllers) by extension 'cmake'
+[0.209s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/controllers) by extension 'python'
+[0.209s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/controllers) by extensions ['python_setup_py']
+[0.209s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/controllers) by extension 'python_setup_py'
+[0.209s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/controllers/__pycache__) by extensions ['ignore', 'ignore_ament_install']
+[0.209s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/controllers/__pycache__) by extension 'ignore'
+[0.209s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/controllers/__pycache__) by extension 'ignore_ament_install'
+[0.209s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/controllers/__pycache__) by extensions ['colcon_pkg']
+[0.210s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/controllers/__pycache__) by extension 'colcon_pkg'
+[0.210s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/controllers/__pycache__) by extensions ['colcon_meta']
+[0.210s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/controllers/__pycache__) by extension 'colcon_meta'
+[0.210s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/controllers/__pycache__) by extensions ['ros']
+[0.210s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/controllers/__pycache__) by extension 'ros'
+[0.210s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/controllers/__pycache__) by extensions ['cmake', 'python']
+[0.210s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/controllers/__pycache__) by extension 'cmake'
+[0.210s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/controllers/__pycache__) by extension 'python'
+[0.210s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/controllers/__pycache__) by extensions ['python_setup_py']
+[0.210s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/controllers/__pycache__) by extension 'python_setup_py'
+[0.210s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/controllers/log) by extensions ['ignore', 'ignore_ament_install']
+[0.210s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/controllers/log) by extension 'ignore'
+[0.210s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/controllers/log) ignored
+[0.210s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/lqr_on_kinematic_model) by extensions ['ignore', 'ignore_ament_install']
+[0.211s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/lqr_on_kinematic_model) by extension 'ignore'
+[0.211s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/lqr_on_kinematic_model) by extension 'ignore_ament_install'
+[0.211s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/lqr_on_kinematic_model) by extensions ['colcon_pkg']
+[0.211s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/lqr_on_kinematic_model) by extension 'colcon_pkg'
+[0.211s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/lqr_on_kinematic_model) by extensions ['colcon_meta']
+[0.211s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/lqr_on_kinematic_model) by extension 'colcon_meta'
+[0.211s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/lqr_on_kinematic_model) by extensions ['ros']
+[0.211s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/lqr_on_kinematic_model) by extension 'ros'
+[0.211s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/lqr_on_kinematic_model) by extensions ['cmake', 'python']
+[0.211s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/lqr_on_kinematic_model) by extension 'cmake'
+[0.211s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/lqr_on_kinematic_model) by extension 'python'
+[0.211s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/lqr_on_kinematic_model) by extensions ['python_setup_py']
+[0.211s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/lqr_on_kinematic_model) by extension 'python_setup_py'
+[0.211s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/lqr_on_kinematic_model/__pycache__) by extensions ['ignore', 'ignore_ament_install']
+[0.212s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/lqr_on_kinematic_model/__pycache__) by extension 'ignore'
+[0.212s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/lqr_on_kinematic_model/__pycache__) by extension 'ignore_ament_install'
+[0.212s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/lqr_on_kinematic_model/__pycache__) by extensions ['colcon_pkg']
+[0.212s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/lqr_on_kinematic_model/__pycache__) by extension 'colcon_pkg'
+[0.212s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/lqr_on_kinematic_model/__pycache__) by extensions ['colcon_meta']
+[0.212s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/lqr_on_kinematic_model/__pycache__) by extension 'colcon_meta'
+[0.212s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/lqr_on_kinematic_model/__pycache__) by extensions ['ros']
+[0.212s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/lqr_on_kinematic_model/__pycache__) by extension 'ros'
+[0.212s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/lqr_on_kinematic_model/__pycache__) by extensions ['cmake', 'python']
+[0.212s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/lqr_on_kinematic_model/__pycache__) by extension 'cmake'
+[0.212s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/lqr_on_kinematic_model/__pycache__) by extension 'python'
+[0.212s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/lqr_on_kinematic_model/__pycache__) by extensions ['python_setup_py']
+[0.212s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/lqr_on_kinematic_model/__pycache__) by extension 'python_setup_py'
+[0.212s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/lqr_on_kinematic_model/log) by extensions ['ignore', 'ignore_ament_install']
+[0.213s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/lqr_on_kinematic_model/log) by extension 'ignore'
+[0.213s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/lqr_on_kinematic_model/log) ignored
+[0.213s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/nmpc_tests) by extensions ['ignore', 'ignore_ament_install']
+[0.213s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/nmpc_tests) by extension 'ignore'
+[0.213s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/nmpc_tests) by extension 'ignore_ament_install'
+[0.213s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/nmpc_tests) by extensions ['colcon_pkg']
+[0.213s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/nmpc_tests) by extension 'colcon_pkg'
+[0.213s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/nmpc_tests) by extensions ['colcon_meta']
+[0.213s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/nmpc_tests) by extension 'colcon_meta'
+[0.213s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/nmpc_tests) by extensions ['ros']
+[0.213s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/nmpc_tests) by extension 'ros'
+[0.213s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/nmpc_tests) by extensions ['cmake', 'python']
+[0.213s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/nmpc_tests) by extension 'cmake'
+[0.214s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/nmpc_tests) by extension 'python'
+[0.214s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/nmpc_tests) by extensions ['python_setup_py']
+[0.214s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/nmpc_tests) by extension 'python_setup_py'
+[0.214s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/nmpc_tests/log) by extensions ['ignore', 'ignore_ament_install']
+[0.214s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/nmpc_tests/log) by extension 'ignore'
+[0.214s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/experiments/nmpc_tests/log) ignored
+[0.214s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/log) by extensions ['ignore', 'ignore_ament_install']
+[0.214s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/log) by extension 'ignore'
+[0.214s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/log) ignored
+[0.214s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws) by extensions ['ignore', 'ignore_ament_install']
+[0.215s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws) by extension 'ignore'
+[0.216s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws) by extension 'ignore_ament_install'
+[0.216s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws) by extensions ['colcon_pkg']
+[0.216s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws) by extension 'colcon_pkg'
+[0.216s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws) by extensions ['colcon_meta']
+[0.216s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws) by extension 'colcon_meta'
+[0.216s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws) by extensions ['ros']
+[0.216s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws) by extension 'ros'
+[0.216s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws) by extensions ['cmake', 'python']
+[0.216s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws) by extension 'cmake'
+[0.216s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws) by extension 'python'
+[0.216s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws) by extensions ['python_setup_py']
+[0.216s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws) by extension 'python_setup_py'
+[0.216s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/build) by extensions ['ignore', 'ignore_ament_install']
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/build) by extension 'ignore'
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/build) ignored
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/install) by extensions ['ignore', 'ignore_ament_install']
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/install) by extension 'ignore'
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/install) ignored
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/launch) by extensions ['ignore', 'ignore_ament_install']
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/launch) by extension 'ignore'
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/launch) by extension 'ignore_ament_install'
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/launch) by extensions ['colcon_pkg']
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/launch) by extension 'colcon_pkg'
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/launch) by extensions ['colcon_meta']
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/launch) by extension 'colcon_meta'
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/launch) by extensions ['ros']
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/launch) by extension 'ros'
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/launch) by extensions ['cmake', 'python']
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/launch) by extension 'cmake'
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/launch) by extension 'python'
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/launch) by extensions ['python_setup_py']
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/launch) by extension 'python_setup_py'
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/launch/__pycache__) by extensions ['ignore', 'ignore_ament_install']
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/launch/__pycache__) by extension 'ignore'
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/launch/__pycache__) by extension 'ignore_ament_install'
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/launch/__pycache__) by extensions ['colcon_pkg']
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/launch/__pycache__) by extension 'colcon_pkg'
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/launch/__pycache__) by extensions ['colcon_meta']
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/launch/__pycache__) by extension 'colcon_meta'
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/launch/__pycache__) by extensions ['ros']
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/launch/__pycache__) by extension 'ros'
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/launch/__pycache__) by extensions ['cmake', 'python']
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/launch/__pycache__) by extension 'cmake'
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/launch/__pycache__) by extension 'python'
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/launch/__pycache__) by extensions ['python_setup_py']
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/launch/__pycache__) by extension 'python_setup_py'
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/log) by extensions ['ignore', 'ignore_ament_install']
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/log) by extension 'ignore'
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/log) ignored
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src) by extensions ['ignore', 'ignore_ament_install']
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src) by extension 'ignore'
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src) by extension 'ignore_ament_install'
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src) by extensions ['colcon_pkg']
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src) by extension 'colcon_pkg'
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src) by extensions ['colcon_meta']
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src) by extension 'colcon_meta'
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src) by extensions ['ros']
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src) by extension 'ros'
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src) by extensions ['cmake', 'python']
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src) by extension 'cmake'
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src) by extension 'python'
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src) by extensions ['python_setup_py']
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src) by extension 'python_setup_py'
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/Clothoids) by extensions ['ignore', 'ignore_ament_install']
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/Clothoids) by extension 'ignore'
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/Clothoids) by extension 'ignore_ament_install'
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/Clothoids) by extensions ['colcon_pkg']
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/Clothoids) by extension 'colcon_pkg'
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/Clothoids) by extensions ['colcon_meta']
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/Clothoids) by extension 'colcon_meta'
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/Clothoids) by extensions ['ros']
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/Clothoids) by extension 'ros'
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/Clothoids) by extensions ['cmake', 'python']
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/Clothoids) by extension 'cmake'
+[0.233s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/Clothoids) by extension 'python'
+[0.233s] DEBUG:colcon.colcon_core.package_identification:Package '/home/cale/thesis-code/ws/src/Clothoids' with type 'cmake' and name 'Clothoids'
+[0.233s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/control) by extensions ['ignore', 'ignore_ament_install']
+[0.233s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/control) by extension 'ignore'
+[0.234s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/control) by extension 'ignore_ament_install'
+[0.234s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/control) by extensions ['colcon_pkg']
+[0.234s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/control) by extension 'colcon_pkg'
+[0.234s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/control) by extensions ['colcon_meta']
+[0.234s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/control) by extension 'colcon_meta'
+[0.234s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/control) by extensions ['ros']
+[0.234s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/control) by extension 'ros'
+[0.237s] DEBUG:colcon.colcon_core.package_identification:Package '/home/cale/thesis-code/ws/src/control' with type 'ros.ament_cmake' and name 'control'
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/operation) by extensions ['ignore', 'ignore_ament_install']
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/operation) by extension 'ignore'
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/operation) by extension 'ignore_ament_install'
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/operation) by extensions ['colcon_pkg']
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/operation) by extension 'colcon_pkg'
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/operation) by extensions ['colcon_meta']
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/operation) by extension 'colcon_meta'
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/operation) by extensions ['ros']
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/operation) by extension 'ros'
+[0.238s] DEBUG:colcon.colcon_core.package_identification:Package '/home/cale/thesis-code/ws/src/operation' with type 'ros.ament_cmake' and name 'operation'
+[0.238s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/report_utils) by extensions ['ignore', 'ignore_ament_install']
+[0.238s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/report_utils) by extension 'ignore'
+[0.239s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/report_utils) by extension 'ignore_ament_install'
+[0.239s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/report_utils) by extensions ['colcon_pkg']
+[0.239s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/report_utils) by extension 'colcon_pkg'
+[0.239s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/report_utils) by extensions ['colcon_meta']
+[0.239s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/report_utils) by extension 'colcon_meta'
+[0.239s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/report_utils) by extensions ['ros']
+[0.239s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/report_utils) by extension 'ros'
+[0.240s] DEBUG:colcon.colcon_core.package_identification:Package '/home/cale/thesis-code/ws/src/report_utils' with type 'ros.ament_python' and name 'report_utils'
+[0.240s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/simulator) by extensions ['ignore', 'ignore_ament_install']
+[0.240s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/simulator) by extension 'ignore'
+[0.240s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/simulator) by extension 'ignore_ament_install'
+[0.240s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/simulator) by extensions ['colcon_pkg']
+[0.240s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/simulator) by extension 'colcon_pkg'
+[0.240s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/simulator) by extensions ['colcon_meta']
+[0.240s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/simulator) by extension 'colcon_meta'
+[0.240s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/simulator) by extensions ['ros']
+[0.240s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/simulator) by extension 'ros'
+[0.241s] DEBUG:colcon.colcon_core.package_identification:Package '/home/cale/thesis-code/ws/src/simulator' with type 'ros.ament_cmake' and name 'simulator'
+[0.241s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/state_estimator) by extensions ['ignore', 'ignore_ament_install']
+[0.241s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/state_estimator) by extension 'ignore'
+[0.241s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/state_estimator) by extension 'ignore_ament_install'
+[0.241s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/state_estimator) by extensions ['colcon_pkg']
+[0.241s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/state_estimator) by extension 'colcon_pkg'
+[0.242s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/state_estimator) by extensions ['colcon_meta']
+[0.242s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/state_estimator) by extension 'colcon_meta'
+[0.242s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/state_estimator) by extensions ['ros']
+[0.242s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/state_estimator) by extension 'ros'
+[0.242s] DEBUG:colcon.colcon_core.package_identification:Package '/home/cale/thesis-code/ws/src/state_estimator' with type 'ros.ament_cmake' and name 'state_estimator'
+[0.243s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/vehicle_interface) by extensions ['ignore', 'ignore_ament_install']
+[0.243s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/vehicle_interface) by extension 'ignore'
+[0.243s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/vehicle_interface) by extension 'ignore_ament_install'
+[0.243s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/vehicle_interface) by extensions ['colcon_pkg']
+[0.243s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/vehicle_interface) by extension 'colcon_pkg'
+[0.243s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/vehicle_interface) by extensions ['colcon_meta']
+[0.243s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/vehicle_interface) by extension 'colcon_meta'
+[0.243s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/vehicle_interface) by extensions ['ros']
+[0.243s] Level 1:colcon.colcon_core.package_identification:_identify(/home/cale/thesis-code/ws/src/vehicle_interface) by extension 'ros'
+[0.244s] DEBUG:colcon.colcon_core.package_identification:Package '/home/cale/thesis-code/ws/src/vehicle_interface' with type 'ros.ament_cmake' and name 'vehicle_interface'
+[0.244s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) using defaults

@@ -22,6 +22,7 @@ find_package(rclcpp_components REQUIRED)
 find_package(vehicle_interface REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(Eigen3 REQUIRED)
+find_package(ignition-math6 REQUIRED)
 
 add_library(pid SHARED
   src/PID.cpp
@@ -29,6 +30,23 @@ add_library(pid SHARED
 target_include_directories(pid PUBLIC include)
 ament_target_dependencies(pid
   "rclcpp"
+)
+
+add_library(pathlib SHARED
+  "src/path/path_line.cpp"
+)
+target_include_directories(pathlib PUBLIC include)
+ament_target_dependencies(pathlib
+  "ignition-math6"
+)
+
+add_executable(pathlib_testing 
+  "src/pathlib_testing.cpp"
+)
+target_include_directories(pathlib_testing PUBLIC include)
+target_link_libraries(pathlib_testing pathlib)
+ament_target_dependencies(pathlib_testing
+  "ignition-math6"  
 )
 
 
@@ -53,7 +71,7 @@ ament_target_dependencies(vehicle_controller
 rclcpp_components_register_nodes(vehicle_controller "VehicleControllerNode")
 
 install(TARGETS
-  pid
+  pid pathlib
   DESTINATION lib/${PROJECT_NAME}
 )
 

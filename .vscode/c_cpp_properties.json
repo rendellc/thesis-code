@@ -1,0 +1,19 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "",
+        "limitSymbolsToIncludedHeaders": true
+      },
+      "includePath": [
+        "/home/cale/thesis-code/ws/src/control/include/**",
+        "/home/cale/thesis-code/ws/src/operation/include/**",
+        "/home/cale/thesis-code/ws/src/simulator/include/**",
+        "/home/cale/thesis-code/ws/src/state_estimator/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS"
+    }
+  ],
+  "version": 4
+}
