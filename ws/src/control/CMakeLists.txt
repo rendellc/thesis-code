@@ -34,6 +34,7 @@ ament_target_dependencies(pid
 
 add_library(pathlib SHARED
   "src/path/path_line.cpp"
+  "src/path/path_spiral.cpp"
 )
 target_include_directories(pathlib PUBLIC include)
 ament_target_dependencies(pathlib

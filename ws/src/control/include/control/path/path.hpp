@@ -8,7 +8,7 @@ class Path
 {
 public:
     enum class Type {
-        LINE, CIRCLE_ARC, FERMAT_SPIRAL
+        LINE, CIRCLE_ARC, SPIRAL
     };
     const Type path_type;
 
@@ -21,7 +21,7 @@ public:
     virtual double cross_track_error(const ignition::math::Vector2d& pos) = 0;
     virtual double course_error(const ignition::math::Vector2d& pos, double course) = 0;
 
-    virtual std::vector<ignition::math::Vector2d> sample(size_t number_of_samples) = 0;
+    virtual std::vector<ignition::math::Vector2d> sample(int number_of_samples) = 0;
 
 
     
