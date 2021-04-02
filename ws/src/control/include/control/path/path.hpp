@@ -27,6 +27,6 @@ public:
     virtual ignition::math::Vector2d getEnd() const = 0;
 
 
-
+    static std::shared_ptr<Path> straight_line_path(const std::vector<ignition::math::Vector2d>& waypoints);
     static std::shared_ptr<Path> fermat_smoothing(const std::vector<ignition::math::Vector2d>& waypoints, double maximum_curvature);
 };

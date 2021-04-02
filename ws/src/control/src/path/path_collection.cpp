@@ -10,22 +10,19 @@ PathCollection::PathCollection(const std::vector<std::shared_ptr<Path>>& collect
 double 
 PathCollection::distance(const ignition::math::Vector2d& pos) 
 {
-    // TODO: nonsense
-    return 0.0;
+    return collection[active]->distance(pos);
 }
     
 double 
 PathCollection::cross_track_error(const ignition::math::Vector2d& pos) 
 {
-    // TODO: nonsense
-    return 0.0;
+    return collection[active]->cross_track_error(pos);
 }
 
 double 
 PathCollection::course_error(const ignition::math::Vector2d& pos, double course) 
 {
-    // TODO: nonsense
-    return 0.0;
+    return collection[active]->course_error(pos, course);
 }
 
 std::vector<ignition::math::Vector2d> 

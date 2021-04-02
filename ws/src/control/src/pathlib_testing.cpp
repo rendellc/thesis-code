@@ -22,6 +22,7 @@ int main()
     constexpr double maximum_curvature = 1/minimum_turn_radius;
     // TODO: implement Path interface for [Path*]
     const auto path = Path::fermat_smoothing(waypoints, maximum_curvature);
+    //const auto path = Path::straight_line_path(waypoints);
     const auto points = path->sample(50);
     for (const auto& p : points)
     {

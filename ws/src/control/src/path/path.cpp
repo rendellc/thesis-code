@@ -4,6 +4,21 @@
 #include <control/path/path_collection.hpp>
 
 
+std::shared_ptr<Path> 
+Path::straight_line_path(const std::vector<ignition::math::Vector2d>& waypoints)
+{
+    std::vector<std::shared_ptr<Path>> subpaths;
+    
+    for (int i = 0; i < waypoints.size() - 1; i++)
+    {
+        subpaths.push_back(
+            std::make_shared<PathLine>(waypoints[i], waypoints[i+1])
+        );
+    }
+    
+    return std::make_shared<PathCollection>(subpaths);
+}
+
 std::shared_ptr<Path>
 Path::fermat_smoothing(const std::vector<ignition::math::Vector2d>& waypoints, double maximum_curvature)
 {
