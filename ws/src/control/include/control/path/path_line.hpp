@@ -19,6 +19,11 @@ public:
     double course_error(const ignition::math::Vector2d& pos, double course) override;
 
     std::vector<ignition::math::Vector2d> sample(int number_of_samples) override;
+    
+    ignition::math::Vector2d getBegin() const override;
+    ignition::math::Vector2d getEnd() const override;
+
+
 private:
-    const ignition::math::Vector2d pos_begin, pos_end;
+    ignition::math::Vector2d pos_begin, pos_end;
 };

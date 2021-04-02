@@ -57,3 +57,16 @@ PathLine::sample(int number_of_samples)
     
     return points;
 }
+
+ignition::math::Vector2d
+PathLine::getBegin() const
+{
+    return pos_begin;
+}
+
+
+ignition::math::Vector2d
+PathLine::getEnd() const
+{
+    return pos_end;
+}

@@ -9,7 +9,7 @@
 class PathSpiral : public Path
 {
 public:
-    PathSpiral(const ignition::math::Vector2d& begin, const ignition::math::Vector2d& mid, const ignition::math::Vector2d& end, double maximum_curvature);
+    PathSpiral(const ignition::math::Vector2d& origin, double orientation, double curvature, double theta_begin, double theta_end);
 
     virtual ~PathSpiral() = default;
 
@@ -21,20 +21,35 @@ public:
 
     std::vector<ignition::math::Vector2d> sample(int number_of_samples) override;
     
+    ignition::math::Vector2d getBegin() const override;
+    ignition::math::Vector2d getEnd() const override;
+    
 private:
-    const ignition::math::Vector2d pos_begin, pos_mid, pos_end;
-    const double maximum_curvature;
+    const ignition::math::Vector2d origin;
+    const double orientation;
+    const double curvature;
+    const double theta_begin, theta_end;
+    
+    
+    ignition::math::Vector2d spiral(double theta) const;
+
+
+    // const double course_in;
+    // const double curvature;
+    // const int turn_direction;
+    // const double theta_end;
+    // const bool reversed = false;
     
     // Spiral parameters
-    ignition::math::Vector2d spiral_begin, spiral_end;
-    int turn_direction;
-    double course_in, course_out, course_change;
-    double theta_end;
-    double theta_max_curvature;
-    double curvature;
-    double alpha;
-    double h, l1, l2, l;
+    // ignition::math::Vector2d spiral_begin, spiral_end;
+    // int turn_direction;
+    // double course_in, course_out, course_change;
+    // double theta_end;
+    // double theta_max_curvature;
+    // double curvature;
+    // double alpha;
+    // double h, l1, l2, l;
 
-    // line before and after spiral
-    std::shared_ptr<PathLine> line_before, line_after;
+    // // line before and after spiral
+    // std::shared_ptr<PathLine> line_before, line_after;
 };

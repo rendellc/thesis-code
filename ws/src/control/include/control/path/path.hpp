@@ -23,6 +23,10 @@ public:
 
     virtual std::vector<ignition::math::Vector2d> sample(int number_of_samples) = 0;
 
+    virtual ignition::math::Vector2d getBegin() const = 0;
+    virtual ignition::math::Vector2d getEnd() const = 0;
+
+
 
     
 };
