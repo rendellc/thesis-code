@@ -9,7 +9,7 @@
 class PathSpiral : public Path
 {
 public:
-    PathSpiral(const ignition::math::Vector2d& origin, double orientation, double curvature, double theta_begin, double theta_end);
+    PathSpiral(const ignition::math::Vector2d& origin, double orientation, double scale, double theta_begin, double theta_end);
 
     virtual ~PathSpiral() = default;
 
@@ -27,15 +27,27 @@ public:
 private:
     const ignition::math::Vector2d origin;
     const double orientation;
-    const double curvature;
+    const double scale;
     const double theta_begin, theta_end;
     
+
     
     ignition::math::Vector2d spiral(double theta) const;
+    ignition::math::Vector2d spiral_derivative(double theta) const;
+    
+
+    std::map<ignition::math::Vector2d, double> closest_cache;
+    double find_closest_theta(const ignition::math::Vector2d& pos);
+    
+    double distance(const ignition::math::Vector2d& pos, double theta) const;
+    double distance_squared_derivative(const ignition::math::Vector2d& pos, double theta) const;
+    
+
+    
 
 
     // const double course_in;
-    // const double curvature;
+    // const double scale;
     // const int turn_direction;
     // const double theta_end;
     // const bool reversed = false;
@@ -46,7 +58,7 @@ private:
     // double course_in, course_out, course_change;
     // double theta_end;
     // double theta_max_curvature;
-    // double curvature;
+    // double scale;
     // double alpha;
     // double h, l1, l2, l;
 

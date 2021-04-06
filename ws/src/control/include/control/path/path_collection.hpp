@@ -22,9 +22,11 @@ public:
     
     ignition::math::Vector2d getBegin() const override;
     ignition::math::Vector2d getEnd() const override;
-
+    
 
 private:
     std::vector<std::shared_ptr<Path>> collection;
-    int active = 0;
+    int closest = 0;
+    
+    void update_closest(const ignition::math::Vector2d& pos);
 };

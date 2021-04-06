@@ -21,6 +21,7 @@ find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(visualization_msgs REQUIRED)
 find_package(vehicle_interface REQUIRED)
 
 add_library(manual_joy SHARED src/manual_operation_joy.cpp)
@@ -39,6 +40,7 @@ ament_target_dependencies(waypoint_publisher
   "rclcpp"
   "rclcpp_components"
   "geometry_msgs"
+  "visualization_msgs"
   "vehicle_interface"
 )
 rclcpp_components_register_nodes(waypoint_publisher "WaypointPublisherNode")

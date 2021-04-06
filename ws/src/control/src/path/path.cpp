@@ -66,14 +66,14 @@ Path::fermat_smoothing(const std::vector<ignition::math::Vector2d>& waypoints, d
             theta_end, 
             sqrt(sqrt(7)/2 - 1.25)
         );
-        const double curvature = 1/maximum_curvature * 
+        const double scale = 1/maximum_curvature * 
             2*sqrt(theta_max_curvature) * (3 + 4*pow(theta_max_curvature,2))
             /
             sqrt(pow(1+4*pow(theta_max_curvature,2),3));
     
         const double alpha = (PI - course_change)/2;
-        const double h = curvature*sqrt(theta_end)*sin(theta_end);
-        const double l1 = curvature*sqrt(theta_end)*cos(theta_end);
+        const double h = scale*sqrt(theta_end)*sin(theta_end);
+        const double l1 = scale*sqrt(theta_end)*cos(theta_end);
         const double l2 = h/tan(alpha);
         const double l = l1 + l2;
 
@@ -87,12 +87,12 @@ Path::fermat_smoothing(const std::vector<ignition::math::Vector2d>& waypoints, d
         );
         subpaths.push_back(
             std::make_shared<PathSpiral>(
-                spiral_begin, course_in, curvature, 0, theta_end
+                spiral_begin, course_in, scale, 0, theta_end
             )
         );
         subpaths.push_back(
             std::make_shared<PathSpiral>(
-                spiral_end, course_out, curvature, -theta_end, 0
+                spiral_end, course_out, scale, -theta_end, 0
             )
         );
     }
@@ -108,3 +108,4 @@ Path::fermat_smoothing(const std::vector<ignition::math::Vector2d>& waypoints, d
 
     return std::make_shared<PathCollection>(subpaths);
 }
+

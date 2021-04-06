@@ -19,9 +19,14 @@ int main()
     };
     
     constexpr double minimum_turn_radius = 1.5;
+    [[maybe_unused]]
     constexpr double maximum_curvature = 1/minimum_turn_radius;
     // TODO: implement Path interface for [Path*]
-    const auto path = Path::fermat_smoothing(waypoints, maximum_curvature);
+    //const auto path = Path::fermat_smoothing(waypoints, maximum_curvature);
+    const auto path = std::make_shared<PathSpiral>(
+        Vec2(1,1), 1, 3, 0, 2
+    );
+
     //const auto path = Path::straight_line_path(waypoints);
     const auto points = path->sample(50);
     for (const auto& p : points)
