@@ -8,7 +8,9 @@
 #include <geometry_msgs/msg/pose_stamped.hpp>
 #include <geometry_msgs/msg/twist.hpp>
 #include <ignition/math/Pose3.hh>
+#include <ignition/math/Quaternion.hh>
 #include <ignition/math/Vector2.hh>
+#include <ignition/math/Vector3.hh>
 #include <memory>
 #include <nav_msgs/msg/path.hpp>
 #include <rclcpp/rclcpp.hpp>
@@ -197,12 +199,22 @@ class VehicleControllerNode : public rclcpp::Node {
     if (pose_p && waypoints_p) {
       // use waypoints if reference not supplied
       // path_p->cross_track_error()
+      const auto &quat = pose_p->pose.orientation;
       const auto position = ignition::math::Vector2d(pose_p->pose.position.x,
                                                      pose_p->pose.position.y);
       const auto path_position = path_p->closest_point(position);
       const auto path_direction = path_p->closest_direction(position);
       const auto path_error = path_position - position;
-      const auto angle_to_path = atan2(path_error.Y(), path_error.X());
+
+      const auto local_path_error =
+          ignition::math::Quaterniond(quat.w, quat.x, quat.y, quat.z)
+              .RotateVectorReverse(ignition::math::Vector3d(
+                  path_error.X(), path_error.Y(), 0.0));
+
+      // TODO(rendellc): need to rotate to vehicle coordinates
+
+      const auto angle_to_path =
+          atan2(local_path_error.Y(), local_path_error.X());
 
       using Marker = visualization_msgs::msg::Marker;
       controller_markers_msg.markers[0].header.frame_id = "map";
@@ -228,6 +240,18 @@ class VehicleControllerNode : public rclcpp::Node {
 
       if (!reference_p) {
         // only use waypoints if refernce_p not supplied
+        constexpr double wheel_radius = 0.505;
+
+        // TODO(rendellc): speed controller
+        fl_msg.angular_velocity = 1.5 / wheel_radius;
+        fr_msg.angular_velocity = 1.5 / wheel_radius;
+        rl_msg.angular_velocity = 1.5 / wheel_radius;
+        rr_msg.angular_velocity = 1.5 / wheel_radius;
+
+        double distance_to_path = path_error.Length();
+        double steering_angle_front =
+            1 * atan(2 * angle_to_path * distance_to_path) / (1.57 / 2);
+        ackermann_steering(steering_angle_front);
       }
     }
 
@@ -237,6 +261,24 @@ class VehicleControllerNode : public rclcpp::Node {
     rl_pub_p->publish(rl_msg);
     rr_pub_p->publish(rr_msg);
     fr_pub_p->publish(fr_msg);
+  }
+
+  void ackermann_steering(double steering_angle) {
+    constexpr double L = 3.2;
+    constexpr double W = 2.0;
+
+    fl_msg.steering_angle =
+        atan2(2 * L * sin(steering_angle),
+              2 * L * cos(steering_angle) - W * sin(steering_angle));
+    fl_msg.steering_angle_rate = 0.0;
+    fr_msg.steering_angle =
+        atan2(2 * L * sin(steering_angle),
+              2 * L * cos(steering_angle) + W * sin(steering_angle));
+    fr_msg.steering_angle_rate = 0.0;
+    rr_msg.steering_angle = 0.0;
+    rr_msg.steering_angle_rate = 0.0;
+    rl_msg.steering_angle = 0.0;
+    rl_msg.steering_angle_rate = 0.0;
   }
 
   void pose_callback(geometry_msgs::msg::PoseStamped::SharedPtr msg_p) {
@@ -258,9 +300,10 @@ class VehicleControllerNode : public rclcpp::Node {
       points.emplace_back(wp.x, wp.y);
     }
 
-    // path_p = Path::fermat_smoothing(points, maximum_curvature);
-    path_p = std::make_shared<PathSpiral>(ignition::math::Vector2d(0, 0), 0, 30,
-                                          0, 2);
+    path_p = Path::fermat_smoothing(points, maximum_curvature);
+    // path_p = std::make_shared<PathSpiral>(ignition::math::Vector2d(3, 2), 0,
+    // 30,
+    //                                       -2, 0);
 
     // Update marker message
     constexpr int num_samples = 100;

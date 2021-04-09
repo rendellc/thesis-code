@@ -6,6 +6,7 @@ from geometry_msgs.msg import Pose, Point
 
 import xacro
 
+from numpy import pi, cos, sin
 
 def main(args=None):
 
@@ -23,6 +24,14 @@ def main(args=None):
     request.initial_pose.position.x = 2.0
     request.initial_pose.position.y = 2.0
     request.initial_pose.position.z = 1.3
+    
+    yaw = 0
+    request.initial_pose.orientation.w = cos(yaw/2)
+    request.initial_pose.orientation.x = sin(yaw/2)*cos(pi/2)
+    request.initial_pose.orientation.y = sin(yaw/2)*cos(pi/2)
+    request.initial_pose.orientation.z = sin(yaw/2)*cos(0)
+
+
 
     request.reference_frame = "map"
 

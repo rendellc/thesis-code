@@ -39,7 +39,7 @@ ignition::math::Vector2d PathSpiral::spiral_u(double u) const {
   const auto sign = u > 0 ? 1 : -1;
   return origin + scale * u *
                       ignition::math::Vector2d(cos(sign * u * u + orientation),
-                                               cos(sign * u * u + orientation));
+                                               sin(sign * u * u + orientation));
 }
 
 ignition::math::Vector2d PathSpiral::spiral_u_derivative(double u) const {
@@ -47,8 +47,8 @@ ignition::math::Vector2d PathSpiral::spiral_u_derivative(double u) const {
   const auto& k = scale;
   const auto c = cos(sign * u * u + orientation);
   const auto s = sin(sign * u * u + orientation);
-  return ignition::math::Vector2d(k * c - 2 * k * u * u * s,
-                                  k * s + 2 * k * u * u * c);
+  return ignition::math::Vector2d(k * c - 2 * k * sign * u * u * s,
+                                  k * s + 2 * k * sign * u * u * c);
 }
 
 ignition::math::Vector2d PathSpiral::spiral_u_double_derivative(
@@ -57,8 +57,9 @@ ignition::math::Vector2d PathSpiral::spiral_u_double_derivative(
   const auto& k = scale;
   const auto c = cos(sign * u * u + orientation);
   const auto s = sin(sign * u * u + orientation);
-  return ignition::math::Vector2d(6 * k * u * (-s) + 4 * k * pow(u, 3) * (-c),
-                                  6 * k * u * (c) + 4 * k * pow(u, 3) * (-s));
+  return ignition::math::Vector2d(
+      6 * k * sign * u * (-s) + 4 * k * pow(u, 3) * (-c),
+      6 * k * sign * u * (c) + 4 * k * pow(u, 3) * (-s));
 }
 
 std::vector<ignition::math::Vector2d> PathSpiral::sample(
@@ -67,9 +68,13 @@ std::vector<ignition::math::Vector2d> PathSpiral::sample(
   points.resize(number_of_samples);
 
   for (int i = 0; i < number_of_samples; i++) {
-    const double theta = theta_begin + (theta_end - theta_begin) *
-                                           static_cast<double>(i) /
-                                           number_of_samples;
+    const double n = static_cast<double>(number_of_samples);
+    // i = 0      => interpolation = 0
+    // i = n - 1  => interpolation = 1
+    const double interpolation = n / (n - 1) * (i / n);
+
+    const double theta =
+        theta_begin + interpolation * (theta_end - theta_begin);
     points[i] = spiral(theta);
   }
 
@@ -119,12 +124,15 @@ double PathSpiral::find_closest_theta(const ignition::math::Vector2d& pos) {
 
   // value was not cached, compute it
   // transform variable since theta space has singularity
-  const double u_begin = theta_to_u(theta_begin);
-  const double u_end = theta_to_u(theta_end);
-  double u = (u_begin + u_end) / 2;
+  double theta_initial = (theta_begin + theta_end) / 2;
+  if (!closest_cache.empty()) {
+    theta_initial = closest_cache.begin()->second;
+  }
 
-  constexpr int max_iterations = 100;
-  constexpr double eps = 0.001;
+  double u = theta_to_u(theta_initial);
+
+  constexpr int max_iterations = 10;
+  constexpr double eps = 1e-5;
   double cost_derivative = 2 * (spiral_u(u) - pos).Dot(spiral_u_derivative(u));
   int iterations = 0;
 
@@ -140,27 +148,32 @@ double PathSpiral::find_closest_theta(const ignition::math::Vector2d& pos) {
 
     u = u - cost_derivative / cost_double_derivative;
     iterations++;
+  }
 
-    if (u < u_begin) {
-      u = u_begin;
-      break;
-    } else if (u > u_end) {
-      u = u_end;
-      break;
-    }
+  // TODO(rendellc): double check that cost_double_derivative > 0 at solution
+
+  double theta_best = u_to_theta(u);
+  double distance_best = spiral(theta_best).Distance(pos);
+  const double distance_begin = spiral(theta_begin).Distance(pos);
+  const double distance_end = spiral(theta_end).Distance(pos);
+  if (distance_begin < distance_best) {
+    distance_best = distance_begin;
+    theta_best = theta_best;
+  }
+  if (distance_end < distance_best) {
+    distance_best = distance_end;
+    theta_best = theta_best;
   }
 
   if (iterations == max_iterations) {
-    std::cerr << "max iterations reached in Newtons method" << std::endl;
+    // std::cerr << "max iterations reached in Newtons method" << std::endl;
   }
-
-  double theta = u_to_theta(u);
 
   // (*const_cast<typeof(closest_cache)*>(&closest_cache))[pos] = theta;
   // we will in practise never look up the same position again in the future
   // so clear cache to avoid memory leak
   // TODO(rendellc): use a better data structure for this cache
   closest_cache.clear();
-  closest_cache[pos] = theta;
-  return theta;
+  closest_cache[pos] = theta_best;
+  return theta_best;
 }

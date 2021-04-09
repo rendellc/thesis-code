@@ -46,7 +46,7 @@ def generate_launch_description():
     
     return LaunchDescription([
         simulator, 
-        operation_manual,
+        # operation_manual,
         operation,
         state_estimator,
         controllers, 

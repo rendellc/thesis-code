@@ -82,7 +82,7 @@ class WheelControllerNode : public rclcpp::Node {
         return atan2(sin(dtheta), cos(dtheta));
       };
 
-      const auto x1 = x_p->steering_angle - xr_p->steering_angle;
+      const auto x1 = ssa(x_p->steering_angle - xr_p->steering_angle);
       const auto x2 = x_p->steering_angle_rate - xr_p->steering_angle_rate;
 
       const double wheel_mass = 200.0, wheel_radius = 0.505, wheel_width = 0.4;
