@@ -22,6 +22,7 @@ find_package(rclcpp_components REQUIRED)
 find_package(vehicle_interface REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(visualization_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(ignition-math6 REQUIRED)
 
@@ -74,6 +75,7 @@ ament_target_dependencies(vehicle_controller
   "rclcpp_components"
   "geometry_msgs"
   "visualization_msgs"
+  "nav_msgs"
   "vehicle_interface"
   "ignition-math6"
 )

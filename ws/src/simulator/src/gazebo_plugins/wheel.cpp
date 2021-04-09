@@ -29,6 +29,7 @@ private:
     rclcpp::Publisher<vehicle_interface::msg::WheelState>::SharedPtr wheel_state_pub_p;
 
     std::string name = "";
+
     double drive_torque = 0.0;
     double steer_torque = 0.0;
 

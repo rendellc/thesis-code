@@ -70,6 +70,11 @@ install(
   DESTINATION share/${PROJECT_NAME}
 )
 
+# Install Python scripts
+install(
+  PROGRAMS simulator/spawn_vehicle.py 
+  DESTINATION bin
+)
 
 
 # Export package dependencies
@@ -77,6 +82,8 @@ ament_export_dependencies(ament_cmake)
 ament_export_dependencies(ament_cmake_python)
 ament_export_dependencies(rclcpp)
 ament_export_dependencies(rclpy)
+ament_export_include_directories(include ${rclcpp_INDLUDE_DIRS})
+# ament_export_libraries(${PROJECT_NAME} ${rclcpp_LIBRARIES})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
