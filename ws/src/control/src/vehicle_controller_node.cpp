@@ -60,7 +60,7 @@ class VehicleControllerNode : public rclcpp::Node {
         std::chrono::duration<double>(1 / update_rate),
         std::bind(&VehicleControllerNode::update_command, this));
 
-    this->declare_parameter<double>("maximum_curvature", 0.15);
+    this->declare_parameter<double>("maximum_curvature", 0.5);
     this->get_parameter("maximum_curvature", maximum_curvature);
   }
 
@@ -301,12 +301,13 @@ class VehicleControllerNode : public rclcpp::Node {
     }
 
     path_p = Path::fermat_smoothing(points, maximum_curvature);
+    // path_p = Path::straight_line_path(points);
     // path_p = std::make_shared<PathSpiral>(ignition::math::Vector2d(3, 2), 0,
     // 30,
     //                                       -2, 0);
 
     // Update marker message
-    constexpr int num_samples = 100;
+    constexpr int num_samples = 500;
     const auto path_points = path_p->sample(num_samples);
     path_marker_msg.points.resize(path_points.size());
     geometry_msgs::msg::Point p_geom;

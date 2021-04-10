@@ -22,7 +22,7 @@ def main(args=None):
     request.xml = urdf
     request.robot_namespace = "vehicle"
     request.initial_pose.position.x = 2.0
-    request.initial_pose.position.y = 2.0
+    request.initial_pose.position.y = 0.5
     request.initial_pose.position.z = 1.3
     
     yaw = 0

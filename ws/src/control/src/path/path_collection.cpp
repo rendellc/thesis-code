@@ -13,6 +13,9 @@ std::vector<ignition::math::Vector2d> PathCollection::sample(
     int number_of_samples) {
   // Bug: might make fewer samples due to integer division
   const int number_of_samples_per = number_of_samples / collection.size();
+  std::cout << "Subpaths (" << collection.size()
+            << ") with number_of_samples_per = " << number_of_samples_per
+            << std::endl;
   std::vector<ignition::math::Vector2d> points;
   for (const auto& subpath : collection) {
     const auto subpath_sample = subpath->sample(number_of_samples_per);
