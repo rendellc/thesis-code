@@ -49,6 +49,21 @@ ignition::math::Vector2d PathLine::closest_point(
   }
 }
 
+// ignition::math::Vector2d PathLine::closest_point_step_ahead(
+//     const ignition::math::Vector2d& pos, double velocity, double time) {
+//   const auto pos_line = closest_point(pos);
+//   const auto direction = closest_direction(pos);
+//   const double distance_to_end = (pos_line - pos_end).Length();
+//   const double time_on_path = std::min(time, distance_to_end / velocity);
+//
+//   const auto pos_ahead = pos_line + time_on_path * velocity * direction;
+//   if (time_remaining) {
+//     *time_remaining = time - time_on_path;
+//   }
+//
+//   return pos_ahead;
+// }
+
 ignition::math::Vector2d PathLine::closest_direction(
     const ignition::math::Vector2d& pos) {
   return (pos_end - pos_begin).Normalized();

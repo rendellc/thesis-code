@@ -51,6 +51,28 @@ ignition::math::Vector2d PathCollection::closest_direction(
   return collection[closest]->closest_direction(pos);
 }
 
+// ignition::math::Vector2d PathCollection::closest_point_step_ahead(
+//     const ignition::math::Vector2d& pos, double velocity, double time,
+//     double* time_left_p) {
+//   update_closest(pos);
+//
+//   double time_left = time;
+//   if (time_left_p) {
+//     time_left = *time_left_p;
+//   }
+//
+//   int subpath_index = closest;
+//   ignition::math::Vector2d step_ahead_pos;
+//   while (time_left > 0 && subpath_index < collection.size()) {
+//     step_ahead_pos = collection[subpath_index]->closest_point_step_ahead(
+//         pos, velocity, time_left, time_left_p);
+//
+//     subpath_index++;
+//   }
+//
+//   return step_ahead_pos;
+// }
+
 ignition::math::Vector2d PathCollection::getBegin() const {
   return (*collection.cbegin())->getBegin();
 }

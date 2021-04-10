@@ -1,15 +1,12 @@
 #pragma once
 
-#include <vector>
-#include <memory>
-
 #include <ignition/math/Vector2.hh>
+#include <memory>
+#include <vector>
 
 class Path {
  public:
-  enum class Type {
-    LINE, CIRCLE_ARC, SPIRAL, COLLECTION
-  };
+  enum class Type { LINE, CIRCLE_ARC, SPIRAL, COLLECTION };
   const Type path_type;
 
   Path() = delete;
@@ -18,11 +15,18 @@ class Path {
 
   virtual double distance(const ignition::math::Vector2d& pos) = 0;
 
-  virtual std::vector<ignition::math::Vector2d> sample(int number_of_samples) = 0;
-  virtual std::vector<ignition::math::Vector2d> sample_direction(int number_of_samples) = 0;
+  virtual std::vector<ignition::math::Vector2d> sample(
+      int number_of_samples) = 0;
+  virtual std::vector<ignition::math::Vector2d> sample_direction(
+      int number_of_samples) = 0;
 
-  virtual ignition::math::Vector2d closest_point(const ignition::math::Vector2d& pos) = 0;
-  virtual ignition::math::Vector2d closest_direction(const ignition::math::Vector2d& pos) = 0;
+  virtual ignition::math::Vector2d closest_point(
+      const ignition::math::Vector2d& pos) = 0;
+  virtual ignition::math::Vector2d closest_direction(
+      const ignition::math::Vector2d& pos) = 0;
+  //   virtual ignition::math::Vector2d closest_point_step_ahead(
+  //       const ignition::math::Vector2d& pos, double velocity, double time,
+  //       double* time_left = nullptr);
 
   virtual ignition::math::Vector2d getBegin() const = 0;
   virtual ignition::math::Vector2d getEnd() const = 0;

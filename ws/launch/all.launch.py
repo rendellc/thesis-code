@@ -21,7 +21,10 @@ def include_launch_file(package, launchfile, launch_arguments=[]):
 def generate_launch_description():
 
     simulator = include_launch_file(
-        "simulator", "launch/simulator.launch.py", [("gui", "false")]
+        "simulator", "launch/simulator.launch.py", [
+            ("gui", "true"),
+            ("verbose", "true"),
+        ]
     )
 
     operation_manual = include_launch_file(

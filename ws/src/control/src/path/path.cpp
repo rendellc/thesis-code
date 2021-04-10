@@ -86,12 +86,6 @@ std::shared_ptr<Path> Path::fermat_smoothing(
       subpaths.push_back(std::make_shared<PathSpiral>(
           spiral_end, course_out + PI, scale, theta_end, 0));
     }
-    // } else {
-    //   subpaths.push_back(std::make_shared<PathSpiral>(
-    //       spiral_begin, course_in + PI, scale, 0, theta_end));
-    //   subpaths.push_back(std::make_shared<PathSpiral>(
-    //       spiral_end, course_out + PI, scale, -theta_end, 0));
-    // }
   }
 
   // Add straight line to final waypoint

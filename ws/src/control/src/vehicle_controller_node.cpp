@@ -249,8 +249,12 @@ class VehicleControllerNode : public rclcpp::Node {
         rr_msg.angular_velocity = 1.5 / wheel_radius;
 
         double distance_to_path = path_error.Length();
+        const double delta = 2;
+        const double max_steering_angle = 3 * 3.14 / 4;
         double steering_angle_front =
-            1 * atan(2 * angle_to_path * distance_to_path) / (1.57 / 2);
+            max_steering_angle *
+            (+atan(angle_to_path * distance_to_path / delta) / (1.57 / 2) +
+             0.0);
         ackermann_steering(steering_angle_front);
       }
     }
