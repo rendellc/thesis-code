@@ -7,6 +7,7 @@
 #include <geometry_msgs/msg/point.hpp>
 #include <geometry_msgs/msg/pose_stamped.hpp>
 #include <geometry_msgs/msg/twist.hpp>
+#include <geometry_msgs/msg/twist_stamped.hpp>
 #include <ignition/math/Pose3.hh>
 #include <ignition/math/Quaternion.hh>
 #include <ignition/math/Vector2.hh>
@@ -29,6 +30,9 @@ class VehicleControllerNode : public rclcpp::Node {
       : Node("vehicle_controller_node", options) {
     pose_sub_p = this->create_subscription<geometry_msgs::msg::PoseStamped>(
         "pose", 1, std::bind(&VehicleControllerNode::pose_callback, this, _1));
+    twist_sub_p = this->create_subscription<geometry_msgs::msg::TwistStamped>(
+        "twist", 1,
+        std::bind(&VehicleControllerNode::twist_callback, this, _1));
     reference_sub_p =
         this->create_subscription<vehicle_interface::msg::DriveMode>(
             "reference", 1,
@@ -66,6 +70,7 @@ class VehicleControllerNode : public rclcpp::Node {
 
  private:
   rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr pose_sub_p;
+  rclcpp::Subscription<geometry_msgs::msg::TwistStamped>::SharedPtr twist_sub_p;
   rclcpp::Subscription<vehicle_interface::msg::DriveMode>::SharedPtr
       reference_sub_p;
   rclcpp::Subscription<vehicle_interface::msg::Waypoints>::SharedPtr
@@ -85,6 +90,7 @@ class VehicleControllerNode : public rclcpp::Node {
   rclcpp::TimerBase::SharedPtr timer_p;
 
   geometry_msgs::msg::PoseStamped::SharedPtr pose_p;
+  geometry_msgs::msg::TwistStamped::SharedPtr twist_p;
   vehicle_interface::msg::DriveMode::SharedPtr reference_p;
   vehicle_interface::msg::Waypoints::SharedPtr waypoints_p;
 
@@ -288,6 +294,11 @@ class VehicleControllerNode : public rclcpp::Node {
   void pose_callback(geometry_msgs::msg::PoseStamped::SharedPtr msg_p) {
     pose_p = msg_p;
     RCLCPP_INFO_ONCE(this->get_logger(), "pose message recieved");
+  }
+
+  void twist_callback(geometry_msgs::msg::TwistStamped::SharedPtr msg_p) {
+    twist_p = msg_p;
+    RCLCPP_INFO_ONCE(this->get_logger(), "twist message recieved");
   }
 
   void reference_callback(vehicle_interface::msg::DriveMode::SharedPtr msg_p) {
