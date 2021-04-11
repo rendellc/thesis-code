@@ -108,27 +108,6 @@ ignition::math::Vector2d PathSpiral::closest_direction(
   return spiral_u_derivative(u).Normalized();
 }
 
-// ignition::math::Vector2d PathSpiral::closest_point_step_ahead(
-//     const ignition::math::Vector2d& pos, double velocity, double time) {
-//   const double theta = find_closest_theta(pos);
-//   const double u = theta_to_u(theta);
-//   // NOTE(rendellc): stepping ahead here, it is not correct to assume
-//   // u_derivative is constant.
-//   const double u_derivative =
-//       velocity / (scale * sqrt(2 * (1 + 4 * pow(u, 4))));
-//
-//   const double u_end = theta_to_u(theta_end);
-//   const double u_remaining = u_end - u;
-//   const double time_on_path = std::min(time, u_remaining / u_derivative);
-//   const double u_ahead = u + time_on_path * u_derivative;
-//
-//   if (time_remaining) {
-//     *time_remaining = time - time_on_path;
-//   }
-//
-//   return spiral_u(u_ahead);
-// }
-
 ignition::math::Vector2d PathSpiral::getBegin() const {
   return spiral(theta_begin);
 }
