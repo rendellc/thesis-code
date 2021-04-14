@@ -13,28 +13,31 @@ class WaypointPublisherNode : public rclcpp::Node {
     waypoint_markers_pub_p =
         this->create_publisher<typeof(waypoint_markers)>("waypoint_markers", 1);
 
-    geometry_msgs::msg::Point wp;
-    wp.x = wp.y = wp.z = 0;
-    waypoints.points.push_back(wp);
-    wp.x += 20;
-    waypoints.points.push_back(wp);
-    wp.y += 10;
-    waypoints.points.push_back(wp);
-    wp.x -= 30;
-    waypoints.points.push_back(wp);
-    wp.y += 10;
-    waypoints.points.push_back(wp);
-    wp.x += 30;
-    waypoints.points.push_back(wp);
-    wp.y += 10;
-    waypoints.points.push_back(wp);
-    wp.x -= 60;
-    waypoints.points.push_back(wp);
-    wp.y = 0;
-    waypoints.points.push_back(wp);
-    wp.x = -0;
-    wp.y = 0;
-    waypoints.points.push_back(wp);
+    this->declare_parameter("waypoint_xs");
+    std::vector<double> waypoint_xs =
+        this->get_parameter("waypoint_xs").as_double_array();
+
+    this->declare_parameter("waypoint_ys");
+    std::vector<double> waypoint_ys =
+        this->get_parameter("waypoint_ys").as_double_array();
+
+    if (waypoint_xs.size() != waypoint_ys.size()) {
+      RCLCPP_WARN_STREAM(this->get_logger(), "different number of x ("
+                                                 << waypoint_xs.size()
+                                                 << ") and y ("
+                                                 << waypoint_ys.size()
+                                                 << ") waypoints" << std::endl);
+      return;
+    }
+
+    const int num_waypoints = waypoint_xs.size();
+
+    for (int i = 0; i < num_waypoints; i++) {
+      geometry_msgs::msg::Point wp;
+      wp.x = waypoint_xs[i];
+      wp.y = waypoint_ys[i];
+      waypoints.points.push_back(wp);
+    }
 
     waypoint_markers.header.frame_id = "map";
     waypoint_markers.ns = "vehicle";

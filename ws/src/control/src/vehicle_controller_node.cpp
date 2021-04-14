@@ -67,19 +67,38 @@ class VehicleControllerNode : public rclcpp::Node {
     fr_pub_p = this->create_publisher<vehicle_interface::msg::WheelState>(
         "wheel_fr/reference", 1);
 
-    this->declare_parameter<double>("update_rate", 20.0);
-    this->get_parameter("update_rate", update_rate);
+    // this->declare_parameter<double>("update_rate", 20.0);
+    this->declare_parameter("update_rate");
+    const bool update_rate_set =
+        this->get_parameter("update_rate", update_rate);
+    if (!update_rate_set) {
+      RCLCPP_WARN(this->get_logger(), "update_rate not set");
+    }
+
+    // this->get_parameter("update_rate", update_rate);
     timer_p = this->create_wall_timer(
-        std::chrono::duration<double>(1 / update_rate),
+        std::chrono::duration<double>(1 / update_rate.as_double()),
         std::bind(&VehicleControllerNode::update_command, this));
 
-    this->declare_parameter<double>("maximum_curvature", 0.5);
-    this->get_parameter("maximum_curvature", maximum_curvature);
+    this->declare_parameter("maximum_curvature");
+    const bool maximum_curvature_set =
+        this->get_parameter("maximum_curvature", maximum_curvature);
+    if (!maximum_curvature_set) {
+      RCLCPP_WARN(this->get_logger(), "maximum_curvature not set");
+    }
 
-    this->declare_parameter<double>("P_heading", 5);
-    this->get_parameter("P_heading", heading_pid.P);
-    RCLCPP_INFO_STREAM(this->get_logger(),
-                       "Heading P is " << heading_pid.P << std::endl);
+    // this->declare_parameter<double>("maximum_curvature", 0.25);
+    // this->get_parameter("maximum_curvature", maximum_curvature);
+
+    this->declare_parameter("P_heading");
+    this->get_parameter<double>("P_heading", heading_pid.P);
+    // RCLCPP_INFO_STREAM(this->get_logger(),
+    //                    "Heading P is " << heading_pid.P << std::endl);
+
+    this->declare_parameter("P_speed");
+    this->get_parameter<double>("P_speed", speed_pid.P);
+    this->declare_parameter("I_speed");
+    this->get_parameter<double>("I_speed", speed_pid.I);
   }
 
  private:
@@ -113,10 +132,12 @@ class VehicleControllerNode : public rclcpp::Node {
 
   std::shared_ptr<Path> path_p;
 
+  PID speed_pid;
   PID heading_pid;
 
-  double update_rate;
-  double maximum_curvature;
+  rclcpp::Parameter update_rate;
+  rclcpp::Parameter maximum_curvature;
+  // double maximum_curvature;
 
   void do_reference_control() {
     // #if 0
@@ -271,19 +292,25 @@ class VehicleControllerNode : public rclcpp::Node {
 
       if (!reference_p) {
         // only use waypoints if refernce_p not supplied
+        const auto time_now = this->get_clock()->now();
         constexpr double wheel_radius = 0.505;
 
-        // TODO(rendellc): speed controller
-        fl_msg.angular_velocity = 1.5 / wheel_radius;
-        fr_msg.angular_velocity = 1.5 / wheel_radius;
-        rl_msg.angular_velocity = 1.5 / wheel_radius;
-        rr_msg.angular_velocity = 1.5 / wheel_radius;
+        const double vx_reference = 2.0;
+        const double &vx = twist_p->twist.linear.x;
+        const double speed_cg_u = speed_pid.update(vx_reference - vx, time_now);
+
+        // TODO(rendellc): transform speed_cg_u to speed signals for each wheel
+
+        fl_msg.angular_velocity = speed_cg_u / wheel_radius;
+        rl_msg.angular_velocity = speed_cg_u / wheel_radius;
+        rr_msg.angular_velocity = speed_cg_u / wheel_radius;
+        fr_msg.angular_velocity = speed_cg_u / wheel_radius;
 
         const double PI_HALF = atan2(1, 0);
         const double DEG_TO_RAD = PI_HALF / 90;
 
-        const double max_steering_angle = 20 * DEG_TO_RAD;
-        const double approach_angle = 45 * DEG_TO_RAD;
+        const double max_steering_angle = 45 * DEG_TO_RAD;
+        const double approach_angle = 30 * DEG_TO_RAD;
         const double approach_gain = 2;
 
         // atan controller
@@ -295,7 +322,6 @@ class VehicleControllerNode : public rclcpp::Node {
           return atan2(sin(angle), cos(angle));
         };
 
-        const auto time_now = this->get_clock()->now();
         const double heading_error = ssa(heading_reference - heading);
         double steering_angle_front =
             heading_pid.update(heading_error, time_now);
@@ -310,6 +336,7 @@ class VehicleControllerNode : public rclcpp::Node {
         const double steering_angle_rear = -steering_angle_front;
 
         afar_steering(steering_angle_front, steering_angle_rear);
+        // ackermann_steering(steering_angle_front);
 
         info_msg.path_course = path_course;
         info_msg.cross_track_error = cross_track_error;
@@ -392,9 +419,11 @@ class VehicleControllerNode : public rclcpp::Node {
       points.emplace_back(wp.x, wp.y);
     }
 
-    path_p = Path::fermat_smoothing(points, maximum_curvature);
+    path_p = Path::fermat_smoothing(points, maximum_curvature.as_double());
     // path_p = Path::straight_line_path(points);
-    // path_p = std::make_shared<PathSpiral>(Vector2d(3, 2), 0, 10, 0, 3);
+    // path_p = std::make_shared<PathSpiral>(
+    //     Vector2d(10 * sqrt(1.5) * cos(1.5), 10 * sqrt(1.5) * sin(1.5)), 0,
+    //     10, 1.5, 0);
 
     // Update marker message
     constexpr int num_samples = 500;

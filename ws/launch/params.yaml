@@ -1,0 +1,8 @@
+controller:
+  ros__parameters:
+    I_speed: 1.0
+    P_heading: 5.0
+    P_speed: 5.0
+    maximum_curvature: 0.25
+    update_rate: 70.0
+    use_sim_time: false

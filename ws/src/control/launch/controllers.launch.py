@@ -2,8 +2,22 @@ from launch import LaunchDescription
 from launch_ros.actions import ComposableNodeContainer
 from launch_ros.descriptions import ComposableNode
 
+import pathlib
+
+
 def generate_launch_description():
-    
+
+    vehicle_controller_parameters = [
+        {"update_rate": 50.0},
+        {"maximum_curvature": 0.25},
+        {"P_heading": 5.0},
+        {"P_speed": 5.0},
+        {"I_speed": 1.0}
+    ]
+    wheel_controller_parameters = [
+        {"update_rate": 100.0}
+    ]
+
     container = ComposableNodeContainer(
         name="controllers_container",
         namespace="vehicle",
@@ -15,45 +29,35 @@ def generate_launch_description():
                 plugin="VehicleControllerNode",
                 name="controller",
                 namespace="vehicle",
-                parameters=[
-                    {"update_rate": 50.0}
-                ]
+                parameters=vehicle_controller_parameters,
             ),
             ComposableNode(
                 package="control",
                 plugin="WheelControllerNode",
                 namespace="vehicle/wheel_fl",
                 name="controller",
-                parameters=[
-                    {"update_rate": 100.0}
-                ]
+                parameters=wheel_controller_parameters
             ),
             ComposableNode(
                 package="control",
                 plugin="WheelControllerNode",
                 namespace="vehicle/wheel_rl",
                 name="controller",
-                parameters=[
-                    {"update_rate": 100.0}
-                ]
+                parameters=wheel_controller_parameters
             ),
             ComposableNode(
                 package="control",
                 plugin="WheelControllerNode",
                 namespace="vehicle/wheel_rr",
                 name="controller",
-                parameters=[
-                    {"update_rate": 100.0}
-                ]
+                parameters=wheel_controller_parameters
             ),
             ComposableNode(
                 package="control",
                 plugin="WheelControllerNode",
                 namespace="vehicle/wheel_fr",
                 name="controller",
-                parameters=[
-                    {"update_rate": 100.0}
-                ]
+                parameters=wheel_controller_parameters
             ),
         ]
     )

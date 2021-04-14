@@ -1,3 +1,4 @@
+#include <cassert>
 #include <control/path/path_spiral.hpp>
 
 PathSpiral::PathSpiral(const ignition::math::Vector2d& origin,
@@ -86,9 +87,14 @@ std::vector<ignition::math::Vector2d> PathSpiral::sample_direction(
   std::vector<ignition::math::Vector2d> directions(number_of_samples);
 
   for (int i = 0; i < number_of_samples; i++) {
-    const double theta = theta_begin + (theta_end - theta_begin) *
-                                           static_cast<double>(i) /
-                                           number_of_samples;
+    const double n = static_cast<double>(number_of_samples);
+    // i = 0      => interpolation = 0
+    // i = n - 1  => interpolation = 1
+    const double interpolation = n / (n - 1) * (i / n);
+    const double theta =
+        theta_begin + interpolation * (theta_end - theta_begin);
+
+    // derivative is not defined in theta-space, so convert to u
     const double u = theta_to_u(theta);
     directions[i] = spiral_u_derivative(u).Normalized();
   }
@@ -103,9 +109,10 @@ ignition::math::Vector2d PathSpiral::closest_point(
 
 ignition::math::Vector2d PathSpiral::closest_direction(
     const ignition::math::Vector2d& pos) {
+  const auto sign = theta_end > theta_begin ? 1 : -1;
   const double theta = find_closest_theta(pos);
   const double u = theta_to_u(theta);
-  return spiral_u_derivative(u).Normalized();
+  return sign * spiral_u_derivative(u).Normalized();
 }
 
 ignition::math::Vector2d PathSpiral::getBegin() const {
@@ -129,25 +136,26 @@ double PathSpiral::find_closest_theta(const ignition::math::Vector2d& pos) {
   constexpr int num_samples = 10;
   const auto sample_positions = sample(num_samples);
   int sample_index_best = -1;
-  double sample_distance_best = std::numeric_limits<double>::infinity();
+  double distance_sample_best = std::numeric_limits<double>::infinity();
   for (int i = 0; i < sample_positions.size(); i++) {
     const auto& sample_position = sample_positions[i];
     const double distance = sample_position.Distance(pos);
-    if (distance < sample_distance_best) {
+    if (distance < distance_sample_best) {
       sample_index_best = i;
-      sample_distance_best = distance;
+      distance_sample_best = distance;
     }
   }
   const double n = static_cast<double>(num_samples);
   const double interpolation = n / (n - 1) * sample_index_best / n;
-  double theta_best = theta_begin + interpolation * (theta_end - theta_begin);
+  double theta_sample_best =
+      theta_begin + interpolation * (theta_end - theta_begin);
 
   // double theta_initial = (theta_begin + theta_end) / 2;
   // if (!closest_cache.empty()) {
   //   theta_initial = closest_cache.begin()->second;
   // }
-  double u = theta_to_u(theta_best);
 
+  double u = theta_to_u(theta_sample_best);
   constexpr int max_iterations = 100;
   constexpr double eps = 0.001;
   double cost_derivative = 2 * (spiral_u(u) - pos).Dot(spiral_u_derivative(u));
@@ -169,21 +177,14 @@ double PathSpiral::find_closest_theta(const ignition::math::Vector2d& pos) {
 
   // TODO(rendellc): double check that cost_double_derivative > 0 at solution
 
-  theta_best = u_to_theta(u);
+  double theta_best = u_to_theta(u);
   double distance_best = spiral(theta_best).Distance(pos);
-  if (!(theta_begin <= theta_best && theta_best <= theta_end)) {
-    distance_best = std::numeric_limits<double>::infinity();
-  }
-
-  const double distance_begin = spiral(theta_begin).Distance(pos);
-  const double distance_end = spiral(theta_end).Distance(pos);
-  if (distance_begin < distance_best) {
-    distance_best = distance_begin;
-    theta_best = theta_begin;
-  }
-  if (distance_end < distance_best) {
-    distance_best = distance_end;
-    theta_best = theta_end;
+  const bool inside_domain =
+      (theta_begin <= theta_best && theta_best <= theta_end) ||
+      (theta_end <= theta_best && theta_best <= theta_begin);
+  if (!inside_domain) {
+    theta_best = theta_sample_best;
+    distance_best = distance_sample_best;
   }
 
   if (iterations == max_iterations) {

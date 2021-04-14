@@ -22,8 +22,8 @@ def generate_launch_description():
 
     simulator = include_launch_file(
         "simulator", "launch/simulator.launch.py", [
-            #("gui", "true"),
-            #("verbose", "true"),
+            # ("gui", "true"),
+            # ("verbose", "true"),
         ]
     )
 
@@ -41,7 +41,7 @@ def generate_launch_description():
         executable="rviz2",
         name="rviz2",
         arguments=[
-            #"--display-config " + get_package_share_directory("report_utils") + "/config.rviz"
+            # "--display-config " + get_package_share_directory("report_utils") + "/config.rviz"
             "--display-config", "launch/config.rviz"
         ]
     )
@@ -51,7 +51,7 @@ def generate_launch_description():
         arguments=["0", "0", "0", "0", "0", "0", "world", "map"]
     )
 
-    return LaunchDescription([
+    ld = LaunchDescription([
         simulator,
         # operation_manual,
         operation,
@@ -60,3 +60,5 @@ def generate_launch_description():
         rviz,
         tf2static
     ])
+
+    return ld
