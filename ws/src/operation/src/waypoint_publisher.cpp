@@ -16,7 +16,7 @@ class WaypointPublisherNode : public rclcpp::Node {
     geometry_msgs::msg::Point wp;
     wp.x = wp.y = wp.z = 0;
     waypoints.points.push_back(wp);
-    wp.x += 30;
+    wp.x += 20;
     waypoints.points.push_back(wp);
     wp.y += 10;
     waypoints.points.push_back(wp);
@@ -28,11 +28,11 @@ class WaypointPublisherNode : public rclcpp::Node {
     waypoints.points.push_back(wp);
     wp.y += 10;
     waypoints.points.push_back(wp);
-    wp.x -= 50;
+    wp.x -= 60;
     waypoints.points.push_back(wp);
     wp.y = 0;
     waypoints.points.push_back(wp);
-    wp.x = -3;
+    wp.x = -0;
     wp.y = 0;
     waypoints.points.push_back(wp);
 

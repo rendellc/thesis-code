@@ -124,14 +124,31 @@ double PathSpiral::find_closest_theta(const ignition::math::Vector2d& pos) {
 
   // value was not cached, compute it
   // transform variable since theta space has singularity
-  double theta_initial = (theta_begin + theta_end) / 2;
-  if (!closest_cache.empty()) {
-    theta_initial = closest_cache.begin()->second;
+
+  // Sample distances to begin close to local optimum
+  constexpr int num_samples = 10;
+  const auto sample_positions = sample(num_samples);
+  int sample_index_best = -1;
+  double sample_distance_best = std::numeric_limits<double>::infinity();
+  for (int i = 0; i < sample_positions.size(); i++) {
+    const auto& sample_position = sample_positions[i];
+    const double distance = sample_position.Distance(pos);
+    if (distance < sample_distance_best) {
+      sample_index_best = i;
+      sample_distance_best = distance;
+    }
   }
+  const double n = static_cast<double>(num_samples);
+  const double interpolation = n / (n - 1) * sample_index_best / n;
+  double theta_best = theta_begin + interpolation * (theta_end - theta_begin);
 
-  double u = theta_to_u(theta_initial);
+  // double theta_initial = (theta_begin + theta_end) / 2;
+  // if (!closest_cache.empty()) {
+  //   theta_initial = closest_cache.begin()->second;
+  // }
+  double u = theta_to_u(theta_best);
 
-  constexpr int max_iterations = 10;
+  constexpr int max_iterations = 100;
   constexpr double eps = 0.001;
   double cost_derivative = 2 * (spiral_u(u) - pos).Dot(spiral_u_derivative(u));
   int iterations = 0;
@@ -152,18 +169,21 @@ double PathSpiral::find_closest_theta(const ignition::math::Vector2d& pos) {
 
   // TODO(rendellc): double check that cost_double_derivative > 0 at solution
 
-  double theta_best = u_to_theta(u);
+  theta_best = u_to_theta(u);
   double distance_best = spiral(theta_best).Distance(pos);
+  if (!(theta_begin <= theta_best && theta_best <= theta_end)) {
+    distance_best = std::numeric_limits<double>::infinity();
+  }
+
   const double distance_begin = spiral(theta_begin).Distance(pos);
   const double distance_end = spiral(theta_end).Distance(pos);
-  if (distance_begin < distance_best ||
-      !(theta_begin <= theta_best && theta_best <= theta_end)) {
+  if (distance_begin < distance_best) {
     distance_best = distance_begin;
-    theta_best = theta_best;
+    theta_best = theta_begin;
   }
   if (distance_end < distance_best) {
     distance_best = distance_end;
-    theta_best = theta_best;
+    theta_best = theta_end;
   }
 
   if (iterations == max_iterations) {

@@ -22,8 +22,8 @@ def generate_launch_description():
 
     simulator = include_launch_file(
         "simulator", "launch/simulator.launch.py", [
-            ("gui", "true"),
-            ("verbose", "true"),
+            #("gui", "true"),
+            #("verbose", "true"),
         ]
     )
 

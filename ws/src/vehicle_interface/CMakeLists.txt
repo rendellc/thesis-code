@@ -25,6 +25,7 @@ find_package(geometry_msgs REQUIRED)
 set(MSG_FILES
   "msg/Rotation.msg"
   "msg/DriveMode.msg"
+  "msg/VehicleControllerInfo.msg"
   "msg/Waypoints.msg"
   "msg/WheelCommand.msg"
   "msg/WheelState.msg"

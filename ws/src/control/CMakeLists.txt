@@ -69,6 +69,7 @@ add_library(vehicle_controller SHARED src/vehicle_controller_node.cpp)
 target_include_directories(vehicle_controller PUBLIC include ${Eigen3_INCLUDE_DIRS})
 target_link_libraries(vehicle_controller
   pathlib
+  pid
 )
 ament_target_dependencies(vehicle_controller 
   "rclcpp"
