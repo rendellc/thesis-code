@@ -16,9 +16,6 @@ def generate_launch_description():
         [0, 0]
     ], dtype=float)
 
-    print(waypoints[:, 0])
-    print(waypoints[0, :])
-
     waypoints_xs = list(waypoints[:, 0])
     waypoints_ys = list(waypoints[:, 1])
 

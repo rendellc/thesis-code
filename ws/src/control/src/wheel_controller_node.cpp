@@ -28,17 +28,32 @@ class WheelControllerNode : public rclcpp::Node {
             "load", 1,
             std::bind(&WheelControllerNode::load_callback, this, _1));
 
-    this->declare_parameter<double>("update_rate", 100);
+    this->declare_parameter("update_rate");
     this->get_parameter("update_rate", update_rate);
     timer_p = this->create_wall_timer(
         std::chrono::duration<double>(1 / update_rate),
         std::bind(&WheelControllerNode::update_command, this));
 
-    this->declare_parameter<double>("P_omega", 100);
-    this->declare_parameter<double>("P_delta", 100);
-
+    this->declare_parameter("P_omega");
     this->get_parameter("P_omega", angular_velocity_pid.P);
-    this->get_parameter("P_delta", steering_angle_pid.P);
+
+    this->declare_parameter("wheel_mass");
+    this->get_parameter("wheel_mass", wheel_mass);
+
+    this->declare_parameter("wheel_radius");
+    this->get_parameter("wheel_radius", wheel_radius);
+
+    this->declare_parameter("wheel_width");
+    this->get_parameter("wheel_width", wheel_width);
+
+    this->declare_parameter("sliding_mode_eigenvalue");
+    this->get_parameter("sliding_mode_eigenvalue", sliding_mode_eigenvalue);
+
+    this->declare_parameter("steer_resistance_factor");
+    this->get_parameter("steer_resistance_factor", steer_resistance_factor);
+
+    this->declare_parameter("beta_0");
+    this->get_parameter("beta_0", beta_0);
 
     RCLCPP_INFO(this->get_logger(), "%s initialized", this->get_name());
   }
@@ -53,14 +68,20 @@ class WheelControllerNode : public rclcpp::Node {
       wheel_load_sub_p;
   rclcpp::TimerBase::SharedPtr timer_p;
 
+  double update_rate;
+  double wheel_mass;
+  double wheel_radius;
+  double wheel_width;
+  double sliding_mode_eigenvalue;
+  double steer_resistance_factor;
+  double beta_0;
+
   vehicle_interface::msg::WheelState::SharedPtr wheel_state_p;
   vehicle_interface::msg::WheelState::SharedPtr wheel_reference_p;
   vehicle_interface::msg::WheelLoad::SharedPtr wheel_load_p;
 
   vehicle_interface::msg::WheelCommand command_msg;
-  double update_rate;
   PID angular_velocity_pid;
-  PID steering_angle_pid;
 
   void update_command() {
     if (wheel_state_p && wheel_reference_p && wheel_load_p) {
@@ -85,22 +106,24 @@ class WheelControllerNode : public rclcpp::Node {
       const auto x1 = ssa(x_p->steering_angle - xr_p->steering_angle);
       const auto x2 = x_p->steering_angle_rate - xr_p->steering_angle_rate;
 
-      const double wheel_mass = 200.0, wheel_radius = 0.505, wheel_width = 0.4;
-      const double a1 = 0.5;
+      // const double wheel_mass = 200.0, wheel_radius = 0.505, wheel_width =
+      // 0.4; const double sliding_eigenvalue = 0.5;
       const double steer_inertia =
           wheel_mass *
           (3 * wheel_radius * wheel_radius + wheel_width * wheel_width) / 12;
       // const double max_steer_resistance = 15000.0; // found by experimenting
       // in gazebo, should actually be different for each wheel and load
       // dependent
-      const double max_steer_resistance = 2.5 * F_z;
-      const double beta_0 = 0.1;
-      const double rho = steer_inertia * a1 * fabs(x2) + max_steer_resistance;
+      // const double steer_resistance_factor = 2.5;
+      const double max_steer_resistance = steer_resistance_factor * F_z;
+      // const double beta_0 = 0.1;
+      const double rho = steer_inertia * sliding_mode_eigenvalue * fabs(x2) +
+                         max_steer_resistance;
       const double beta = rho + beta_0;
-      const double s = a1 * x2 + x1;
+      const double s = sliding_mode_eigenvalue * x2 + x1;
 
       const auto sign = [](double x) {
-        double eps = 2.5;
+        double eps = 2.0;
         if (x < -eps) {
           return -1.0;
         } else if (fabs(x) <= eps) {

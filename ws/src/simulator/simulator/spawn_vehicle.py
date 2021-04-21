@@ -26,7 +26,7 @@ def main(args=None):
     request.initial_pose.position.y = 0.5
     request.initial_pose.position.z = 1.3
 
-    yaw = 3.14
+    yaw = 0
     request.initial_pose.orientation.w = cos(yaw/2)
     request.initial_pose.orientation.x = sin(yaw/2)*cos(pi/2)
     request.initial_pose.orientation.y = sin(yaw/2)*cos(pi/2)

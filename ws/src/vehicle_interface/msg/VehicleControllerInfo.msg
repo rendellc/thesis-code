@@ -1,4 +1,5 @@
 float64 path_course
 float64 cross_track_error
-float64 heading_error
+float64 yaw_error
+float64 course_error
 float64 steering_angle_front
