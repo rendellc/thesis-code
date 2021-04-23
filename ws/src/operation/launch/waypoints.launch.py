@@ -15,6 +15,18 @@ def generate_launch_description():
         [-10, 0],
         [0, 0]
     ], dtype=float)
+    # waypoints = np.array([
+    #     [0, 0],
+    #     [10, 0],
+    #     [20, 10],
+    #     [20, 20],
+    #     [10, 30],
+    #     [0, 30],
+    #     [-10, 20],
+    #     [-10, 10],
+    #     [-5, 0],
+    #     [0, 0],
+    # ], dtype=float)
 
     waypoints_xs = list(waypoints[:, 0])
     waypoints_ys = list(waypoints[:, 1])

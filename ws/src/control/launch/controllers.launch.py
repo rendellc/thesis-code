@@ -31,8 +31,8 @@ def generate_launch_description():
         {"wheel_radius": 0.505},
         {"wheel_width": 0.4},
         {"sliding_mode_eigenvalue": 0.1},
-        {"steer_resistance_factor": 2.5},
-        {"beta_0": 2.0}
+        {"steer_resistance_factor": 2.0},
+        {"beta_0": 0.1}
     ]
 
     container = ComposableNodeContainer(

@@ -334,8 +334,8 @@ class VehicleControllerNode : public rclcpp::Node {
 
         // course_reference;  // 0.05 * time_now.seconds();
         // const double yaw_reference = course_reference;
-
-        const double yaw_reference = (4 * PI_HALF) / 10.0 * time_now.seconds();
+        // (4 * PI_HALF) / 10.0 * time_now.seconds();
+        const double yaw_reference = course_reference;
         const double yaw_error = ssa(yaw_reference - yaw);
 
         const double sideslip_desired = course_reference - yaw_reference;

@@ -162,7 +162,6 @@
     <xacro:wheel_macro name="wheel_rr" parent="base_link" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}" xyz="-3 -1 0"/>
     <xacro:wheel_macro name="wheel_fr" parent="base_link" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}" xyz="0.2 -1 0"/>
 
-    <!--
     <xacro:property name="tool_mass" value="400"/>
     <link name="tool_link">
         <inertial>
@@ -191,7 +190,6 @@
         <child link="tool_link"/>
         <axis xyz="0 0 1"/>
     </joint>
-    -->
         
     <gazebo>
         <plugin name="vehicle" filename="libvehicle_body.so">
