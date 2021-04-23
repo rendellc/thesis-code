@@ -9,8 +9,7 @@ import xacro
 from numpy import pi, cos, sin
 
 
-def main(args=None):
-
+def spawn(pos, yaw, args=None):
     rclpy.init(args=args)
     node = rclpy.create_node("vehicle_spawner_node")
     client = node.create_client(SpawnEntity, "spawn_entity")
@@ -22,11 +21,10 @@ def main(args=None):
     request.name = "vehicle"
     request.xml = urdf
     request.robot_namespace = "vehicle"
-    request.initial_pose.position.x = 2.0
-    request.initial_pose.position.y = 0.5
-    request.initial_pose.position.z = 1.3
+    request.initial_pose.position.x = pos[0]
+    request.initial_pose.position.y = pos[1]
+    request.initial_pose.position.z = pos[2]
 
-    yaw = 0
     request.initial_pose.orientation.w = cos(yaw/2)
     request.initial_pose.orientation.x = sin(yaw/2)*cos(pi/2)
     request.initial_pose.orientation.y = sin(yaw/2)*cos(pi/2)
@@ -42,6 +40,10 @@ def main(args=None):
 
     node.destroy_node()
     rclpy.shutdown()
+
+
+def main(args=None):
+    spawn((2.0, 0.0, 1.3), pi/2)
 
 
 if __name__ == "__main__":

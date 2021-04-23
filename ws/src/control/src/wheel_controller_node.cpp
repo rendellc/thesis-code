@@ -37,6 +37,9 @@ class WheelControllerNode : public rclcpp::Node {
     this->declare_parameter("P_omega");
     this->get_parameter("P_omega", angular_velocity_pid.P);
 
+    this->declare_parameter("I_omega");
+    this->get_parameter("I_omega", angular_velocity_pid.I);
+
     this->declare_parameter("wheel_mass");
     this->get_parameter("wheel_mass", wheel_mass);
 
@@ -75,6 +78,7 @@ class WheelControllerNode : public rclcpp::Node {
   double sliding_mode_eigenvalue;
   double steer_resistance_factor;
   double beta_0;
+  double x1_integral = 0.0;
 
   vehicle_interface::msg::WheelState::SharedPtr wheel_state_p;
   vehicle_interface::msg::WheelState::SharedPtr wheel_reference_p;
@@ -104,10 +108,9 @@ class WheelControllerNode : public rclcpp::Node {
       };
 
       const auto x1 = ssa(x_p->steering_angle - xr_p->steering_angle);
+      x1_integral = x1_integral + x1 / update_rate;
       const auto x2 = x_p->steering_angle_rate - xr_p->steering_angle_rate;
 
-      // const double wheel_mass = 200.0, wheel_radius = 0.505, wheel_width =
-      // 0.4; const double sliding_eigenvalue = 0.5;
       const double steer_inertia =
           wheel_mass *
           (3 * wheel_radius * wheel_radius + wheel_width * wheel_width) / 12;
@@ -124,12 +127,10 @@ class WheelControllerNode : public rclcpp::Node {
 
       const auto sign = [](double x) {
         double eps = 2.0;
-        if (x < -eps) {
-          return -1.0;
-        } else if (fabs(x) <= eps) {
+        if (fabs(x) < eps) {
           return x / eps;
         } else {
-          return 1.0;
+          return x / fabs(x);  // sign(x)
         }
       };
 

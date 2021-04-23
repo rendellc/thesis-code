@@ -82,14 +82,14 @@
         </link>
         <link name="${name}_tire">
             <inertial>
-                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <origin xyz="0 0 0" rpy="${-pi/2} 0 0"/>
                 <mass value="${mass}"/>
                 <inertia ixx="${1/12*mass*(3*radius**2 + length**2)}" ixy="0" ixz="0" 
                     iyy="${1/12*mass*(3*radius**2 + length**2)}" iyz="0"
                     izz="${1/2*mass*radius**2}"/>
             </inertial>
             <visual>
-                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <origin xyz="0 0 0" rpy="${-pi/2} 0 0"/>
                 <geometry>
 <!-- 
                     <cylinder radius="${radius}" length="${length}"/>
@@ -98,7 +98,7 @@
                 </geometry>
             </visual>
             <collision>
-                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <origin xyz="0 0 0" rpy="${-pi/2} 0 0"/>
                 <geometry>
                     <cylinder radius="${radius}" length="${length}"/>
                 </geometry>
@@ -109,8 +109,10 @@
             <parent link="${parent}"/>
             <child link="${name}_base"/>
             <axis xyz="0 0 1"/>
+                <!--
             <limit lower="-1" upper="1" effort="10000000000000000" velocity="100"/>
             <safety_controller soft_lower_limit="0" soft_upper_limit="0" k_position="1" k_velocity="1"/>
+                -->
         </joint>
         <joint name="joint_${name}_base_to_${name}_steer" type="continuous">
             <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -119,10 +121,11 @@
             <axis xyz="0 0 1"/>
         </joint>
         <joint name="joint_${name}_steer_to_${name}_tire" type="continuous">
-            <origin xyz="0 0 ${-radius - 0.15}" rpy="${-pi/2} 0 0"/>
+            <origin xyz="0 0 ${-radius - 0.15}" rpy="0 0 0"/>
+            <!-- <origin xyz="0 0 ${-radius - 0.15}" rpy="${-pi/2} 0 0"/> -->
             <parent link="${name}_steer"/>
             <child link="${name}_tire"/>
-            <axis xyz="0 0 1"/>
+            <axis xyz="0 1 0"/>
         </joint>
         <!--
             <transmission name="${name}_steer_transmission">
@@ -138,13 +141,13 @@
         <gazebo reference="${name}_steer">
             <material>Gazebo/Blue</material>
         </gazebo>
-        <!--
         <gazebo reference="${name}_tire">
-            <material>Gazebo/Orange</material>
-            <mu1>0.9</mu1>
-            <mu2>0.8</mu2>
+            <!-- <material>Gazebo/Orange</material> -->
+            <!--
+            <mu1>0.3</mu1>
+            <mu2>0.1</mu2>
+            -->
         </gazebo>
-        -->
         <gazebo>
             <plugin name="${name}" filename="libwheel.so">
                 <steer_joint name="joint_${name}_base_to_${name}_steer"/> 
@@ -159,6 +162,7 @@
     <xacro:wheel_macro name="wheel_rr" parent="base_link" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}" xyz="-3 -1 0"/>
     <xacro:wheel_macro name="wheel_fr" parent="base_link" mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}" xyz="0.2 -1 0"/>
 
+    <!--
     <xacro:property name="tool_mass" value="400"/>
     <link name="tool_link">
         <inertial>
@@ -187,6 +191,7 @@
         <child link="tool_link"/>
         <axis xyz="0 0 1"/>
     </joint>
+    -->
         
     <gazebo>
         <plugin name="vehicle" filename="libvehicle_body.so">

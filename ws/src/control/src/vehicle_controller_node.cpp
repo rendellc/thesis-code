@@ -69,22 +69,21 @@ class VehicleControllerNode : public rclcpp::Node {
 
     // this->declare_parameter<double>("update_rate", 20.0);
     this->declare_parameter("update_rate");
-    const bool update_rate_set =
-        this->get_parameter("update_rate", update_rate);
-    if (!update_rate_set) {
-      RCLCPP_WARN(this->get_logger(), "update_rate not set");
-    }
+    this->get_parameter("update_rate", update_rate);
 
-    // this->get_parameter("update_rate", update_rate);
     timer_p = this->create_wall_timer(
-        std::chrono::duration<double>(1 / update_rate.as_double()),
+        std::chrono::duration<double>(1 / update_rate),
         std::bind(&VehicleControllerNode::update_command, this));
 
     this->declare_parameter("maximum_curvature");
     this->get_parameter<double>("maximum_curvature", maximum_curvature);
 
-    this->declare_parameter("P_heading");
-    this->get_parameter<double>("P_heading", heading_pid.P);
+    this->declare_parameter("P_yaw");
+    this->get_parameter<double>("P_yaw", yaw_pid.P);
+    this->declare_parameter("I_yaw");
+    this->get_parameter<double>("I_yaw", yaw_pid.I);
+    this->declare_parameter("D_yaw");
+    this->get_parameter<double>("D_yaw", yaw_pid.D);
 
     this->declare_parameter("P_speed");
     this->get_parameter<double>("P_speed", speed_pid.P);
@@ -96,7 +95,9 @@ class VehicleControllerNode : public rclcpp::Node {
     this->get_parameter<double>("approach_angle", approach_angle);
 
     this->declare_parameter("P_approach");
-    this->get_parameter<double>("P_approach", P_approach);
+    this->get_parameter<double>("P_approach", approach_pi.P);
+    this->declare_parameter("I_approach");
+    this->get_parameter<double>("I_approach", approach_pi.I);
   }
 
  private:
@@ -131,9 +132,10 @@ class VehicleControllerNode : public rclcpp::Node {
   std::shared_ptr<Path> path_p;
 
   PID speed_pid;
-  PID heading_pid;
+  PID yaw_pid;
+  PID approach_pi;
 
-  rclcpp::Parameter update_rate;
+  double update_rate;
   double maximum_curvature;
   // double maximum_curvature;
   double approach_angle;
@@ -231,16 +233,16 @@ class VehicleControllerNode : public rclcpp::Node {
   }
 
   void update_command() {
-    if (pose_p && twist_p && reference_p) {
-      // prefer reference if supplied
-      do_reference_control();
+    // if (pose_p && twist_p && reference_p) {
+    //   // prefer reference if supplied
+    //   do_reference_control();
 
-      // NOTE: if update_command is called more frequently than
-      // reference_p are receieved, then this doesn't work.
-      // Solution: keep track of when messages are received (prefered),
-      // or add timestamp to message.
-      reference_p.reset();
-    }
+    //   // NOTE: if update_command is called more frequently than
+    //   // reference_p are receieved, then this doesn't work.
+    //   // Solution: keep track of when messages are received (prefered),
+    //   // or add timestamp to message.
+    //   reference_p.reset();
+    // }
     if (pose_p && twist_p && waypoints_p) {
       // use waypoints if reference not supplied
       // path_p->cross_track_error()
@@ -315,59 +317,53 @@ class VehicleControllerNode : public rclcpp::Node {
         const double PI_HALF = atan2(1, 0);
         const double DEG_TO_RAD = PI_HALF / 90;
 
-        const double max_steering_angle = 45 * DEG_TO_RAD;
-        // const double approach_angle = 30 * DEG_TO_RAD;
-        // const double approach_gain = 2;
-
-        const double yaw_reference = 0.0;
-        const double yaw_error = yaw_reference - yaw;
-
-        // atan path following controller
-        const double course_reference =
-            path_course -
-            approach_angle * atan(P_approach * cross_track_error) / PI_HALF;
-
         const auto ssa = [](double angle) {
           return atan2(sin(angle), cos(angle));
         };
 
-        const double sideslip_desired = course_reference - yaw_reference;
-        const double yawrate_desired = 1.0 * yaw_error;
+        // const double max_steering_angle = 45 * DEG_TO_RAD;
+        // const double approach_angle = 30 * DEG_TO_RAD;
+        // const double approach_gain = 2;
 
-        constexpr double cg_to_front = 1.0, cg_to_rear = 3.2, front_width = 2.0,
+        // atan path following controller
+
+        const double approach_error =
+            approach_pi.update(cross_track_error, time_now);
+        const double course_reference =
+            path_course - approach_angle * atan(approach_error) / PI_HALF;
+
+        // course_reference;  // 0.05 * time_now.seconds();
+        // const double yaw_reference = course_reference;
+
+        const double yaw_reference = (4 * PI_HALF) / 10.0 * time_now.seconds();
+        const double yaw_error = ssa(yaw_reference - yaw);
+
+        const double sideslip_desired = course_reference - yaw_reference;
+        // const double yawrate_desired = 0.31415;
+        const double yawrate_desired = yaw_pid.update(yaw_error, time_now);
+
+        constexpr double cg_to_front = 0.6, cg_to_rear = 2.6, front_width = 2.0,
                          rear_width = 2.0;
-        const auto steering_angle_front =
-            atan2(speed * sin(sideslip_desired) + yawrate_desired * cg_to_front,
-                  speed * cos(sideslip_desired));
-        const auto steering_angle_rear =
-            atan2(speed * sin(sideslip_desired) - yawrate_desired * cg_to_rear,
-                  speed * cos(sideslip_desired));
         const double course_error = ssa(course_reference - course);
 
-        // TODO(rendell): relate (course_error, yaw_error) to (steering_angles)
+        const Vector3d pos_fl(cg_to_front, front_width / 2, 0);
+        const Vector3d pos_rl(-cg_to_rear, rear_width / 2, 0);
+        const Vector3d pos_rr(-cg_to_rear, -rear_width / 2, 0);
+        const Vector3d pos_fr(cg_to_front, -front_width / 2, 0);
 
-        // double steering_angle_front =
-        //     heading_pid.update(course_error, time_now);
-
-        // afar_steering(steering_angle_front, steering_angle_rear);
-
-        const Vector2d pos_fl(cg_to_front, front_width / 2);
-        const Vector2d pos_rl(-cg_to_rear, rear_width / 2);
-        const Vector2d pos_rr(-cg_to_rear, -rear_width / 2);
-        const Vector2d pos_fr(cg_to_front, -front_width / 2);
-
-        const Vector2d velocity_body_desired(
+        const Vector3d velocity_body_desired(
             speed_desired * cos(sideslip_desired),
-            speed_desired * sin(sideslip_desired));
+            speed_desired * sin(sideslip_desired), 0);
+        const Vector3d z_axis(0, 0, 1);
 
-        const Vector2d vel_fl =
-            velocity_body_desired + yawrate_desired * pos_fl;
-        const Vector2d vel_rl =
-            velocity_body_desired + yawrate_desired * pos_rl;
-        const Vector2d vel_rr =
-            velocity_body_desired + yawrate_desired * pos_rr;
-        const Vector2d vel_fr =
-            velocity_body_desired + yawrate_desired * pos_fr;
+        const Vector3d vel_fl =
+            velocity_body_desired + yawrate_desired * z_axis.Cross(pos_fl);
+        const Vector3d vel_rl =
+            velocity_body_desired + yawrate_desired * z_axis.Cross(pos_rl);
+        const Vector3d vel_rr =
+            velocity_body_desired + yawrate_desired * z_axis.Cross(pos_rr);
+        const Vector3d vel_fr =
+            velocity_body_desired + yawrate_desired * z_axis.Cross(pos_fr);
 
         const double speed_fl = vel_fl.Length();
         const double speed_rl = vel_rl.Length();
@@ -376,18 +372,24 @@ class VehicleControllerNode : public rclcpp::Node {
 
         fl_msg.angular_velocity = speed_fl / wheel_radius;
         fl_msg.steering_angle = atan2(vel_fl.Y(), vel_fl.X());
+        fl_msg.steering_angle_rate = 0.0;
+
         rl_msg.angular_velocity = speed_rl / wheel_radius;
         rl_msg.steering_angle = atan2(vel_rl.Y(), vel_rl.X());
+        rl_msg.steering_angle_rate = 0.0;
+
         rr_msg.angular_velocity = speed_rr / wheel_radius;
         rr_msg.steering_angle = atan2(vel_rr.Y(), vel_rr.X());
+        rr_msg.steering_angle_rate = 0.0;
+
         fr_msg.angular_velocity = speed_fr / wheel_radius;
         fr_msg.steering_angle = atan2(vel_fr.Y(), vel_fr.X());
+        fr_msg.steering_angle_rate = 0.0;
 
         info_msg.path_course = path_course;
         info_msg.cross_track_error = cross_track_error;
         info_msg.yaw_error = yaw_error;
         info_msg.course_error = course_error;
-        info_msg.steering_angle_front = steering_angle_front;
       }
     }
 
