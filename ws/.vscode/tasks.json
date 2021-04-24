@@ -14,6 +14,18 @@
 			},
 			"problemMatcher": [],
 			"label": "colcon: build"
+		},
+		{
+			"type": "colcon",
+			"args": [
+				"build",
+				"--symlink-install",
+				"--packages-select",
+				"control"
+			],
+			"group": "build",
+			"problemMatcher": [],
+			"label": "colcon: build 'control'"
 		}
 	]
 }

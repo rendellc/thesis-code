@@ -51,6 +51,11 @@ ignition::math::Vector2d PathCollection::closest_direction(
   return collection[closest]->closest_direction(pos);
 }
 
+double PathCollection::closest_courserate(const ignition::math::Vector2d& pos) {
+  update_closest(pos);
+  return collection[closest]->closest_courserate(pos);
+}
+
 // ignition::math::Vector2d PathCollection::closest_point_step_ahead(
 //     const ignition::math::Vector2d& pos, double velocity, double time,
 //     double* time_left_p) {

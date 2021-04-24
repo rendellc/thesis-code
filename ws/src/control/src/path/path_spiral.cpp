@@ -1,5 +1,6 @@
 #include <cassert>
 #include <control/path/path_spiral.hpp>
+#include <ignition/math/Vector3.hh>
 
 PathSpiral::PathSpiral(const ignition::math::Vector2d& origin,
                        double orientation, double scale, double theta_begin,
@@ -113,6 +114,25 @@ ignition::math::Vector2d PathSpiral::closest_direction(
   const double theta = find_closest_theta(pos);
   const double u = theta_to_u(theta);
   return sign * spiral_u_derivative(u).Normalized();
+}
+
+double PathSpiral::closest_courserate(const ignition::math::Vector2d& pos) {
+  const auto sign = theta_end > theta_begin ? 1 : -1;
+  const double theta = find_closest_theta(pos);
+  const double u = theta_to_u(theta);
+
+  using ignition::math::Vector2d;
+  using ignition::math::Vector3d;
+
+  const Vector2d v2 = spiral_u_derivative(u);
+  const Vector2d vdot2 = spiral_u_double_derivative(u);
+
+  const Vector3d v(v2.X(), v2.Y(), 0);
+  const Vector3d vdot(vdot2.X(), vdot2.Y(), 0);
+  const Vector3d z_axis(0, 0, 1);
+
+  const double courserate = z_axis.Cross(v).Dot(vdot) / v.SquaredLength();
+  return courserate;
 }
 
 ignition::math::Vector2d PathSpiral::getBegin() const {

@@ -58,6 +58,9 @@ class WheelControllerNode : public rclcpp::Node {
     this->declare_parameter("beta_0");
     this->get_parameter("beta_0", beta_0);
 
+    this->declare_parameter("sign_slide_eps");
+    this->get_parameter("sign_slide_eps", sign_slide_eps);
+
     RCLCPP_INFO(this->get_logger(), "%s initialized", this->get_name());
   }
 
@@ -78,6 +81,7 @@ class WheelControllerNode : public rclcpp::Node {
   double sliding_mode_eigenvalue;
   double steer_resistance_factor;
   double beta_0;
+  double sign_slide_eps;
   double x1_integral = 0.0;
 
   vehicle_interface::msg::WheelState::SharedPtr wheel_state_p;
@@ -123,12 +127,12 @@ class WheelControllerNode : public rclcpp::Node {
       const double rho = steer_inertia * sliding_mode_eigenvalue * fabs(x2) +
                          max_steer_resistance;
       const double beta = rho + beta_0;
-      const double s = sliding_mode_eigenvalue * x2 + x1;
+      // const double s = x1 + (1 / sliding_mode_eigenvalue) * x2;
+      const double s = sliding_mode_eigenvalue * x1 + x2;
 
-      const auto sign = [](double x) {
-        double eps = 2.0;
-        if (fabs(x) < eps) {
-          return x / eps;
+      const auto sign = [=](double x) {
+        if (fabs(x) < sign_slide_eps) {
+          return x / sign_slide_eps;
         } else {
           return x / fabs(x);  // sign(x)
         }

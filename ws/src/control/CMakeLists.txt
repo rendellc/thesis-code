@@ -6,9 +6,9 @@ if(NOT CMAKE_C_STANDARD)
   set(CMAKE_C_STANDARD 99)
 endif()
 
-# Default to C++14
+# Default to C++17
 if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 14)
+  set(CMAKE_CXX_STANDARD 17)
 endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -25,6 +25,7 @@ find_package(visualization_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(ignition-math6 REQUIRED)
+
 
 add_library(pid SHARED
   src/PID.cpp
@@ -45,6 +46,13 @@ ament_target_dependencies(pathlib
   "ignition-math6"
 )
 
+add_library(controllib SHARED
+  "src/dynamics/dynamical_system.cpp"
+  "src/dynamics/no_slip_4wis.cpp"
+)
+target_include_directories(controllib PUBLIC include ${Eigen3_INCLUDE_DIRS} "/usr/include/eigen3")
+
+
 add_executable(pathlib_testing 
   "src/pathlib_testing.cpp"
 )
@@ -64,6 +72,7 @@ ament_target_dependencies(wheel_controller
   "vehicle_interface"
 )
 rclcpp_components_register_nodes(wheel_controller "WheelControllerNode")
+
 
 add_library(vehicle_controller SHARED src/vehicle_controller_node.cpp)
 target_include_directories(vehicle_controller PUBLIC include ${Eigen3_INCLUDE_DIRS})

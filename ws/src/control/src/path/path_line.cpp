@@ -69,6 +69,10 @@ ignition::math::Vector2d PathLine::closest_direction(
   return (pos_end - pos_begin).Normalized();
 }
 
+double PathLine::closest_courserate(const ignition::math::Vector2d& pos) {
+  return 0.0;
+}
+
 ignition::math::Vector2d PathLine::getBegin() const { return pos_begin; }
 
 ignition::math::Vector2d PathLine::getEnd() const { return pos_end; }

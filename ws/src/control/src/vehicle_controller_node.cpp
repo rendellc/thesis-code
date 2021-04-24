@@ -95,9 +95,11 @@ class VehicleControllerNode : public rclcpp::Node {
     this->get_parameter<double>("approach_angle", approach_angle);
 
     this->declare_parameter("P_approach");
-    this->get_parameter<double>("P_approach", approach_pi.P);
+    this->get_parameter<double>("P_approach", approach_pid.P);
     this->declare_parameter("I_approach");
-    this->get_parameter<double>("I_approach", approach_pi.I);
+    this->get_parameter<double>("I_approach", approach_pid.I);
+    this->declare_parameter("D_approach");
+    this->get_parameter<double>("D_approach", approach_pid.D);
   }
 
  private:
@@ -131,15 +133,46 @@ class VehicleControllerNode : public rclcpp::Node {
 
   std::shared_ptr<Path> path_p;
 
+  static constexpr double PI_HALF = 1.57079632679;
+  static constexpr double cg_to_front = 0.6, cg_to_rear = 2.6,
+                          front_width = 2.0, rear_width = 2.0;
+  static constexpr double wheel_radius = 0.505;
+
   PID speed_pid;
   PID yaw_pid;
-  PID approach_pi;
+  PID approach_pid;
 
+  // Parameters
   double update_rate;
   double maximum_curvature;
-  // double maximum_curvature;
   double approach_angle;
   double P_approach;
+
+  // Reference
+  rclcpp::Time time_now;
+  double yaw_reference;
+
+  // Dynamic variables
+  Quaterniond vehicle_quat;
+  double yaw;
+  double yawrate;
+  Vector2d position;
+  Vector2d velocity_body;
+  Vector3d velocity_inertial;
+  double speed;
+  double sideslip;
+  double course;
+  Vector2d path_position;
+  Vector2d path_direction;
+  double path_course;
+  double path_courserate;
+  Vector2d path_error;
+  double cross_track_error;
+  double course_reference;
+  double approach_error;
+  double yaw_error;
+  double course_error;
+  double speed_desired = 2.0;
 
   void do_reference_control() {
     // #if 0
@@ -232,6 +265,101 @@ class VehicleControllerNode : public rclcpp::Node {
     // #endif
   }
 
+  double ssa(double angle) { return atan2(sin(angle), cos(angle)); }
+
+  void update_dynamic_variables() {
+    if (pose_p && twist_p && path_p) {
+      time_now = this->get_clock()->now();
+      const auto &q = pose_p->pose.orientation;
+      vehicle_quat = Quaterniond(q.w, q.x, q.y, q.z);
+      yaw = vehicle_quat.Yaw();
+      position = Vector2d(pose_p->pose.position.x, pose_p->pose.position.y);
+      velocity_body =
+          Vector2d(twist_p->twist.linear.x, twist_p->twist.linear.y);
+      velocity_inertial = vehicle_quat.RotateVector(
+          Vector3d(velocity_body.X(), velocity_body.Y(), 0));
+      sideslip = atan2(velocity_body.Y(), velocity_body.X());
+      course = yaw + sideslip;
+
+      path_position = path_p->closest_point(position);
+      path_direction = path_p->closest_direction(position);
+      path_course = atan2(path_direction.Y(), path_direction.X());
+      path_courserate = path_p->closest_courserate(position);
+      path_error = position - path_position;
+      cross_track_error = Quaterniond(0, 0, path_course)
+                              .RotateVectorReverse(
+                                  Vector3d(path_error.X(), path_error.Y(), 0.0))
+                              .Y();
+      speed = velocity_body.Length();
+      yawrate = twist_p->twist.angular.z;
+
+      approach_error = approach_pid.update(cross_track_error, time_now);
+      course_reference =
+          path_course - approach_angle * atan(approach_error) / PI_HALF;
+      course_error = ssa(course_reference - course);
+
+      // TODO(rendellc): select yaw_reference source
+      yaw_reference = 0;
+      yaw_error = ssa(yaw_reference - yaw);
+    }
+  }
+
+  void ilqr() {}
+
+  void pid_control() {
+    // course_reference;  // 0.05 * time_now.seconds();
+    // const double yaw_reference = course_reference;
+    // (4 * PI_HALF) / 10.0 * time_now.seconds();
+    // const double yaw_reference = course_reference;
+
+    // const double yawrate_desired = 0.31415;
+    // yaw_pid.update(yaw_error, time_now);
+    const double yawrate_desired = 1.0;
+    const double sidesliprate_desired = path_courserate - yawrate_desired;
+    const double sideslip_desired =
+        (course_reference - yaw) + sidesliprate_desired / (2 * update_rate);
+
+    const Vector3d pos_fl(cg_to_front, front_width / 2, 0);
+    const Vector3d pos_rl(-cg_to_rear, rear_width / 2, 0);
+    const Vector3d pos_rr(-cg_to_rear, -rear_width / 2, 0);
+    const Vector3d pos_fr(cg_to_front, -front_width / 2, 0);
+
+    const Vector3d velocity_body_desired(speed_desired * cos(sideslip_desired),
+                                         speed_desired * sin(sideslip_desired),
+                                         0);
+    const Vector3d z_axis(0, 0, 1);
+
+    const Vector3d vel_fl =
+        velocity_body_desired + yawrate_desired * z_axis.Cross(pos_fl);
+    const Vector3d vel_rl =
+        velocity_body_desired + yawrate_desired * z_axis.Cross(pos_rl);
+    const Vector3d vel_rr =
+        velocity_body_desired + yawrate_desired * z_axis.Cross(pos_rr);
+    const Vector3d vel_fr =
+        velocity_body_desired + yawrate_desired * z_axis.Cross(pos_fr);
+
+    const double speed_fl = vel_fl.Length();
+    const double speed_rl = vel_rl.Length();
+    const double speed_rr = vel_rr.Length();
+    const double speed_fr = vel_fr.Length();
+
+    fl_msg.angular_velocity = speed_fl / wheel_radius;
+    fl_msg.steering_angle = atan2(vel_fl.Y(), vel_fl.X());
+    fl_msg.steering_angle_rate = 0.0;
+
+    rl_msg.angular_velocity = speed_rl / wheel_radius;
+    rl_msg.steering_angle = atan2(vel_rl.Y(), vel_rl.X());
+    rl_msg.steering_angle_rate = 0.0;
+
+    rr_msg.angular_velocity = speed_rr / wheel_radius;
+    rr_msg.steering_angle = atan2(vel_rr.Y(), vel_rr.X());
+    rr_msg.steering_angle_rate = 0.0;
+
+    fr_msg.angular_velocity = speed_fr / wheel_radius;
+    fr_msg.steering_angle = atan2(vel_fr.Y(), vel_fr.X());
+    fr_msg.steering_angle_rate = 0.0;
+  }
+
   void update_command() {
     // if (pose_p && twist_p && reference_p) {
     //   // prefer reference if supplied
@@ -243,36 +371,10 @@ class VehicleControllerNode : public rclcpp::Node {
     //   // or add timestamp to message.
     //   reference_p.reset();
     // }
-    if (pose_p && twist_p && waypoints_p) {
+    if (pose_p && twist_p && path_p && waypoints_p) {
       // use waypoints if reference not supplied
-      // path_p->cross_track_error()
-      const auto &q = pose_p->pose.orientation;
-      const auto quat = Quaterniond(q.w, q.x, q.y, q.z);
-      const auto yaw = quat.Yaw();
-      const auto position =
-          Vector2d(pose_p->pose.position.x, pose_p->pose.position.y);
-      const auto velocity_body =
-          Vector2d(twist_p->twist.linear.x, twist_p->twist.linear.y);
-      const auto velocity_inertial =
-          quat.RotateVector(Vector3d(velocity_body.X(), velocity_body.Y(), 0));
-      const double sideslip = atan2(velocity_body.Y(), velocity_body.X());
-      const double speed = velocity_body.Length();
-      const double course = yaw + sideslip;
-      const double &yawrate = twist_p->twist.angular.z;
 
-      const auto path_position = path_p->closest_point(position);
-      const auto path_direction = path_p->closest_direction(position);
-      const auto path_error = position - path_position;
-
-      const double path_course = atan2(path_direction.Y(), path_direction.X());
-
-      const auto cross_track_error =
-          Quaterniond(0, 0, path_course)
-              .RotateVectorReverse(
-                  Vector3d(path_error.X(), path_error.Y(), 0.0))
-              .Y();
-
-      // TODO(rendellc): need to rotate to vehicle coordinates
+      update_dynamic_variables();
 
       using Marker = visualization_msgs::msg::Marker;
       controller_markers_msg.markers[0].header.frame_id = "map";
@@ -297,94 +399,7 @@ class VehicleControllerNode : public rclcpp::Node {
       controller_markers_pub_p->publish(controller_markers_msg);
 
       if (!reference_p) {
-        // only use waypoints if refernce_p not supplied
-        const auto time_now = this->get_clock()->now();
-        constexpr double wheel_radius = 0.505;
-
-        // const double vx_reference = 2.0;
-        const double speed_desired = 2.0;
-        // const double &vx = twist_p->twist.linear.x;
-        // const double speed_cg_u = speed_pid.update(vx_reference - vx,
-        // time_now);
-
-        // TODO(rendellc): transform speed_cg_u to speed signals for each wheel
-
-        // fl_msg.angular_velocity = speed_cg_u / wheel_radius;
-        // rl_msg.angular_velocity = speed_cg_u / wheel_radius;
-        // rr_msg.angular_velocity = speed_cg_u / wheel_radius;
-        // fr_msg.angular_velocity = speed_cg_u / wheel_radius;
-
-        const double PI_HALF = atan2(1, 0);
-        const double DEG_TO_RAD = PI_HALF / 90;
-
-        const auto ssa = [](double angle) {
-          return atan2(sin(angle), cos(angle));
-        };
-
-        // const double max_steering_angle = 45 * DEG_TO_RAD;
-        // const double approach_angle = 30 * DEG_TO_RAD;
-        // const double approach_gain = 2;
-
-        // atan path following controller
-
-        const double approach_error =
-            approach_pi.update(cross_track_error, time_now);
-        const double course_reference =
-            path_course - approach_angle * atan(approach_error) / PI_HALF;
-
-        // course_reference;  // 0.05 * time_now.seconds();
-        // const double yaw_reference = course_reference;
-        // (4 * PI_HALF) / 10.0 * time_now.seconds();
-        const double yaw_reference = course_reference;
-        const double yaw_error = ssa(yaw_reference - yaw);
-
-        const double sideslip_desired = course_reference - yaw_reference;
-        // const double yawrate_desired = 0.31415;
-        const double yawrate_desired = yaw_pid.update(yaw_error, time_now);
-
-        constexpr double cg_to_front = 0.6, cg_to_rear = 2.6, front_width = 2.0,
-                         rear_width = 2.0;
-        const double course_error = ssa(course_reference - course);
-
-        const Vector3d pos_fl(cg_to_front, front_width / 2, 0);
-        const Vector3d pos_rl(-cg_to_rear, rear_width / 2, 0);
-        const Vector3d pos_rr(-cg_to_rear, -rear_width / 2, 0);
-        const Vector3d pos_fr(cg_to_front, -front_width / 2, 0);
-
-        const Vector3d velocity_body_desired(
-            speed_desired * cos(sideslip_desired),
-            speed_desired * sin(sideslip_desired), 0);
-        const Vector3d z_axis(0, 0, 1);
-
-        const Vector3d vel_fl =
-            velocity_body_desired + yawrate_desired * z_axis.Cross(pos_fl);
-        const Vector3d vel_rl =
-            velocity_body_desired + yawrate_desired * z_axis.Cross(pos_rl);
-        const Vector3d vel_rr =
-            velocity_body_desired + yawrate_desired * z_axis.Cross(pos_rr);
-        const Vector3d vel_fr =
-            velocity_body_desired + yawrate_desired * z_axis.Cross(pos_fr);
-
-        const double speed_fl = vel_fl.Length();
-        const double speed_rl = vel_rl.Length();
-        const double speed_rr = vel_rr.Length();
-        const double speed_fr = vel_fr.Length();
-
-        fl_msg.angular_velocity = speed_fl / wheel_radius;
-        fl_msg.steering_angle = atan2(vel_fl.Y(), vel_fl.X());
-        fl_msg.steering_angle_rate = 0.0;
-
-        rl_msg.angular_velocity = speed_rl / wheel_radius;
-        rl_msg.steering_angle = atan2(vel_rl.Y(), vel_rl.X());
-        rl_msg.steering_angle_rate = 0.0;
-
-        rr_msg.angular_velocity = speed_rr / wheel_radius;
-        rr_msg.steering_angle = atan2(vel_rr.Y(), vel_rr.X());
-        rr_msg.steering_angle_rate = 0.0;
-
-        fr_msg.angular_velocity = speed_fr / wheel_radius;
-        fr_msg.steering_angle = atan2(vel_fr.Y(), vel_fr.X());
-        fr_msg.steering_angle_rate = 0.0;
+        pid_control();
 
         info_msg.path_course = path_course;
         info_msg.cross_track_error = cross_track_error;
