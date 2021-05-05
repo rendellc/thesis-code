@@ -2,30 +2,24 @@
 
 #include <eigen3/Eigen/Dense>
 
-// using Eigen::MatrixXd;
-// using Eigen::Vector2d;
-//
-using Eigen::MatrixXd;
-using Eigen::VectorXd;
-
 class DynamicalSystem {
  public:
-  const int number_of_states;
-  const int number_of_inputs;
+  DynamicalSystem() = default;
+  virtual ~DynamicalSystem() = default;
 
-  DynamicalSystem() = delete;
-  DynamicalSystem(int number_of_states, int number_of_inputs);
-  virtual ~DynamicalSystem();
+  virtual Eigen::VectorXd derivatives(const Eigen::VectorXd& states,
+                                      const Eigen::VectorXd& inputs) = 0;
 
-  virtual VectorXd derivatives(const VectorXd& states,
-                               const VectorXd& inputs) = 0;
+  virtual void linearize(const Eigen::VectorXd& states,
+                         const Eigen::VectorXd& inputs, Eigen::MatrixXd& A,
+                         Eigen::MatrixXd& B);
 
-  virtual void linearize(const VectorXd& states, const VectorXd& inputs,
-                         MatrixXd& A, MatrixXd& B) = 0;
+  void discretize(const Eigen::VectorXd& states, const Eigen::VectorXd& inputs,
+                  double stepsize, Eigen::MatrixXd& Ak, Eigen::MatrixXd& Bk);
 
-  void discretize(const VectorXd& states, const VectorXd& inputs,
-                  double stepsize, MatrixXd& Ak, MatrixXd& Bk);
+  Eigen::VectorXd step(const Eigen::VectorXd& states,
+                       const Eigen::VectorXd& inputs, double stepsize);
 
-  VectorXd step(const VectorXd& states, const VectorXd& inputs,
-                double stepsize);
+  virtual int number_of_states() const = 0;
+  virtual int number_of_inputs() const = 0;
 };

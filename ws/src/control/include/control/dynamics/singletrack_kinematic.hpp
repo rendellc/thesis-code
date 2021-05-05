@@ -3,35 +3,32 @@
 #include <control/dynamics/dynamical_system.hpp>
 #include <eigen3/Eigen/Dense>
 
-class NoSlip4WISSystem : public DynamicalSystem {
+class SingletrackKinematicSystem : public DynamicalSystem {
   void velocity_and_yawrate(const Eigen::VectorXd& states,
                             Eigen::Vector2d& velocity, double& yawrate) const;
 
   Eigen::Matrix2d rotation_matrix(double yaw) const;
 
-  static constexpr int NX = 11;
-  static constexpr int NU = 8;
+  static constexpr int NX = 7;
+  static constexpr int NU = 4;
 
   double wheel_radius;
+  double length_to_front;
+  double length_to_rear;
   double time_constant_omega;
   double time_constant_delta;
 
-  Eigen::Vector2d wheel_position_fl;
-  Eigen::Vector2d wheel_position_rl;
-  Eigen::Vector2d wheel_position_rr;
-  Eigen::Vector2d wheel_position_fr;
-
-  Eigen::Matrix<double, 3, 8> no_slip_matrix;
+  Eigen::Matrix<double, 3, 4> no_slip_matrix;
 
  public:
-  using StateT = Eigen::Matrix<double, 11, 1>;
-  using InputT = Eigen::Matrix<double, 8, 1>;
+  using StateT = Eigen::Matrix<double, NX, 1>;
+  using InputT = Eigen::Matrix<double, NU, 1>;
 
-  NoSlip4WISSystem() = delete;
-  NoSlip4WISSystem(double length_to_front, double length_to_rear,
-                   double front_width, double rear_width, double wheel_radius,
-                   double time_constant_omega, double time_constant_delta);
-  virtual ~NoSlip4WISSystem();
+  SingletrackKinematicSystem() = delete;
+  SingletrackKinematicSystem(double length_to_front, double length_to_rear,
+                             double wheel_radius, double time_constant_omega,
+                             double time_constant_delta);
+  virtual ~SingletrackKinematicSystem() = default;
 
   Eigen::VectorXd derivatives(const Eigen::VectorXd& states,
                               const Eigen::VectorXd& inputs) override;

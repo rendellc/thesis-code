@@ -12,16 +12,25 @@ def generate_launch_description():
     vehicle_controller_parameters = [
         {"update_rate": 50.0},
         {"maximum_curvature": 0.25},
-        {"P_yaw": 5.0},
+        {"pid_active": True},
+        {"P_yaw": 0.7},
         {"I_yaw": 0.0},
-        {"D_yaw": 0.0},
+        {"D_yaw": 0.2},
         {"P_speed": 2.0},
         {"I_speed": 1.0},
         {"approach_angle": deg2rad(30)},
         # {"P_approach": 2.0}  # NOTE: mclain recommends 1/radius_min = maximum_curvature
         {"P_approach": 2.0},
         {"I_approach": 0.5},
-        {"D_approach": 0.0}
+        {"D_approach": 0.0},
+        {"ilqr_4wis_active": False},
+        {"ilqr_cost_x": 1.0},
+        {"ilqr_cost_y": 1.0},
+        {"ilqr_cost_yaw": 10.0},
+        {"ilqr_cost_angular_vel": 0.2},
+        {"ilqr_cost_steering_angle": 1.0},
+        {"ilqr_trajectory_length": 50},
+        {"ilqr_singletrack_active": False}
     ]
     wheel_controller_parameters = [
         {"update_rate": 100.0},

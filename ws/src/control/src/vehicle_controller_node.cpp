@@ -2,6 +2,9 @@
 
 #include <cmath>
 #include <control/PID.hpp>
+#include <control/dynamics/no_slip_4wis.hpp>
+#include <control/dynamics/singletrack_kinematic.hpp>
+#include <control/iterative_lqr.hpp>
 #include <control/path/path.hpp>
 #include <control/path/path_spiral.hpp>
 #include <eigen3/Eigen/Dense>
@@ -16,14 +19,14 @@
 #include <memory>
 #include <nav_msgs/msg/path.hpp>
 #include <rclcpp/rclcpp.hpp>
+#include <vehicle_interface/msg/drive_mode.hpp>
+#include <vehicle_interface/msg/vehicle_controller_info.hpp>
+#include <vehicle_interface/msg/waypoints.hpp>
+#include <vehicle_interface/msg/wheel_state.hpp>
 #include <visualization_msgs/msg/marker.hpp>
 #include <visualization_msgs/msg/marker_array.hpp>
 
-#include "vehicle_interface/msg/drive_mode.hpp"
-#include "vehicle_interface/msg/vehicle_controller_info.hpp"
-#include "vehicle_interface/msg/waypoints.hpp"
-#include "vehicle_interface/msg/wheel_state.hpp"
-
+using Eigen::VectorXd;
 using ignition::math::Quaterniond;
 using ignition::math::Vector2d;
 using ignition::math::Vector3d;
@@ -67,6 +70,27 @@ class VehicleControllerNode : public rclcpp::Node {
     fr_pub_p = this->create_publisher<vehicle_interface::msg::WheelState>(
         "wheel_fr/reference", 1);
 
+    fl_sub_p = this->create_subscription<vehicle_interface::msg::WheelState>(
+        "wheel_fl/state", 1,
+        [this](vehicle_interface::msg::WheelState::SharedPtr msg) {
+          this->fl_state_msg = *msg;
+        });
+    rl_sub_p = this->create_subscription<vehicle_interface::msg::WheelState>(
+        "wheel_rl/state", 1,
+        [this](vehicle_interface::msg::WheelState::SharedPtr msg) {
+          this->rl_state_msg = *msg;
+        });
+    rr_sub_p = this->create_subscription<vehicle_interface::msg::WheelState>(
+        "wheel_rr/state", 1,
+        [this](vehicle_interface::msg::WheelState::SharedPtr msg) {
+          this->rr_state_msg = *msg;
+        });
+    fr_sub_p = this->create_subscription<vehicle_interface::msg::WheelState>(
+        "wheel_fr/state", 1,
+        [this](vehicle_interface::msg::WheelState::SharedPtr msg) {
+          this->fr_state_msg = *msg;
+        });
+
     // this->declare_parameter<double>("update_rate", 20.0);
     this->declare_parameter("update_rate");
     this->get_parameter("update_rate", update_rate);
@@ -77,6 +101,9 @@ class VehicleControllerNode : public rclcpp::Node {
 
     this->declare_parameter("maximum_curvature");
     this->get_parameter<double>("maximum_curvature", maximum_curvature);
+
+    this->declare_parameter("pid_active");
+    this->get_parameter<bool>("pid_active", pid_active);
 
     this->declare_parameter("P_yaw");
     this->get_parameter<double>("P_yaw", yaw_pid.P);
@@ -100,6 +127,80 @@ class VehicleControllerNode : public rclcpp::Node {
     this->get_parameter<double>("I_approach", approach_pid.I);
     this->declare_parameter("D_approach");
     this->get_parameter<double>("D_approach", approach_pid.D);
+
+    this->declare_parameter("ilqr_4wis_active");
+    this->get_parameter<bool>("ilqr_4wis_active", ilqr_4wis_active);
+
+    this->declare_parameter("ilqr_singletrack_active");
+    this->get_parameter<bool>("ilqr_singletrack_active",
+                              ilqr_singletrack_active);
+
+    double ilqr_cost_x, ilqr_cost_y, ilqr_cost_yaw, ilqr_cost_angular_vel,
+        ilqr_cost_steering_angle;
+    this->declare_parameter("ilqr_cost_x");
+    this->get_parameter<double>("ilqr_cost_x", ilqr_cost_x);
+    this->declare_parameter("ilqr_cost_y");
+    this->get_parameter<double>("ilqr_cost_y", ilqr_cost_y);
+    this->declare_parameter("ilqr_cost_yaw");
+    this->get_parameter<double>("ilqr_cost_yaw", ilqr_cost_yaw);
+    this->declare_parameter("ilqr_cost_angular_vel");
+    this->get_parameter<double>("ilqr_cost_angular_vel", ilqr_cost_angular_vel);
+    this->declare_parameter("ilqr_cost_steering_angle");
+    this->get_parameter<double>("ilqr_cost_steering_angle",
+                                ilqr_cost_steering_angle);
+    int ilqr_trajectory_length;
+    this->declare_parameter("ilqr_trajectory_length");
+    this->get_parameter<int>("ilqr_trajectory_length", ilqr_trajectory_length);
+
+    // iLQR for 4WIS no slip model
+    dynsys_4wis_p =
+        std::make_shared<NoSlip4WISSystem>(cg_to_front, cg_to_rear, front_width,
+                                           rear_width, wheel_radius, 3.0, 3.0);
+    VectorXd cost_states(dynsys_4wis_p->number_of_states());
+    cost_states.fill(0.0);
+    cost_states(0) = ilqr_cost_x;
+    cost_states(1) = ilqr_cost_y;
+    cost_states(2) = ilqr_cost_yaw;
+    VectorXd cost_states_final = cost_states;
+    VectorXd cost_inputs(dynsys_4wis_p->number_of_inputs());
+    cost_inputs(0) = ilqr_cost_angular_vel;
+    cost_inputs(1) = ilqr_cost_angular_vel;
+    cost_inputs(2) = ilqr_cost_angular_vel;
+    cost_inputs(3) = ilqr_cost_angular_vel;
+    cost_inputs(4) = ilqr_cost_steering_angle;
+    cost_inputs(5) = ilqr_cost_steering_angle;
+    cost_inputs(6) = ilqr_cost_steering_angle;
+    cost_inputs(7) = ilqr_cost_steering_angle;
+    std::vector<VectorXd> input_sequence;
+    input_sequence.resize(ilqr_trajectory_length);
+    for (int i = 0; i < ilqr_trajectory_length; i++) {
+      input_sequence[i].setRandom(dynsys_4wis_p->number_of_inputs());
+    }
+    const double stepsize = 1 / update_rate;
+    ilqr_4wis = std::make_shared<IterativeLQR>(dynsys_4wis_p, cost_states,
+                                               cost_states_final, cost_inputs,
+                                               input_sequence, stepsize);
+
+    // iLQR for singletrack model
+    // dynsys_singletrack_p = std::make_shared<SingletrackKinematicSystem>(
+    //     cg_to_front, cg_to_rear, wheel_radius, 3.0, 3.0);
+    // cost_states.setZero(dynsys_singletrack_p->number_of_states());
+    // cost_states(0) = ilqr_cost_x;
+    // cost_states(1) = ilqr_cost_y;
+    // cost_states(2) = ilqr_cost_yaw;
+    // cost_states_final = cost_states;
+    // cost_inputs.setZero(dynsys_singletrack_p->number_of_inputs());
+    // cost_inputs(0) = ilqr_cost_angular_vel;
+    // cost_inputs(1) = ilqr_cost_angular_vel;
+    // cost_inputs(2) = ilqr_cost_steering_angle;
+    // cost_inputs(3) = ilqr_cost_steering_angle;
+    // input_sequence.resize(ilqr_trajectory_length);
+    // for (int i = 0; i < ilqr_trajectory_length; i++) {
+    //   input_sequence[i].setRandom(dynsys_singletrack_p->number_of_inputs());
+    // }
+    // ilqr_singletrack = std::make_shared<IterativeLQR>(
+    //     dynsys_singletrack_p, cost_states, cost_states_final, cost_inputs,
+    //     input_sequence, stepsize);
   }
 
  private:
@@ -116,6 +217,11 @@ class VehicleControllerNode : public rclcpp::Node {
   rclcpp::Publisher<vehicle_interface::msg::WheelState>::SharedPtr fl_pub_p,
       rl_pub_p, rr_pub_p, fr_pub_p;
   vehicle_interface::msg::WheelState fl_msg, rl_msg, rr_msg, fr_msg;
+
+  rclcpp::Subscription<vehicle_interface::msg::WheelState>::SharedPtr fl_sub_p,
+      rl_sub_p, rr_sub_p, fr_sub_p;
+  vehicle_interface::msg::WheelState fl_state_msg, rl_state_msg, rr_state_msg,
+      fr_state_msg;
 
   visualization_msgs::msg::Marker path_marker_msg;
   rclcpp::Publisher<decltype(path_marker_msg)>::SharedPtr path_marker_pub_p;
@@ -134,7 +240,7 @@ class VehicleControllerNode : public rclcpp::Node {
   std::shared_ptr<Path> path_p;
 
   static constexpr double PI_HALF = 1.57079632679;
-  static constexpr double cg_to_front = 0.6, cg_to_rear = 2.6,
+  static constexpr double cg_to_front = 0.2, cg_to_rear = 3.0,
                           front_width = 2.0, rear_width = 2.0;
   static constexpr double wheel_radius = 0.505;
 
@@ -143,6 +249,9 @@ class VehicleControllerNode : public rclcpp::Node {
   PID approach_pid;
 
   // Parameters
+  bool pid_active;
+  bool ilqr_4wis_active;
+  bool ilqr_singletrack_active;
   double update_rate;
   double maximum_curvature;
   double approach_angle;
@@ -171,8 +280,16 @@ class VehicleControllerNode : public rclcpp::Node {
   double course_reference;
   double approach_error;
   double yaw_error;
+  double yawrate_error;
   double course_error;
   double speed_desired = 2.0;
+  Vector2d icr;
+
+  // Iterative LQR variables
+  std::shared_ptr<DynamicalSystem> dynsys_4wis_p;
+  std::shared_ptr<IterativeLQR> ilqr_4wis;
+  std::shared_ptr<DynamicalSystem> dynsys_singletrack_p;
+  std::shared_ptr<IterativeLQR> ilqr_singletrack;
 
   void do_reference_control() {
     // #if 0
@@ -299,12 +416,21 @@ class VehicleControllerNode : public rclcpp::Node {
       course_error = ssa(course_reference - course);
 
       // TODO(rendellc): select yaw_reference source
-      yaw_reference = 0;
+      // yaw_reference = 0;
+      // yaw_reference = PI_HALF;
+      yaw_reference = path_course;
       yaw_error = ssa(yaw_reference - yaw);
+      yawrate_error = path_courserate - yawrate;
+
+      // update icr
+      icr = compute_icr(velocity_body, yawrate);
     }
   }
 
-  void ilqr() {}
+  // void ilqr() {}
+  Vector2d compute_icr(const Vector2d &velocity_body, double yawrate) {
+    return Vector2d(-velocity_body.Y() / yawrate, velocity_body.X() / yawrate);
+  }
 
   void pid_control() {
     // course_reference;  // 0.05 * time_now.seconds();
@@ -312,12 +438,18 @@ class VehicleControllerNode : public rclcpp::Node {
     // (4 * PI_HALF) / 10.0 * time_now.seconds();
     // const double yaw_reference = course_reference;
 
-    // const double yawrate_desired = 0.31415;
-    // yaw_pid.update(yaw_error, time_now);
-    const double yawrate_desired = 1.0;
-    const double sidesliprate_desired = path_courserate - yawrate_desired;
-    const double sideslip_desired =
-        (course_reference - yaw) + sidesliprate_desired / (2 * update_rate);
+    // const double yawrate_desired =
+    //     yaw_pid.update(yaw_error, yawrate_error, time_now);
+    const double yawrate_desired =
+        yaw_pid.update(yaw_error, yawrate_error, time_now);
+    // yaw_pid.update(yaw_error, time_now) + path_courserate;
+    // const double yawrate_desired = 0.314;
+    const double sidesliprate_desired = path_courserate - yawrate;
+
+    // TODO(rendellc): compare these two versions
+    const double sideslip_desired = (course_reference - yaw);
+    // const double sideslip_desired = (course_reference - yaw) +
+    // sidesliprate_desired / (2 * update_rate);
 
     const Vector3d pos_fl(cg_to_front, front_width / 2, 0);
     const Vector3d pos_rl(-cg_to_rear, rear_width / 2, 0);
@@ -360,6 +492,128 @@ class VehicleControllerNode : public rclcpp::Node {
     fr_msg.steering_angle_rate = 0.0;
   }
 
+  void ilqr_control_4wis() {
+    VectorXd state(dynsys_4wis_p->number_of_states());
+    state.fill(0.0);
+    state(0) = position[0];
+    state(1) = position[1];
+    state(2) = yaw;
+
+    state(3) = fl_state_msg.angular_velocity;
+    state(4) = rl_state_msg.angular_velocity;
+    state(5) = rr_state_msg.angular_velocity;
+    state(6) = fr_state_msg.angular_velocity;
+
+    state(7) = fl_state_msg.steering_angle;
+    state(8) = rl_state_msg.steering_angle;
+    state(9) = rr_state_msg.steering_angle;
+    state(10) = fr_state_msg.steering_angle;
+    // RCLCPP_INFO_STREAM(this->get_logger(), "state " << state);
+
+    VectorXd state_target(dynsys_4wis_p->number_of_states());
+    state_target.fill(0.0);
+    // TODO(rendellc): path_position needs to include a step forward
+    // along the path
+    // or state_target needs to include velocity
+    state_target(0) = path_position[0] + path_direction[0];
+    state_target(1) = path_position[1] + path_direction[1];
+    state_target(2) = yaw_reference;
+
+    // RCLCPP_INFO_STREAM(this->get_logger(), "ilqr target" << state_target);
+
+    Eigen::Matrix<double, 8, 1> input = ilqr_4wis->update(state, state_target);
+    // RCLCPP_INFO_STREAM(this->get_logger(), "ilqr inputs\n" << input);
+    fl_msg.angular_velocity = input(0);
+    rl_msg.angular_velocity = input(1);
+    rr_msg.angular_velocity = input(2);
+    fr_msg.angular_velocity = input(3);
+    fl_msg.steering_angle = input(4);
+    rl_msg.steering_angle = input(5);
+    rr_msg.steering_angle = input(6);
+    fr_msg.steering_angle = input(7);
+  }
+
+  void ilqr_control_singletrack() {
+    // Robust decoupling, ideal steering dynamics and yaw stabilization of 4WS
+    // cars https://www.sciencedirect.com/science/article/pii/0005109894900795
+    // Aimed at consumer cars
+    // Assumes delta_fl = delta_fr
+    // Assumes delta_rl = delta_rr
+    // => Not applicable
+
+    // Vehicle Dynamics and Control
+    // https://link.springer.com/book/10.1007/978-1-4614-1433-9
+    // Chapter 2, page 21
+    // Single track model with 3 inputs
+    // delta_f, delta_r, V=speed of vehicle
+    // They derive the same equations as we have derived
+    // in the thesis
+    // They show that for small steering angles, the
+    // difference between the inner and outer wheels
+    // is very small (proportional to delta^2).
+    //
+    // Cannot find a reference showing how to move from delta_f, delta_r,
+    // omega_f, omega_r to delta_ij, omega_ij. Should not be too hard and would
+    // be a useful result.
+
+    VectorXd state(dynsys_singletrack_p->number_of_states());
+    state.fill(0.0);
+    state(0) = position[0];
+    state(1) = position[1];
+    state(2) = yaw;
+
+    state(3) = fl_state_msg.angular_velocity;
+    state(4) = rl_state_msg.angular_velocity;
+
+    state(7) = fl_state_msg.steering_angle;
+    state(8) = rl_state_msg.steering_angle;
+    // RCLCPP_INFO_STREAM(this->get_logger(), "state " << state);
+
+    VectorXd state_target(dynsys_singletrack_p->number_of_states());
+    state_target.fill(0.0);
+    // TODO(rendellc): path_position needs to include a step forward
+    // along the path
+    // or state_target needs to include velocity
+    state_target(0) = path_position[0] + path_direction[0];
+    state_target(1) = path_position[1] + path_direction[1];
+    state_target(2) = yaw_reference;
+
+    // TODO(rendellc): 4WIS wheel states to singletrack wheel states
+
+    // RCLCPP_INFO_STREAM(this->get_logger(), "ilqr target" << state_target);
+
+    Eigen::Matrix<double, 8, 1> input =
+        ilqr_singletrack->update(state, state_target);
+    // RCLCPP_INFO_STREAM(this->get_logger(), "ilqr inputs\n" << input);
+    const double omega_f = input(3);
+    const double omega_r = input(4);
+    const double delta_f = input(5);
+    const double delta_r = input(6);
+    const double &Lf = cg_to_front;
+    const double &Lr = cg_to_rear;
+
+    // TODO(rendellc): singletrack wheel input to 4WIS wheel input
+    //
+    const double omega_fl = omega_f;
+    const double omega_rl = omega_r;
+    const double omega_rr = omega_r;
+    const double omega_fr = omega_f;
+    const double delta_fl = delta_f;
+    const double delta_rl = delta_r;
+    const double delta_rr = delta_r;
+    const double delta_fr = delta_r;
+
+    //
+    fl_msg.angular_velocity = omega_fl;
+    rl_msg.angular_velocity = omega_rl;
+    rr_msg.angular_velocity = omega_rr;
+    fr_msg.angular_velocity = omega_fr;
+    fl_msg.steering_angle = delta_fl;
+    rl_msg.steering_angle = delta_rl;
+    rr_msg.steering_angle = delta_rr;
+    fr_msg.steering_angle = delta_fr;
+  }
+
   void update_command() {
     // if (pose_p && twist_p && reference_p) {
     //   // prefer reference if supplied
@@ -399,7 +653,15 @@ class VehicleControllerNode : public rclcpp::Node {
       controller_markers_pub_p->publish(controller_markers_msg);
 
       if (!reference_p) {
-        pid_control();
+        if (pid_active) {
+          pid_control();
+        }
+        if (ilqr_4wis_active) {
+          ilqr_control_4wis();
+        }
+        if (ilqr_singletrack_active) {
+          ilqr_control_singletrack();
+        }
 
         info_msg.path_course = path_course;
         info_msg.cross_track_error = cross_track_error;

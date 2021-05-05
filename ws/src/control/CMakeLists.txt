@@ -49,6 +49,9 @@ ament_target_dependencies(pathlib
 add_library(controllib SHARED
   "src/dynamics/dynamical_system.cpp"
   "src/dynamics/no_slip_4wis.cpp"
+  "src/dynamics/inverted_pendulum.cpp"
+  "src/dynamics/first_order.cpp"
+  "src/iterative_lqr.cpp"
 )
 target_include_directories(controllib PUBLIC include ${Eigen3_INCLUDE_DIRS} "/usr/include/eigen3")
 
@@ -61,6 +64,12 @@ target_link_libraries(pathlib_testing pathlib)
 ament_target_dependencies(pathlib_testing
   "ignition-math6"  
 )
+
+add_executable(controllib_testing 
+  "src/controllib_testing.cpp"
+)
+target_include_directories(controllib_testing PUBLIC include "/usr/include/eigen3")
+target_link_libraries(controllib_testing controllib)
 
 
 add_library(wheel_controller SHARED src/wheel_controller_node.cpp)
@@ -78,6 +87,7 @@ add_library(vehicle_controller SHARED src/vehicle_controller_node.cpp)
 target_include_directories(vehicle_controller PUBLIC include ${Eigen3_INCLUDE_DIRS})
 target_link_libraries(vehicle_controller
   pathlib
+  controllib
   pid
 )
 ament_target_dependencies(vehicle_controller 
