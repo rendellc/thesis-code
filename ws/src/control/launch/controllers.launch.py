@@ -11,7 +11,7 @@ def generate_launch_description():
 
     vehicle_controller_parameters = [
         {"update_rate": 50.0},
-        {"maximum_curvature": 0.25},
+        {"maximum_curvature": 0.75},
         {"pid_active": True},
         {"P_yaw": 0.7},
         {"I_yaw": 0.0},
@@ -37,6 +37,8 @@ def generate_launch_description():
         {"P_omega": 200.0},
         #{"P_omega": 100.0},
         {"I_omega": 20.0},
+        {"P_delta": 5.0},
+        {"steering_rate_limit": 100000.0},
         {"wheel_mass": 200.0},
         {"wheel_radius": 0.505},
         {"wheel_width": 0.4},

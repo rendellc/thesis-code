@@ -12,6 +12,7 @@
 			"/opt/ros/foxy/lib/python3.8/site-packages"
 		],
 		"files.associations": {
+			"*.tikz": "latex",
 			"array": "cpp",
 			"hash_map": "cpp",
 			"hash_set": "cpp",
@@ -81,7 +82,8 @@
 			"cfenv": "cpp",
 			"typeindex": "cpp",
 			"typeinfo": "cpp",
-			"variant": "cpp"
+			"variant": "cpp",
+			"*.ipp": "cpp"
 		},
 		"ros.distro": "foxy",
 	}

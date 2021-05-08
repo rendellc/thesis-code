@@ -7,6 +7,7 @@
 #include <control/iterative_lqr.hpp>
 #include <control/path/path.hpp>
 #include <control/path/path_spiral.hpp>
+#include <control/ssa.hpp>
 #include <eigen3/Eigen/Dense>
 #include <geometry_msgs/msg/point.hpp>
 #include <geometry_msgs/msg/pose_stamped.hpp>
@@ -26,6 +27,7 @@
 #include <visualization_msgs/msg/marker.hpp>
 #include <visualization_msgs/msg/marker_array.hpp>
 
+using control::ssa;
 using Eigen::VectorXd;
 using ignition::math::Quaterniond;
 using ignition::math::Vector2d;
@@ -382,8 +384,6 @@ class VehicleControllerNode : public rclcpp::Node {
     // #endif
   }
 
-  double ssa(double angle) { return atan2(sin(angle), cos(angle)); }
-
   void update_dynamic_variables() {
     if (pose_p && twist_p && path_p) {
       time_now = this->get_clock()->now();
@@ -416,9 +416,9 @@ class VehicleControllerNode : public rclcpp::Node {
       course_error = ssa(course_reference - course);
 
       // TODO(rendellc): select yaw_reference source
-      // yaw_reference = 0;
+      yaw_reference = 0;
       // yaw_reference = PI_HALF;
-      yaw_reference = path_course;
+      // yaw_reference = path_course;
       yaw_error = ssa(yaw_reference - yaw);
       yawrate_error = path_courserate - yawrate;
 

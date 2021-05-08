@@ -27,13 +27,22 @@ find_package(Eigen3 REQUIRED)
 find_package(ignition-math6 REQUIRED)
 
 
-add_library(pid SHARED
-  src/PID.cpp
+add_library(controllib SHARED
+  "src/dynamics/dynamical_system.cpp"
+  "src/dynamics/no_slip_4wis.cpp"
+  "src/dynamics/inverted_pendulum.cpp"
+  "src/dynamics/first_order.cpp"
+  "src/iterative_lqr.cpp"
+  "src/halley.cpp"
+  "src/ssa.cpp"
+  "src/clip.cpp"
+  "src/PID.cpp"
 )
-target_include_directories(pid PUBLIC include)
-ament_target_dependencies(pid
+target_include_directories(controllib PUBLIC include ${Eigen3_INCLUDE_DIRS} "/usr/include/eigen3")
+ament_target_dependencies(controllib
   "rclcpp"
 )
+
 
 add_library(pathlib SHARED
   "src/path/path_line.cpp"
@@ -45,16 +54,9 @@ target_include_directories(pathlib PUBLIC include)
 ament_target_dependencies(pathlib
   "ignition-math6"
 )
-
-add_library(controllib SHARED
-  "src/dynamics/dynamical_system.cpp"
-  "src/dynamics/no_slip_4wis.cpp"
-  "src/dynamics/inverted_pendulum.cpp"
-  "src/dynamics/first_order.cpp"
-  "src/iterative_lqr.cpp"
+target_link_libraries(pathlib
+  controllib
 )
-target_include_directories(controllib PUBLIC include ${Eigen3_INCLUDE_DIRS} "/usr/include/eigen3")
-
 
 add_executable(pathlib_testing 
   "src/pathlib_testing.cpp"
@@ -74,7 +76,7 @@ target_link_libraries(controllib_testing controllib)
 
 add_library(wheel_controller SHARED src/wheel_controller_node.cpp)
 target_include_directories(wheel_controller PUBLIC include)
-target_link_libraries(wheel_controller pid)
+target_link_libraries(wheel_controller controllib)
 ament_target_dependencies(wheel_controller 
   "rclcpp"
   "rclcpp_components"
@@ -88,7 +90,6 @@ target_include_directories(vehicle_controller PUBLIC include ${Eigen3_INCLUDE_DI
 target_link_libraries(vehicle_controller
   pathlib
   controllib
-  pid
 )
 ament_target_dependencies(vehicle_controller 
   "rclcpp"
@@ -102,7 +103,7 @@ ament_target_dependencies(vehicle_controller
 rclcpp_components_register_nodes(vehicle_controller "VehicleControllerNode")
 
 install(TARGETS
-  pid pathlib
+  controllib pathlib
   DESTINATION lib/${PROJECT_NAME}
 )
 

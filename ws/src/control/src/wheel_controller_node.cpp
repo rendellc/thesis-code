@@ -1,6 +1,7 @@
 
 #include <chrono>
 #include <cmath>
+#include <control/ssa.hpp>
 #include <rclcpp/rclcpp.hpp>
 
 #include "control/PID.hpp"
@@ -8,6 +9,7 @@
 #include "vehicle_interface/msg/wheel_load.hpp"
 #include "vehicle_interface/msg/wheel_state.hpp"
 
+using control::ssa;
 using std::placeholders::_1;
 
 class WheelControllerNode : public rclcpp::Node {
@@ -39,6 +41,11 @@ class WheelControllerNode : public rclcpp::Node {
 
     this->declare_parameter("I_omega");
     this->get_parameter("I_omega", angular_velocity_pid.I);
+
+    this->declare_parameter("P_delta");
+    this->get_parameter("P_delta", steering_rate_pid.P);
+    this->declare_parameter("steering_rate_limit");
+    this->get_parameter("steering_rate_limit", steering_rate_limit);
 
     this->declare_parameter("wheel_mass");
     this->get_parameter("wheel_mass", wheel_mass);
@@ -83,6 +90,7 @@ class WheelControllerNode : public rclcpp::Node {
   double beta_0;
   double sign_slide_eps;
   double x1_integral = 0.0;
+  double steering_rate_limit;
 
   vehicle_interface::msg::WheelState::SharedPtr wheel_state_p;
   vehicle_interface::msg::WheelState::SharedPtr wheel_reference_p;
@@ -90,55 +98,102 @@ class WheelControllerNode : public rclcpp::Node {
 
   vehicle_interface::msg::WheelCommand command_msg;
   PID angular_velocity_pid;
+  PID steering_rate_pid;
+
+  void sliding_mode_steering_angle() {
+    const auto &x_p = wheel_state_p;
+    const auto &xr_p = wheel_reference_p;
+    const auto &F_z = wheel_load_p->load;
+
+    // Steering angle control law
+    // calculation in goodnotes
+    const auto x1 = ssa(x_p->steering_angle - xr_p->steering_angle);
+    x1_integral = x1_integral + x1 / update_rate;
+    const auto x2 = x_p->steering_angle_rate - xr_p->steering_angle_rate;
+
+    const double steer_inertia =
+        wheel_mass *
+        (3 * wheel_radius * wheel_radius + wheel_width * wheel_width) / 12;
+    // const double max_steer_resistance = 15000.0; // found by experimenting
+    // in gazebo, should actually be different for each wheel and load
+    // dependent
+    // const double steer_resistance_factor = 2.5;
+    const double max_steer_resistance = steer_resistance_factor * F_z;
+    // const double beta_0 = 0.1;
+    const double rho = steer_inertia * sliding_mode_eigenvalue * fabs(x2) +
+                       max_steer_resistance;
+    const double beta = rho + beta_0;
+    // const double s = x1 + (1 / sliding_mode_eigenvalue) * x2;
+    const double s = sliding_mode_eigenvalue * x1 + x2;
+
+    const auto sign = [=](double x) {
+      if (fabs(x) < sign_slide_eps) {
+        return x / sign_slide_eps;
+      } else {
+        return x / fabs(x);  // sign(x)
+      }
+    };
+
+    command_msg.steer_torque = -beta * sign(s);
+  }
+
+  double soft_sign(double x) {
+    if (fabs(x) < sign_slide_eps) {
+      return x / sign_slide_eps;
+    } else {
+      return x / fabs(x);  // sign(x)
+    }
+  }
+
+  void bang_bang_rate(double desired_rate) {
+    const auto &x = wheel_state_p;
+    const auto &xr = wheel_reference_p;
+    const auto &F_z = wheel_load_p->load;
+
+    // Steering angle rate control law
+    // calculation in goodnotes
+    const double steer_inertia =
+        wheel_mass *
+        (3 * wheel_radius * wheel_radius + wheel_width * wheel_width) / 12;
+
+    const double rate_error = desired_rate - x->steering_angle_rate;
+    const double max_reference_angular_accel = 0.1;
+    const double max_steer_resistance = steer_resistance_factor * F_z;
+
+    command_msg.steer_torque = (steer_inertia * max_reference_angular_accel +
+                                max_steer_resistance + beta_0) *
+                               soft_sign(rate_error);
+  }
 
   void update_command() {
     if (wheel_state_p && wheel_reference_p && wheel_load_p) {
-      const auto time_now = this->now();
-
-      // Shorter names
-      const auto &x_p = wheel_state_p;
-      const auto &xr_p = wheel_reference_p;
-      const auto &F_z = wheel_load_p->load;
-
       // Angular velocity control law
-      const auto omega_error = xr_p->angular_velocity - x_p->angular_velocity;
+      const auto time_now = this->now();
+      const auto omega_error =
+          wheel_reference_p->angular_velocity - wheel_state_p->angular_velocity;
       command_msg.drive_torque =
           angular_velocity_pid.update(omega_error, time_now);
 
-      // Steering angle control law
-      // calculation in goodnotes
-      const std::function<double(double)> ssa = [](double dtheta) {
-        return atan2(sin(dtheta), cos(dtheta));
-      };
+      bool use_sliding_mode = false;
+      if (use_sliding_mode) {
+        sliding_mode_steering_angle();
+      }
 
-      const auto x1 = ssa(x_p->steering_angle - xr_p->steering_angle);
-      x1_integral = x1_integral + x1 / update_rate;
-      const auto x2 = x_p->steering_angle_rate - xr_p->steering_angle_rate;
+      bool use_bang_bang = true;
+      if (use_bang_bang) {
+        const double delta = wheel_state_p->steering_angle;
+        const double delta_r = wheel_reference_p->steering_angle;
 
-      const double steer_inertia =
-          wheel_mass *
-          (3 * wheel_radius * wheel_radius + wheel_width * wheel_width) / 12;
-      // const double max_steer_resistance = 15000.0; // found by experimenting
-      // in gazebo, should actually be different for each wheel and load
-      // dependent
-      // const double steer_resistance_factor = 2.5;
-      const double max_steer_resistance = steer_resistance_factor * F_z;
-      // const double beta_0 = 0.1;
-      const double rho = steer_inertia * sliding_mode_eigenvalue * fabs(x2) +
-                         max_steer_resistance;
-      const double beta = rho + beta_0;
-      // const double s = x1 + (1 / sliding_mode_eigenvalue) * x2;
-      const double s = sliding_mode_eigenvalue * x1 + x2;
-
-      const auto sign = [=](double x) {
-        if (fabs(x) < sign_slide_eps) {
-          return x / sign_slide_eps;
-        } else {
-          return x / fabs(x);  // sign(x)
+        // compute desired rate
+        double desired_angular_rate =
+            steering_rate_pid.update(ssa(delta_r - delta), time_now);
+        if (fabs(desired_angular_rate) >= steering_rate_limit) {
+          desired_angular_rate = desired_angular_rate /
+                                 fabs(desired_angular_rate) *
+                                 steering_rate_limit;
         }
-      };
-
-      command_msg.steer_torque = -beta * sign(s);
+        bang_bang_rate(desired_angular_rate);
+      }
 
       command_pub_p->publish(command_msg);
     }
