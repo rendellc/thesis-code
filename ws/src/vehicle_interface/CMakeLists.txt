@@ -26,6 +26,7 @@ set(MSG_FILES
   "msg/Rotation.msg"
   "msg/DriveMode.msg"
   "msg/VehicleControllerInfo.msg"
+  "msg/WheelControllerInfo.msg"
   "msg/Waypoints.msg"
   "msg/WheelCommand.msg"
   "msg/WheelState.msg"

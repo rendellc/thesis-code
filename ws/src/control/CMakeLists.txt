@@ -34,6 +34,7 @@ add_library(controllib SHARED
   "src/dynamics/first_order.cpp"
   "src/iterative_lqr.cpp"
   "src/halley.cpp"
+  "src/softsign.cpp"
   "src/ssa.cpp"
   "src/clip.cpp"
   "src/PID.cpp"

@@ -1,6 +1,6 @@
-import pathlib
+import subprocess
 
 
-p = pathlib.Path("../src/simulator/models").absolute()
-
-print(str(p))
+command = ["python3",
+           "/home/cale/thesis-code/ws/src/simulator/simulator/spawn_vehicle.py"]
+subprocess.Popen(command, stdout=subprocess.PIPE)

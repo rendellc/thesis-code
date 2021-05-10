@@ -1,34 +1,34 @@
 
 #include <chrono>
 #include <cmath>
+#include <control/PID.hpp>
+#include <control/softsign.hpp>
 #include <control/ssa.hpp>
 #include <rclcpp/rclcpp.hpp>
+#include <vehicle_interface/msg/wheel_command.hpp>
+#include <vehicle_interface/msg/wheel_controller_info.hpp>
+#include <vehicle_interface/msg/wheel_load.hpp>
+#include <vehicle_interface/msg/wheel_state.hpp>
 
-#include "control/PID.hpp"
-#include "vehicle_interface/msg/wheel_command.hpp"
-#include "vehicle_interface/msg/wheel_load.hpp"
-#include "vehicle_interface/msg/wheel_state.hpp"
-
+using control::softsign;
 using control::ssa;
 using std::placeholders::_1;
+using namespace vehicle_interface::msg;
 
 class WheelControllerNode : public rclcpp::Node {
  public:
   WheelControllerNode(const rclcpp::NodeOptions &options)
       : Node("wheel_controller_node", options) {
-    command_pub_p =
-        this->create_publisher<vehicle_interface::msg::WheelCommand>("command",
-                                                                     10);
-    state_sub_p = this->create_subscription<vehicle_interface::msg::WheelState>(
+    command_pub_p = this->create_publisher<WheelCommand>("command", 10);
+    state_sub_p = this->create_subscription<WheelState>(
         "state", 1, std::bind(&WheelControllerNode::state_callback, this, _1));
-    reference_sub_p =
-        this->create_subscription<vehicle_interface::msg::WheelState>(
-            "reference", 1,
-            std::bind(&WheelControllerNode::reference_callback, this, _1));
-    wheel_load_sub_p =
-        this->create_subscription<vehicle_interface::msg::WheelLoad>(
-            "load", 1,
-            std::bind(&WheelControllerNode::load_callback, this, _1));
+    reference_sub_p = this->create_subscription<WheelState>(
+        "reference", 1,
+        std::bind(&WheelControllerNode::reference_callback, this, _1));
+    wheel_load_sub_p = this->create_subscription<WheelLoad>(
+        "load", 1, std::bind(&WheelControllerNode::load_callback, this, _1));
+
+    info_pub_p = this->create_publisher<WheelControllerInfo>("info", 10);
 
     this->declare_parameter("update_rate");
     this->get_parameter("update_rate", update_rate);
@@ -56,6 +56,9 @@ class WheelControllerNode : public rclcpp::Node {
     this->declare_parameter("wheel_width");
     this->get_parameter("wheel_width", wheel_width);
 
+    this->declare_parameter("use_sliding_mode");
+    this->get_parameter("use_sliding_mode", use_sliding_mode);
+
     this->declare_parameter("sliding_mode_eigenvalue");
     this->get_parameter("sliding_mode_eigenvalue", sliding_mode_eigenvalue);
 
@@ -65,40 +68,52 @@ class WheelControllerNode : public rclcpp::Node {
     this->declare_parameter("beta_0");
     this->get_parameter("beta_0", beta_0);
 
-    this->declare_parameter("sign_slide_eps");
-    this->get_parameter("sign_slide_eps", sign_slide_eps);
+    this->declare_parameter("sliding_mode_softregion");
+    this->get_parameter("sliding_mode_softregion", sliding_mode_softregion);
+
+    this->declare_parameter("use_robust_rate");
+    this->get_parameter("use_robust_rate", use_robust_rate);
+
+    this->declare_parameter("max_steering_accel");
+    this->get_parameter("max_steering_accel", max_steering_accel);
+
+    this->declare_parameter("robust_rate_softregion");
+    this->get_parameter("robust_rate_softregion", robust_rate_softregion);
 
     RCLCPP_INFO(this->get_logger(), "%s initialized", this->get_name());
   }
 
  private:
-  rclcpp::Publisher<vehicle_interface::msg::WheelCommand>::SharedPtr
-      command_pub_p;
-  rclcpp::Subscription<vehicle_interface::msg::WheelState>::SharedPtr
-      state_sub_p,
-      reference_sub_p;
-  rclcpp::Subscription<vehicle_interface::msg::WheelLoad>::SharedPtr
-      wheel_load_sub_p;
+  rclcpp::Publisher<WheelCommand>::SharedPtr command_pub_p;
+  rclcpp::Publisher<WheelControllerInfo>::SharedPtr info_pub_p;
+  rclcpp::Subscription<WheelState>::SharedPtr state_sub_p, reference_sub_p;
+  rclcpp::Subscription<WheelLoad>::SharedPtr wheel_load_sub_p;
   rclcpp::TimerBase::SharedPtr timer_p;
 
   double update_rate;
   double wheel_mass;
   double wheel_radius;
   double wheel_width;
+  bool use_sliding_mode;
   double sliding_mode_eigenvalue;
   double steer_resistance_factor;
   double beta_0;
-  double sign_slide_eps;
+  double sliding_mode_softregion;
   double x1_integral = 0.0;
   double steering_rate_limit;
+  bool use_robust_rate;
+  double robust_rate_softregion;
+  double max_steering_accel;
 
-  vehicle_interface::msg::WheelState::SharedPtr wheel_state_p;
-  vehicle_interface::msg::WheelState::SharedPtr wheel_reference_p;
-  vehicle_interface::msg::WheelLoad::SharedPtr wheel_load_p;
+  WheelState::SharedPtr wheel_state_p;
+  WheelState::SharedPtr wheel_reference_p;
+  WheelLoad::SharedPtr wheel_load_p;
 
-  vehicle_interface::msg::WheelCommand command_msg;
+  WheelCommand command_msg;
   PID angular_velocity_pid;
   PID steering_rate_pid;
+
+  WheelControllerInfo info_msg;
 
   void sliding_mode_steering_angle() {
     const auto &x_p = wheel_state_p;
@@ -126,28 +141,16 @@ class WheelControllerNode : public rclcpp::Node {
     // const double s = x1 + (1 / sliding_mode_eigenvalue) * x2;
     const double s = sliding_mode_eigenvalue * x1 + x2;
 
-    const auto sign = [=](double x) {
-      if (fabs(x) < sign_slide_eps) {
-        return x / sign_slide_eps;
-      } else {
-        return x / fabs(x);  // sign(x)
-      }
-    };
+    info_msg.sliding_mode_s = s;
+    info_msg.sliding_mode_rho = rho;
+    info_msg.sliding_mode_beta = beta;
 
-    command_msg.steer_torque = -beta * sign(s);
+    command_msg.steer_torque = -beta * softsign(s, sliding_mode_softregion);
   }
 
-  double soft_sign(double x) {
-    if (fabs(x) < sign_slide_eps) {
-      return x / sign_slide_eps;
-    } else {
-      return x / fabs(x);  // sign(x)
-    }
-  }
-
-  void bang_bang_rate(double desired_rate) {
+  void robust_rate(double desired_rate) {
     const auto &x = wheel_state_p;
-    const auto &xr = wheel_reference_p;
+    // const auto &xr = wheel_reference_p;
     const auto &F_z = wheel_load_p->load;
 
     // Steering angle rate control law
@@ -157,12 +160,13 @@ class WheelControllerNode : public rclcpp::Node {
         (3 * wheel_radius * wheel_radius + wheel_width * wheel_width) / 12;
 
     const double rate_error = desired_rate - x->steering_angle_rate;
-    const double max_reference_angular_accel = 0.1;
     const double max_steer_resistance = steer_resistance_factor * F_z;
 
-    command_msg.steer_torque = (steer_inertia * max_reference_angular_accel +
-                                max_steer_resistance + beta_0) *
-                               soft_sign(rate_error);
+    info_msg.robust_rate_error_rate = rate_error;
+
+    command_msg.steer_torque =
+        (steer_inertia * max_steering_accel + max_steer_resistance + beta_0) *
+        softsign(rate_error, robust_rate_softregion);
   }
 
   void update_command() {
@@ -174,13 +178,11 @@ class WheelControllerNode : public rclcpp::Node {
       command_msg.drive_torque =
           angular_velocity_pid.update(omega_error, time_now);
 
-      bool use_sliding_mode = false;
       if (use_sliding_mode) {
         sliding_mode_steering_angle();
+        info_msg.mode = "sliding_mode";
       }
-
-      bool use_bang_bang = true;
-      if (use_bang_bang) {
+      if (use_robust_rate) {
         const double delta = wheel_state_p->steering_angle;
         const double delta_r = wheel_reference_p->steering_angle;
 
@@ -192,22 +194,32 @@ class WheelControllerNode : public rclcpp::Node {
                                  fabs(desired_angular_rate) *
                                  steering_rate_limit;
         }
-        bang_bang_rate(desired_angular_rate);
+        robust_rate(desired_angular_rate);
+
+        info_msg.mode = "robust_rate";
+        info_msg.robust_rate_angular_rate_reference = desired_angular_rate;
       }
 
+      info_msg.header.frame_id = this->get_namespace();
+      info_msg.header.stamp = this->get_clock()->now();
+      info_msg.state = *wheel_state_p;
+      info_msg.reference = *wheel_reference_p;
+      info_msg.steer_torque = command_msg.steer_torque;
+      info_msg.drive_torque = command_msg.drive_torque;
       command_pub_p->publish(command_msg);
+      info_pub_p->publish(info_msg);
     }
   }
 
-  void state_callback(vehicle_interface::msg::WheelState::SharedPtr msg_p) {
+  void state_callback(WheelState::SharedPtr msg_p) {
     RCLCPP_INFO_ONCE(this->get_logger(), "state message recieved");
     wheel_state_p = msg_p;
   }
-  void reference_callback(vehicle_interface::msg::WheelState::SharedPtr msg_p) {
+  void reference_callback(WheelState::SharedPtr msg_p) {
     RCLCPP_INFO_ONCE(this->get_logger(), "reference message recieved");
     wheel_reference_p = msg_p;
   }
-  void load_callback(vehicle_interface::msg::WheelLoad::SharedPtr msg_p) {
+  void load_callback(WheelLoad::SharedPtr msg_p) {
     RCLCPP_INFO_ONCE(this->get_logger(), "load message recieved");
     wheel_load_p = msg_p;
   }

@@ -1,3 +1,4 @@
+import subprocess
 from launch import LaunchDescription
 
 from launch_ros.actions import ComposableNodeContainer
@@ -22,7 +23,7 @@ def generate_launch_description():
 
     simulator = include_launch_file(
         "simulator", "launch/simulator.launch.py", [
-            # ("gui", "true"),
+            ("gui", "false"),
             # ("verbose", "true"),
         ]
     )
@@ -60,5 +61,9 @@ def generate_launch_description():
         rviz,
         tf2static
     ])
+
+    command = ["python3",
+               "/home/cale/thesis-code/ws/src/simulator/simulator/spawn_vehicle.py"]
+    subprocess.Popen(command, stdout=subprocess.PIPE)
 
     return ld

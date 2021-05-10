@@ -8,21 +8,43 @@ from vehicle_interface.msg import VehicleControllerInfo
 from collections import deque
 import pickle
 
+from builtin_interfaces.msg._time import Time as TimeMsg
+
+import pandas as pd
+
 
 class Writer:
-    def __init__(self, node, listeners, period, directory):
+    def __init__(self, node, listeners, period, output):
         self.node = node
         self.listeners = listeners
-        self.directory = directory
+        self.output = output
 
         self.timer = self.node.create_timer(period, self.timer_callback)
 
+    @staticmethod
+    def convert_time_msgs(time_msgs):
+        start_time_msg = TimeMsg()
+        elapsed_time = [0.0]*len(time_msgs)
+
+        return start_time_msg, elapsed_time
+
     def timer_callback(self):
         for listener in self.listeners:
-            topic = listener.topic.replace("/", "_")
-            filename = self.directory + "/" + listener.node.get_name() + topic + ".pickle"
-            with open(filename, "wb") as file:
-                pickle.dump(listener.data, file)
+            # if not listener.data:
+            #     continue
+            #
+            data = {}
+            for i, attribute in enumerate(listener.attributes):
+                N = len(listener.data)
+                data_attribute = [listener.data[j][i] for j in range(N)]
+                data[listener.topic + "/" + attribute] = data_attribute
+
+            dataframe = pd.DataFrame.from_dict(data)
+            dataframe.to_pickle(self.output + listener.topic.replace("/", "_") +
+                                ".pickle")
+
+        # with open(output, "wb") as file:
+        #     pickle.dump(data, file)
 
 
 class Listener:
@@ -34,8 +56,16 @@ class Listener:
             topic_type, topic, self.callback, 1)
         self.attributes = attributes
 
+    def get_nested_attr(self, msg, attribute):
+        attribute_list = attribute.split(".")
+        value = msg
+        for attr in attribute_list:
+            value = getattr(value, attr)
+
+        return value
+
     def callback(self, msg):
-        values = [getattr(msg, attr) for attr in self.attributes]
+        values = [self.get_nested_attr(msg, attr) for attr in self.attributes]
         self.data.append(values)
 
 
@@ -46,9 +76,9 @@ def main(args=None):
     listeners = []
     listeners.append(
         Listener(node, VehicleControllerInfo,
-                 "/vehicle/controller_info", ["header", "cross_track_error"]),
+                 "/vehicle/controller_info", ["header.stamp", "cross_track_error"]),
     )
-    writer = Writer(node, listeners, 10, "results")
+    writer = Writer(node, listeners, 10, "results/data")
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()
