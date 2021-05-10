@@ -203,6 +203,7 @@ class VehicleControllerNode : public rclcpp::Node {
     // ilqr_singletrack = std::make_shared<IterativeLQR>(
     //     dynsys_singletrack_p, cost_states, cost_states_final, cost_inputs,
     //     input_sequence, stepsize);
+    //
   }
 
  private:
@@ -285,6 +286,7 @@ class VehicleControllerNode : public rclcpp::Node {
   double yawrate_error;
   double course_error;
   double speed_desired = 2.0;
+  double speed_error;
   Vector2d icr;
 
   // Iterative LQR variables
@@ -416,9 +418,9 @@ class VehicleControllerNode : public rclcpp::Node {
       course_error = ssa(course_reference - course);
 
       // TODO(rendellc): select yaw_reference source
-      yaw_reference = 0;
+      // yaw_reference = 0;
       // yaw_reference = PI_HALF;
-      // yaw_reference = path_course;
+      yaw_reference = path_course;
       yaw_error = ssa(yaw_reference - yaw);
       yawrate_error = path_courserate - yawrate;
 
@@ -448,6 +450,7 @@ class VehicleControllerNode : public rclcpp::Node {
 
     // TODO(rendellc): compare these two versions
     const double sideslip_desired = (course_reference - yaw);
+    info_msg.sideslip_desired = sideslip_desired;
     // const double sideslip_desired = (course_reference - yaw) +
     // sidesliprate_desired / (2 * update_rate);
 
@@ -456,9 +459,11 @@ class VehicleControllerNode : public rclcpp::Node {
     const Vector3d pos_rr(-cg_to_rear, -rear_width / 2, 0);
     const Vector3d pos_fr(cg_to_front, -front_width / 2, 0);
 
+    speed_error = speed_desired - speed;
     const Vector3d velocity_body_desired(speed_desired * cos(sideslip_desired),
                                          speed_desired * sin(sideslip_desired),
                                          0);
+
     const Vector3d z_axis(0, 0, 1);
 
     const Vector3d vel_fl =
@@ -663,15 +668,38 @@ class VehicleControllerNode : public rclcpp::Node {
           ilqr_control_singletrack();
         }
 
-        info_msg.path_course = path_course;
-        info_msg.cross_track_error = cross_track_error;
-        info_msg.yaw_error = yaw_error;
-        info_msg.course_error = course_error;
+        // info_msg.path_course = path_course;
+        // info_msg.cross_track_error = cross_track_error;
+        // info_msg.yaw_error = yaw_error;
+        // info_msg.course_error = course_error;
       }
     }
 
     publish_markers();
 
+    // Update info message
+    info_msg.header.stamp = time_now;
+    info_msg.yaw = yaw;
+    info_msg.yawrate = yawrate;
+    info_msg.course = course;
+    info_msg.sideslip = sideslip;
+    info_msg.path_course = path_course;
+    info_msg.path_courserate = path_courserate;
+    info_msg.path_position.x = path_position.X();
+    info_msg.path_position.y = path_position.Y();
+    info_msg.path_error.x = path_error.X();
+    info_msg.path_error.y = path_error.Y();
+    info_msg.cross_track_error = cross_track_error;
+    info_msg.speed = speed;
+    info_msg.approach_error = approach_error;
+    info_msg.course_reference = course_reference;
+    info_msg.yaw_reference = yaw_reference;
+    info_msg.yaw_error = yaw_error;
+    info_msg.course_error = course_error;
+    info_msg.speed_error = speed_error;
+    info_msg.speed_desired = speed_desired;
+    info_msg.icr.x = icr.X();
+    info_msg.icr.y = icr.Y();
     info_pub_p->publish(info_msg);
 
     fl_pub_p->publish(fl_msg);

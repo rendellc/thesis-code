@@ -20,7 +20,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            "talker = report_utils.publisher_member_function:main"
+            "talker = report_utils.publisher_member_function:main",
+            "plotter = report_utils.plotter:main"
         ],
     },
 )
