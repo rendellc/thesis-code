@@ -34,6 +34,12 @@ def plot_timeseries(t, x, label, ax=None):
 
     return ax
 
+def plot_xy(x,y,label,ax=None):
+    if ax is None:
+        _, ax = plt.subplots()
+    
+    ax.plot(x,y,label=label)
+    return ax
 
 def savefig(fig: plt.figure, figurename=None):
     """
@@ -77,10 +83,22 @@ def plot_from_bagsaver(config, data, display=False):
                 xlow, xupp = pc.get("xlim", [t[0], t[~0]])
                 ax.set_xlim(xlow, xupp)
 
-            ylabel = pc.get("ylabel", plotname)
-            ax.set_ylabel(ylabel)
+                ax.set_xlabel(pc.get("xlabel", "time [s]"))
+                ax.set_ylabel(pc.get("ylabel", plotname))
+            if pc["type"] == "xy":
+                x = data[topic][pc["xdata"]]
+                y = data[topic][pc["ydata"]]
+                label = pc["label"]
+
+                plot_xy(x,y, label=label, ax=ax)
+                
+                ax.set_xlabel(pc.get("xlabel",""))
+                ax.set_ylabel(pc.get("ylabel",""))
+                
 
             savefig(fig, plotname)
+            
+            
         except KeyError as e:
             print("error in", plotname)
             print(plotconfig)

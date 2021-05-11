@@ -2,6 +2,7 @@
 *.pyc
 *.mp4
 *.db3
+*.pickle
 ws/install/
 ws/build/
 ws/log/

@@ -23,6 +23,13 @@ topics:
       - steer_torque
       - state.steering_angle
       - reference.steering_angle
+  /vehicle/pose:
+    topic_type_module: geometry_msgs.msg
+    topic_type: PoseStamped
+    time_attribute: header.stamp
+    data_attributes:
+      - pose.position.x
+      - pose.position.y
 plots:
   yaw:
     type: timeseries
@@ -40,5 +47,11 @@ plots:
     topic: /vehicle/controller_info
     attributes:
       - course
-  # cross_track_error:
-  #   type: timeseries
+  position:
+    type: xy
+    xlabel: "E [m]"
+    ylabel: "N [m]"
+    topic: /vehicle/pose
+    label: "position"
+    xdata: pose.position.x
+    ydata: pose.position.y
