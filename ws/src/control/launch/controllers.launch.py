@@ -53,9 +53,11 @@ def generate_launch_description():
         {"sign_slide_eps": 10.0}
     ]
 
+    vehicle_namespace = "vehicle"
+
     container = ComposableNodeContainer(
         name="controllers_container",
-        namespace="vehicle",
+        namespace=vehicle_namespace,
         package="rclcpp_components",
         executable="component_container",
         composable_node_descriptions=[
@@ -63,34 +65,34 @@ def generate_launch_description():
                 package="control",
                 plugin="VehicleControllerNode",
                 name="controller",
-                namespace="vehicle",
+                namespace=vehicle_namespace,
                 parameters=vehicle_controller_parameters,
             ),
             ComposableNode(
                 package="control",
                 plugin="WheelControllerNode",
-                namespace="vehicle/wheel_fl",
+                namespace=vehicle_namespace + "/wheel_fl",
                 name="controller",
                 parameters=wheel_controller_parameters
             ),
             ComposableNode(
                 package="control",
                 plugin="WheelControllerNode",
-                namespace="vehicle/wheel_rl",
+                namespace=vehicle_namespace + "/wheel_rl",
                 name="controller",
                 parameters=wheel_controller_parameters
             ),
             ComposableNode(
                 package="control",
                 plugin="WheelControllerNode",
-                namespace="vehicle/wheel_rr",
+                namespace=vehicle_namespace + "/wheel_rr",
                 name="controller",
                 parameters=wheel_controller_parameters
             ),
             ComposableNode(
                 package="control",
                 plugin="WheelControllerNode",
-                namespace="vehicle/wheel_fr",
+                namespace=vehicle_namespace + "/wheel_fr",
                 name="controller",
                 parameters=wheel_controller_parameters
             ),

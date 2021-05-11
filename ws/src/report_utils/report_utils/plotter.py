@@ -2,86 +2,68 @@ import rclpy
 from rclpy.node import Node
 
 from std_msgs.msg import String
-
 from vehicle_interface.msg import VehicleControllerInfo
+from vehicle_interface.msg import WheelControllerInfo
 
-from collections import deque
-import pickle
+from report_utils.listener import Listener
 
-from builtin_interfaces.msg._time import Time as TimeMsg
+import numpy as np
+from rosgraph_msgs.msg._clock import Clock
 
-import pandas as pd
+import matplotlib.pyplot as plt
 
 
-class Writer:
-    def __init__(self, node, listeners, period, output):
+class ClockMonitor:
+    def __init__(self, node):
         self.node = node
-        self.listeners = listeners
-        self.output = output
+        #self.self.node.create_subscription(Clock, "/clock", self.callback, 1)
 
-        self.timer = self.node.create_timer(period, self.timer_callback)
+        self.node.create_timer(1, self.check_clock_publishers)
 
-    @staticmethod
-    def convert_time_msgs(time_msgs):
-        start_time_msg = TimeMsg()
-        elapsed_time = [0.0]*len(time_msgs)
+        publishers = self.node.get_publishers_info_by_topic("/clock")
+        self._previous_pub_len = len(publishers)
+        self._done = False
 
-        return start_time_msg, elapsed_time
+    def check_clock_publishers(self):
+        publishers = self.node.get_publishers_info_by_topic("/clock")
+        if len(publishers) == 0 and self._previous_pub_len > 0:
+            self._done = True
 
-    def timer_callback(self):
-        for listener in self.listeners:
-            # if not listener.data:
-            #     continue
-            #
-            data = {}
-            for i, attribute in enumerate(listener.attributes):
-                N = len(listener.data)
-                data_attribute = [listener.data[j][i] for j in range(N)]
-                data[listener.topic + "/" + attribute] = data_attribute
+        self._previous_pub_len = len(publishers)
 
-            dataframe = pd.DataFrame.from_dict(data)
-            dataframe.to_pickle(self.output + listener.topic.replace("/", "_") +
-                                ".pickle")
-
-        # with open(output, "wb") as file:
-        #     pickle.dump(data, file)
+    @property
+    def done(self):
+        return self._done
 
 
-class Listener:
+class Timeseries:
     def __init__(self, node, topic_type, topic, attributes):
-        self.data = deque()
-        self.node = node
-        self.topic = topic
-        self.subscriber = self.node.create_subscription(
-            topic_type, topic, self.callback, 1)
-        self.attributes = attributes
+        self.listener = Listener(node, topic_type, topic, attributes)
 
-    def get_nested_attr(self, msg, attribute):
-        attribute_list = attribute.split(".")
-        value = msg
-        for attr in attribute_list:
-            value = getattr(value, attr)
-
-        return value
-
-    def callback(self, msg):
-        values = [self.get_nested_attr(msg, attr) for attr in self.attributes]
-        self.data.append(values)
+    def to_numpy(self):
+        # TODO: also need time
+        return np.array(self.listener.data)
 
 
 def main(args=None):
     rclpy.init(args=args)
     node = Node("plotter_node")
 
-    listeners = []
-    listeners.append(
-        Listener(node, VehicleControllerInfo,
-                 "/vehicle/controller_info", ["header.stamp", "cross_track_error"]),
-    )
-    writer = Writer(node, listeners, 10, "results/data")
-    rclpy.spin(node)
+    clock_monitor = ClockMonitor(node)
+    steer_torque_fl = Timeseries(node, WheelControllerInfo,
+                                 "/vehicle/wheel_fl/controller_info", ["steer_torque"])
+
+    while not clock_monitor.done:
+        rclpy.spin_once(node)
     node.destroy_node()
     rclpy.shutdown()
+
+    # Can write to disk here
+
+    steer_torque_fl = steer_torque_fl.to_numpy()
+    plt.plot(steer_torque_fl)
+
+    plt.show()
 
 
 if __name__ == "__main__":

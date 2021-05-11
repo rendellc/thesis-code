@@ -28,7 +28,8 @@ class WheelControllerNode : public rclcpp::Node {
     wheel_load_sub_p = this->create_subscription<WheelLoad>(
         "load", 1, std::bind(&WheelControllerNode::load_callback, this, _1));
 
-    info_pub_p = this->create_publisher<WheelControllerInfo>("info", 10);
+    info_pub_p =
+        this->create_publisher<WheelControllerInfo>("controller_info", 10);
 
     this->declare_parameter("update_rate");
     this->get_parameter("update_rate", update_rate);
