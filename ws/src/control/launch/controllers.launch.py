@@ -11,11 +11,11 @@ def generate_launch_description():
 
     vehicle_controller_parameters = [
         {"update_rate": 50.0},
-        {"maximum_curvature": 0.75},
+        {"maximum_curvature": 0.25},
         {"pid_active": True},
-        {"P_yaw": 0.7},
+        {"P_yaw": 1.0},
         {"I_yaw": 0.0},
-        {"D_yaw": 0.2},
+        {"D_yaw": 0.3},
         {"P_speed": 2.0},
         {"I_speed": 1.0},
         {"approach_angle": deg2rad(30)},

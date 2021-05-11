@@ -673,39 +673,39 @@ class VehicleControllerNode : public rclcpp::Node {
         // info_msg.yaw_error = yaw_error;
         // info_msg.course_error = course_error;
       }
+
+      publish_markers();
+
+      // Update info message
+      info_msg.header.stamp = time_now;
+      info_msg.yaw = yaw;
+      info_msg.yawrate = yawrate;
+      info_msg.course = course;
+      info_msg.sideslip = sideslip;
+      info_msg.path_course = path_course;
+      info_msg.path_courserate = path_courserate;
+      info_msg.path_position.x = path_position.X();
+      info_msg.path_position.y = path_position.Y();
+      info_msg.path_error.x = path_error.X();
+      info_msg.path_error.y = path_error.Y();
+      info_msg.cross_track_error = cross_track_error;
+      info_msg.speed = speed;
+      info_msg.approach_error = approach_error;
+      info_msg.course_reference = course_reference;
+      info_msg.yaw_reference = yaw_reference;
+      info_msg.yaw_error = yaw_error;
+      info_msg.course_error = course_error;
+      info_msg.speed_error = speed_error;
+      info_msg.speed_desired = speed_desired;
+      info_msg.icr.x = icr.X();
+      info_msg.icr.y = icr.Y();
+      info_pub_p->publish(info_msg);
+
+      fl_pub_p->publish(fl_msg);
+      rl_pub_p->publish(rl_msg);
+      rr_pub_p->publish(rr_msg);
+      fr_pub_p->publish(fr_msg);
     }
-
-    publish_markers();
-
-    // Update info message
-    info_msg.header.stamp = time_now;
-    info_msg.yaw = yaw;
-    info_msg.yawrate = yawrate;
-    info_msg.course = course;
-    info_msg.sideslip = sideslip;
-    info_msg.path_course = path_course;
-    info_msg.path_courserate = path_courserate;
-    info_msg.path_position.x = path_position.X();
-    info_msg.path_position.y = path_position.Y();
-    info_msg.path_error.x = path_error.X();
-    info_msg.path_error.y = path_error.Y();
-    info_msg.cross_track_error = cross_track_error;
-    info_msg.speed = speed;
-    info_msg.approach_error = approach_error;
-    info_msg.course_reference = course_reference;
-    info_msg.yaw_reference = yaw_reference;
-    info_msg.yaw_error = yaw_error;
-    info_msg.course_error = course_error;
-    info_msg.speed_error = speed_error;
-    info_msg.speed_desired = speed_desired;
-    info_msg.icr.x = icr.X();
-    info_msg.icr.y = icr.Y();
-    info_pub_p->publish(info_msg);
-
-    fl_pub_p->publish(fl_msg);
-    rl_pub_p->publish(rl_msg);
-    rr_pub_p->publish(rr_msg);
-    fr_pub_p->publish(fr_msg);
   }
 
   void speed_yaw_controller_kimetal2018() {}

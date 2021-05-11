@@ -1,0 +1,18 @@
+bagfile: bags/test3.db3
+topics:
+  /vehicle/controller_info:
+    topic_type_module: vehicle_interface.msg
+    topic_type: VehicleControllerInfo
+    time_attribute: header.stamp
+    data_attributes:
+      - yaw
+      - course
+      - sideslip
+  /vehicle/wheel_fl/controller_info:
+    topic_type_module: vehicle_interface.msg
+    topic_type: WheelControllerInfo
+    time_attribute: header.stamp
+    data_attributes:
+      - steer_torque
+      - state.steering_angle
+      - reference.steering_angle

@@ -22,7 +22,7 @@ setup(
         'console_scripts': [
             "talker = report_utils.publisher_member_function:main",
             "listener = report_utils.listener:main",
-            "plotter = report_utils.plotter:main"
+            "bagsaver = report_utils.bagsaver:main"
         ],
     },
 )

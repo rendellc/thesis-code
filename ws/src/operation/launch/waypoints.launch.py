@@ -8,18 +8,18 @@ from report_utils.plan_parser import plan_file_to_cartesian
 
 
 def generate_launch_description():
-    waypoints = plan_file_to_cartesian(
-        "/home/cale/thesis-code/ws/launch/survey_dragvoll_manual.plan")
-    waypoints.astype(float)
-    # waypoints = np.array([
-    #     [0, 0],
-    #     [10, 0],
-    #     [20, 20],
-    #     [0, 25],
-    #     [-10, 10],
-    #     [-10, 0],
-    #     [0, 0]
-    # ], dtype=float)
+    # waypoints = plan_file_to_cartesian(
+    #    "/home/cale/thesis-code/ws/launch/survey_dragvoll_manual.plan")
+    # waypoints.astype(float)
+    waypoints = np.array([
+        [0, 0],
+        [10, 0],
+        [20, 20],
+        [0, 25],
+        [-10, 10],
+        [-10, 0],
+        [0, 0]
+    ], dtype=float)
 
     waypoints_xs = list(waypoints[:, 0])
     waypoints_ys = list(waypoints[:, 1])
