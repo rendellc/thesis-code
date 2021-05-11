@@ -1,8 +1,8 @@
 bagfile: bags/test3.db3 # unused
 outputfile: test.pickle
+figure_directory_raw: ../figs/raw
+figure_directory: ../figs
 time:
-  start_time: null
-  stop_time: null
   relative_to: /vehicle/controller_info
 topics:
   /vehicle/controller_info:
@@ -23,3 +23,22 @@ topics:
       - steer_torque
       - state.steering_angle
       - reference.steering_angle
+plots:
+  yaw:
+    type: timeseries
+    ylabel: "$\\psi$"
+    topic: /vehicle/controller_info
+    attributes:
+      - yaw
+      - course
+  course:
+    type: timeseries
+    ylabel: "$\\chi$"
+    # xlim:
+    #   - 40
+    #   - 72.0
+    topic: /vehicle/controller_info
+    attributes:
+      - course
+  # cross_track_error:
+  #   type: timeseries

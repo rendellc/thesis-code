@@ -12,6 +12,7 @@ import pickle
 
 
 from report_utils.listener import Listener
+import report_utils.plotlib as plotlib
 
 
 class ClockMonitor:
@@ -94,19 +95,22 @@ def main(args=None):
     # console scripts
     import sys
     console_args = sys.argv[1:]
+    if not "--config" in console_args:
+        print("Config file not provided for bagsaver. arguments were", console_args)
+        sys.exit(1)
+
     arguments = {}
     value_arguments = ["--config"]
-    switch_arguments = []
+    switch_arguments = ["--display"]
     for i in range(len(console_args)):
         if console_args[i] in value_arguments:
             arguments[console_args[i]] = console_args[i+1]
-        if console_args[i] in switch_arguments:
-            arguments[console_args[i]] = True
 
-    if not "--config" in arguments.keys():
-        print("Config file not provided for bagsaver. arguments were",
-              sys.argv[1:])
-        sys.exit(1)
+    for arg in switch_arguments:
+        if arg in console_args:
+            arguments[arg] = True
+        else:
+            arguments[arg] = False
 
     config_yaml_file = arguments["--config"]
     with open(config_yaml_file, "r") as file:
@@ -155,40 +159,8 @@ def main(args=None):
         with open(outputfile, "wb") as file:
             pickle.dump(data, file)
 
-    tv = data["/vehicle/controller_info"]["elapsed_time"]
-    tw = data["/vehicle/wheel_fl/controller_info"]["elapsed_time"]
-
-    yaw = data["/vehicle/controller_info"]["yaw"]
-    speed = data["/vehicle/controller_info"]["speed"]
-
-    delta_fl = data["/vehicle/wheel_fl/controller_info"]["state.steering_angle"]
-    delta_fl_r = data["/vehicle/wheel_fl/controller_info"]["reference.steering_angle"]
-
-    def ssa(x): return np.arctan2(np.sin(x), np.cos(x))
-
-    plt.plot(tw, ssa(delta_fl), label=r"$\delta$")
-    plt.plot(tw, ssa(delta_fl_r), label=r"$\delta^r$")
-
-    plt.legend()
-    #plt.plot(tv, speed)
-
-    plt.show()
-
-    # tv = vehicle["elapsed_time"]
-    # time_offset_fl = time_difference(
-    #     wheel_fl["start_time"], vehicle["start_time"])
-    # tw_fl = wheel_fl["elapsed_time"] + time_offset_fl
-
-    # # plt.plot(t)
-
-    # plt.plot(tv, vehicle["speed"])
-    # # plt.plot(tw_fl, wheel_fl["drive_torque"])
-
-    # # plt.plot(wheel_fl["elapsed_time"],
-    # #          wheel_fl["steer_torque"], label=r"$\tau_s$")
-    # # print(wheel_fl)
-    # # plt.plot(steer_torque_fl)
-    # plt.show()
+    plotlib.plot_from_bagsaver(
+        config, data, display=arguments["--display"])
 
 
 if __name__ == "__main__":
