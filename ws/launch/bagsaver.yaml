@@ -1,4 +1,9 @@
-bagfile: bags/test3.db3
+bagfile: bags/test3.db3 # unused
+outputfile: test.pickle
+time:
+  start_time: null
+  stop_time: null
+  relative_to: /vehicle/controller_info
 topics:
   /vehicle/controller_info:
     topic_type_module: vehicle_interface.msg
@@ -8,11 +13,13 @@ topics:
       - yaw
       - course
       - sideslip
+      - speed
   /vehicle/wheel_fl/controller_info:
     topic_type_module: vehicle_interface.msg
     topic_type: WheelControllerInfo
     time_attribute: header.stamp
     data_attributes:
+      - drive_torque
       - steer_torque
       - state.steering_angle
       - reference.steering_angle

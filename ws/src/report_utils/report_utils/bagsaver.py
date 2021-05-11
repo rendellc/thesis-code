@@ -1,24 +1,22 @@
-from typing import Iterable
 import rclpy
 from rclpy.node import Node
 
-from std_msgs.msg import String
-from vehicle_interface.msg import VehicleControllerInfo
-from vehicle_interface.msg import WheelControllerInfo
-
-from report_utils.listener import Listener
-
 import numpy as np
-from rosgraph_msgs.msg._clock import Clock
+# from rosgraph_msgs.msg._clock import Clock
+from builtin_interfaces.msg._time import Time
 
 import matplotlib.pyplot as plt
-from builtin_interfaces.msg._time import Time
+
+import yaml
+import pickle
+
+
+from report_utils.listener import Listener
 
 
 class ClockMonitor:
     def __init__(self, node):
         self.node = node
-        #self.self.node.create_subscription(Clock, "/clock", self.callback, 1)
 
         self.node.create_timer(1, self.check_clock_publishers)
 
@@ -71,9 +69,9 @@ class Timeseries:
         start_time, elapsed_time = self.convert_time_msgs(time_msgs)
 
         data["start_time"] = start_time
-        data["elapsed_time"] = elapsed_time
+        data["elapsed_time"] = elapsed_time.astype(np.float64)
         for i, attribute in enumerate(self._data_attributes):
-            data[attribute] = raw[:, i]
+            data[attribute] = raw[:, i].astype(np.float64)
 
         return data
 
@@ -92,46 +90,107 @@ def time_difference(time1: Time, time2: Time) -> float:
 
 
 def main(args=None):
+    # TODO: there must be a better way to get arguments for
+    # console scripts
+    import sys
+    console_args = sys.argv[1:]
+    arguments = {}
+    value_arguments = ["--config"]
+    switch_arguments = []
+    for i in range(len(console_args)):
+        if console_args[i] in value_arguments:
+            arguments[console_args[i]] = console_args[i+1]
+        if console_args[i] in switch_arguments:
+            arguments[console_args[i]] = True
+
+    if not "--config" in arguments.keys():
+        print("Config file not provided for bagsaver. arguments were",
+              sys.argv[1:])
+        sys.exit(1)
+
+    config_yaml_file = arguments["--config"]
+    with open(config_yaml_file, "r") as file:
+        config = yaml.safe_load(file)
+
     rclpy.init(args=args)
-    node = Node("plotter_node")
+    node = Node("bagsaver_node")
 
     clock_monitor = ClockMonitor(node)
-    wheel_fl = Timeseries(node, WheelControllerInfo,
-                          "/vehicle/wheel_fl/controller_info",
-                          "header.stamp",
-                          ["steer_torque", "drive_torque"])
 
-    vehicle = Timeseries(node, VehicleControllerInfo,
-                         "/vehicle/controller_info",
-                         "header.stamp",
-                         ["yaw", "cross_track_error", "yaw_error", "speed"])
+    # parse config file and set up listeners
+    timeseries = []
+    for topic, d in config["topics"].items():
+        # Import module with topic msg type
+        mod = __import__(d["topic_type_module"], fromlist=[d["topic_type"]])
+        topic_type = getattr(mod, d["topic_type"])
+
+        timeseries.append(Timeseries(node,
+                                     topic_type,
+                                     topic,
+                                     d["time_attribute"],
+                                     d["data_attributes"]))
 
     while not clock_monitor.done:
         rclpy.spin_once(node)
     node.destroy_node()
     rclpy.shutdown()
 
-    # Can write to disk here
+    data = {}
+    for ts in timeseries:
+        data[ts.listener.topic] = ts.to_dict()
 
-    wheel_fl = wheel_fl.to_dict()
-    vehicle = vehicle.to_dict()
+    # Convert all times so it measured relative
+    # to the time owner
+    time_owner_topic = config["time"]["relative_to"]
+    owner_start_time = data[time_owner_topic]["start_time"]
+    for topic in data.keys():
+        time_offset = time_difference(
+            data[topic]["start_time"], owner_start_time)
+        data[topic]["elapsed_time"] = data[topic]["elapsed_time"] + time_offset
+        data[topic]["start_time"] = owner_start_time
 
-    tv = vehicle["elapsed_time"]
-    time_offset_fl = time_difference(
-        wheel_fl["start_time"], vehicle["start_time"])
-    tw_fl = wheel_fl["elapsed_time"] + time_offset_fl
+    # Write to disk
+    outputfile = config.get("outputfile", None)
+    if not outputfile is None:
+        with open(outputfile, "wb") as file:
+            pickle.dump(data, file)
 
-    # plt.plot(t)
+    tv = data["/vehicle/controller_info"]["elapsed_time"]
+    tw = data["/vehicle/wheel_fl/controller_info"]["elapsed_time"]
 
-    plt.plot(tv, vehicle["speed"])
-    plt.plot(tw_fl, wheel_fl["drive_torque"])
+    yaw = data["/vehicle/controller_info"]["yaw"]
+    speed = data["/vehicle/controller_info"]["speed"]
 
-    # plt.plot(wheel_fl["elapsed_time"],
-    #          wheel_fl["steer_torque"], label=r"$\tau_s$")
-    # print(wheel_fl)
-    # plt.plot(steer_torque_fl)
+    delta_fl = data["/vehicle/wheel_fl/controller_info"]["state.steering_angle"]
+    delta_fl_r = data["/vehicle/wheel_fl/controller_info"]["reference.steering_angle"]
+
+    def ssa(x): return np.arctan2(np.sin(x), np.cos(x))
+
+    plt.plot(tw, ssa(delta_fl), label=r"$\delta$")
+    plt.plot(tw, ssa(delta_fl_r), label=r"$\delta^r$")
+
+    plt.legend()
+    #plt.plot(tv, speed)
+
     plt.show()
+
+    # tv = vehicle["elapsed_time"]
+    # time_offset_fl = time_difference(
+    #     wheel_fl["start_time"], vehicle["start_time"])
+    # tw_fl = wheel_fl["elapsed_time"] + time_offset_fl
+
+    # # plt.plot(t)
+
+    # plt.plot(tv, vehicle["speed"])
+    # # plt.plot(tw_fl, wheel_fl["drive_torque"])
+
+    # # plt.plot(wheel_fl["elapsed_time"],
+    # #          wheel_fl["steer_torque"], label=r"$\tau_s$")
+    # # print(wheel_fl)
+    # # plt.plot(steer_torque_fl)
+    # plt.show()
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+    main(args=sys.argv[1:])
