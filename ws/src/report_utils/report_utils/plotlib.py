@@ -10,6 +10,10 @@ RAW_FIG_DIR = Path(".")
 PDF_FIG_DIR = Path(".")
 
 
+def subplots(*args, **kwargs):
+    return plt.subplots(*args, **kwargs)
+
+
 def create_save_directories():
     if not PDF_FIG_DIR.exists():
         print("Creating figure directory")
@@ -40,6 +44,7 @@ def plot_xy(x, y, label, ax=None):
         _, ax = plt.subplots()
 
     ax.plot(x, y, label=label)
+    ax.set_aspect("equal")
     return ax
 
 

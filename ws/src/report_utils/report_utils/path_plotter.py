@@ -2,7 +2,7 @@ import sys
 from matplotlib.pyplot import get_plot_commands, plot
 import numpy as np
 
-from report_utils.plotlib import plot_xy
+import report_utils.plotlib as plotlib
 
 
 def read_from_pipe():
@@ -27,13 +27,24 @@ def parse_waypoints(data):
 
 
 def main(args=None):
+    from sys import argv
+    for i in range(len(argv)):
+        if argv[i] == "--pdffigdir":
+            pdfdir = argv[i+1]
+        if argv[i] == "--rawfigdir":
+            rawdir = argv[i+1]
+        if argv[i] == "--figname":
+            figname = argv[i+1]
+
+    plotlib.set_save_directories(rawdir, pdfdir)
+
     data = read_from_pipe()
     waypoints = parse_waypoints(data)
-    print(waypoints)
-    ax = plot_xy(waypoints[:, 0], waypoints[:, 1], "path")
 
-    from matplotlib.pyplot import show
-    show()
+    fig, ax = plotlib.subplots(num=figname)
+    plotlib.plot_xy(waypoints[:, 0], waypoints[:, 1], "path", ax=ax)
+
+    plotlib.savefig(fig)
 
 
 if __name__ == "__main__":
