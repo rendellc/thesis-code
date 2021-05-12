@@ -83,8 +83,15 @@
 			"typeindex": "cpp",
 			"typeinfo": "cpp",
 			"variant": "cpp",
-			"*.ipp": "cpp"
+			"*.ipp": "cpp",
+			"codecvt": "cpp"
 		},
 		"ros.distro": "foxy",
+		"python.analysis.extraPaths": [
+			"/home/cale/thesis-code/ws/install/simulator/lib/python3.8/site-packages",
+			"/home/cale/thesis-code/ws/install/more_interfaces/lib/python3.8/site-packages",
+			"/home/cale/thesis-code/ws/install/tuts/lib/python3.8/site-packages",
+			"/opt/ros/foxy/lib/python3.8/site-packages"
+		],
 	}
 }

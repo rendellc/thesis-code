@@ -25,6 +25,7 @@ find_package(visualization_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(ignition-math6 REQUIRED)
+# find_package(yaml-cpp REQUIRED)
 
 
 add_library(controllib SHARED
