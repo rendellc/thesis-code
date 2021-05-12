@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 import pickle
 from pathlib import Path
 
-plt.style.use(["science", "grid", "ieee", "no-latex"])
-# plt.style.use(["science", "grid", "no-latex"])
+# plt.style.use(["science", "grid", "ieee", "no-latex"])
+plt.style.use(["science", "grid", "no-latex"])
 
 RAW_FIG_DIR = Path(".")
 PDF_FIG_DIR = Path(".")

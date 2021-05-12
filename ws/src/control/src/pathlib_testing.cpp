@@ -34,6 +34,7 @@ int main(int argc, char* argv[]) {
 
   double minimum_turn_radius = -1.0;
   double maximum_curvature = -1.0;
+  int num_samples = 0;
   std::string smoothing;
   std::vector<Vec2> waypoints;
   std::string command;
@@ -49,8 +50,16 @@ int main(int argc, char* argv[]) {
         maximum_curvature = std::stod(arg);
       } else if (command == "--radius") {
         minimum_turn_radius = std::stod(arg);
+      } else if (command == "--num-samples") {
+        num_samples = std::stoi(arg);
       }
     }
+  }
+
+  if (num_samples <= 0) {
+    std::cerr << "Need to specify --num-samples n (> 0)";
+    std::cerr << "Got " << num_samples << std::endl;
+    return 1;
   }
 
   if (smoothing != "fermat" && smoothing != "cicle" && smoothing != "line") {
@@ -65,7 +74,6 @@ int main(int argc, char* argv[]) {
     return 1;
   }
 
-  // TODO: implement Path interface for [Path*]
   std::shared_ptr<Path> path;
   if (smoothing == "fermat") {
     path = Path::fermat_smoothing(waypoints, maximum_curvature);
@@ -78,7 +86,7 @@ int main(int argc, char* argv[]) {
   // const auto path = std::make_shared<PathSpiral>(Vec2(0, 0), 0, 30, -2, 0);
 
   // const auto path = Path::straight_line_path(waypoints);
-  const auto points = path->sample(50);
+  const auto points = path->sample(num_samples);
   for (const auto& p : points) {
     std::cout << p.X() << "," << p.Y() << "\n";
   }

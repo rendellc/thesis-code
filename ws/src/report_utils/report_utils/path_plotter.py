@@ -28,17 +28,25 @@ def parse_waypoints(data):
 
 def main(args=None):
     from sys import argv
+    last_command = ""
     for i in range(len(argv)):
+        if argv[i][:2] == "--":
+            last_command = argv[i]
+
         if argv[i] == "--pdffigdir":
             pdfdir = argv[i+1]
         if argv[i] == "--rawfigdir":
             rawdir = argv[i+1]
         if argv[i] == "--figname":
             figname = argv[i+1]
+            
+        if last_command == "--smoothed":
+
+
 
     plotlib.set_save_directories(rawdir, pdfdir)
 
-    data = read_from_pipe()
+    #data = read_from_pipe()
     waypoints = parse_waypoints(data)
 
     fig, ax = plotlib.subplots(num=figname)
