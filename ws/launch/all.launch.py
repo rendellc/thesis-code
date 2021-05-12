@@ -1,4 +1,5 @@
 from launch import LaunchDescription
+from launch.substitution import Substitution
 
 from launch_ros.actions import ComposableNodeContainer
 from launch_ros.descriptions import ComposableNode
@@ -34,7 +35,8 @@ def generate_launch_description():
                                      description="Start rviz")
     run_bag = DeclareLaunchArgument("bag", default_value="false",
                                     description="Do rosbag")
-
+    # bagfile = DeclareLaunchArgument("bagfile", default_value="",
+    #                                 description="output of rosbag")
     simulator = include_launch_file(
         "simulator", "launch/simulator.launch.py", [
             #("gui", IfCondition(LaunchConfiguration("gui"))),
@@ -74,8 +76,7 @@ def generate_launch_description():
     )
 
     rosbag_process = ExecuteProcess(
-        cmd=["ros2", "bag", "record", "-a"],
-        output="screen",
+        cmd=["ros2", "bag", "record", "--all"],  # "--output", bagdir],
         condition=IfCondition(LaunchConfiguration("bag"))
     )
 

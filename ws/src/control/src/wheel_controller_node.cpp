@@ -196,7 +196,6 @@ class WheelControllerNode : public rclcpp::Node {
                                  steering_rate_limit;
         }
         robust_rate(desired_angular_rate);
-
         info_msg.mode = "robust_rate";
         info_msg.robust_rate_angular_rate_reference = desired_angular_rate;
       }
@@ -205,10 +204,17 @@ class WheelControllerNode : public rclcpp::Node {
       info_msg.header.stamp = this->get_clock()->now();
       info_msg.state = *wheel_state_p;
       info_msg.reference = *wheel_reference_p;
+      const auto &x = info_msg.state;
+      const auto &xr = info_msg.reference;
+      auto &e = info_msg.error;
+      e.steering_angle = xr.steering_angle - x.steering_angle;
+      e.steering_angle_rate = xr.steering_angle_rate - x.steering_angle_rate;
+      e.angular_velocity = xr.angular_velocity - x.angular_velocity;
       info_msg.steer_torque = command_msg.steer_torque;
       info_msg.drive_torque = command_msg.drive_torque;
-      command_pub_p->publish(command_msg);
       info_pub_p->publish(info_msg);
+
+      command_pub_p->publish(command_msg);
     }
   }
 

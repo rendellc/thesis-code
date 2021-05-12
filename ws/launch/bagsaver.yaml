@@ -1,7 +1,3 @@
-bagfile: bags/test3.db3 # unused
-outputfile: test.pickle
-figure_directory_raw: ../figs/raw
-figure_directory: ../figs
 time:
   relative_to: /vehicle/controller_info
 topics:
@@ -11,9 +7,11 @@ topics:
     time_attribute: header.stamp
     data_attributes:
       - yaw
+      - yaw_error
       - course
       - sideslip
       - speed
+      - cross_track_error
   /vehicle/wheel_fl/controller_info:
     topic_type_module: vehicle_interface.msg
     topic_type: WheelControllerInfo
@@ -22,7 +20,33 @@ topics:
       - drive_torque
       - steer_torque
       - state.steering_angle
+      - state.steering_angle_rate
+      - state.angular_velocity
       - reference.steering_angle
+      - reference.angular_velocity
+      - error.steering_angle
+      - error.angular_velocity
+  /vehicle/wheel_rl/controller_info:
+    topic_type_module: vehicle_interface.msg
+    topic_type: WheelControllerInfo
+    time_attribute: header.stamp
+    data_attributes:
+      - error.steering_angle
+      - error.angular_velocity
+  /vehicle/wheel_rr/controller_info:
+    topic_type_module: vehicle_interface.msg
+    topic_type: WheelControllerInfo
+    time_attribute: header.stamp
+    data_attributes:
+      - error.steering_angle
+      - error.angular_velocity
+  /vehicle/wheel_fr/controller_info:
+    topic_type_module: vehicle_interface.msg
+    topic_type: WheelControllerInfo
+    time_attribute: header.stamp
+    data_attributes:
+      - error.steering_angle
+      - error.angular_velocity
   /vehicle/pose:
     topic_type_module: geometry_msgs.msg
     topic_type: PoseStamped

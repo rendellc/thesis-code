@@ -9,9 +9,7 @@
             <inertial>
                 <origin xyz="0 0 0" rpy="0 0 0"/>
                 <mass value="${mass}"/>
-                <inertia ixx="${1/12*mass*(height**2 + width**2)}" ixy="0" ixz="0" 
-                    iyy="${1/12*mass*(height**2 + length**2)}" iyz="0"
-                    izz="${1/12*mass*(length**2 + width**2)}"/>
+                <inertia ixx="${1/12*mass*(height**2 + width**2)}" ixy="0" ixz="0" iyy="${1/12*mass*(height**2 + length**2)}" iyz="0" izz="${1/12*mass*(length**2 + width**2)}"/>
             </inertial>
             <visual>
                 <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -32,14 +30,12 @@
             <inertial>
                 <origin xyz="0 0 0" rpy="0 0 0"/>
                 <mass value="${mass}"/>
-                <inertia ixx="${1/12*mass*(height**2 + width**2)}" ixy="0" ixz="0" 
-                    iyy="${1/12*mass*(height**2 + length**2)}" iyz="0"
-                    izz="${1/12*mass*(length**2 + width**2)}"/>
+                <inertia ixx="${1/12*mass*(height**2 + width**2)}" ixy="0" ixz="0" iyy="${1/12*mass*(height**2 + length**2)}" iyz="0" izz="${1/12*mass*(length**2 + width**2)}"/>
             </inertial>
             <visual>
                 <origin xyz="0 0 0" rpy="0 0 0"/>
                 <geometry>
-                    <mesh filename="${mesh_uri}"/> 
+                    <mesh filename="${mesh_uri}"/>
                 </geometry>
             </visual>
             <collision>
@@ -55,9 +51,7 @@
             <inertial>
                 <origin xyz="0 0 0" rpy="0 0 0"/>
                 <mass value="1"/>
-                <inertia ixx="1" ixy="0" ixz="0" 
-                    iyy="1" iyz="0"
-                    izz="1"/>
+                <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1"/>
             </inertial>
             <visual>
                 <origin xyz="0 0 0.075" rpy="0 0 0"/>
@@ -69,9 +63,7 @@
         <link name="${name}_steer">
             <inertial>
                 <mass value="1"/>
-                <inertia ixx="1" ixy="0" ixz="0" 
-                    iyy="1" iyz="0"
-                    izz="1"/>
+                <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1"/>
             </inertial>
             <visual>
                 <origin xyz="0 0 -0.075" rpy="0 0 0"/>
@@ -84,17 +76,15 @@
             <inertial>
                 <origin xyz="0 0 0" rpy="${-pi/2} 0 0"/>
                 <mass value="${mass}"/>
-                <inertia ixx="${1/12*mass*(3*radius**2 + length**2)}" ixy="0" ixz="0" 
-                    iyy="${1/12*mass*(3*radius**2 + length**2)}" iyz="0"
-                    izz="${1/2*mass*radius**2}"/>
+                <inertia ixx="${1/12*mass*(3*radius**2 + length**2)}" ixy="0" ixz="0" iyy="${1/12*mass*(3*radius**2 + length**2)}" iyz="0" izz="${1/2*mass*radius**2}"/>
             </inertial>
             <visual>
                 <origin xyz="0 0 0" rpy="${-pi/2} 0 0"/>
                 <geometry>
-<!-- 
+                    <!-- 
                     <cylinder radius="${radius}" length="${length}"/>
 -->
-                    <mesh filename="model://simple_car/resources/tire/tire.dae"/> 
+                    <mesh filename="model://simple_car/resources/tire/tire.dae"/>
                 </geometry>
             </visual>
             <collision>
@@ -109,7 +99,7 @@
             <parent link="${parent}"/>
             <child link="${name}_base"/>
             <axis xyz="0 0 1"/>
-                <!--
+            <!--
             <limit lower="-1" upper="1" effort="10000000000000000" velocity="100"/>
             <safety_controller soft_lower_limit="0" soft_upper_limit="0" k_position="1" k_velocity="1"/>
                 -->
@@ -150,8 +140,8 @@
         </gazebo>
         <gazebo>
             <plugin name="${name}" filename="libwheel.so">
-                <steer_joint name="joint_${name}_base_to_${name}_steer"/> 
-                <drive_joint name="joint_${name}_steer_to_${name}_tire"/> 
+                <steer_joint name="joint_${name}_base_to_${name}_steer"/>
+                <drive_joint name="joint_${name}_steer_to_${name}_tire"/>
             </plugin>
         </gazebo>
     </xacro:macro>
@@ -167,14 +157,12 @@
         <inertial>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <mass value="${tool_mass}"/>
-            <inertia ixx="${1/12*tool_mass*(1**2 + 4.5**2)}" ixy="0" ixz="0" 
-                iyy="${1/12*tool_mass*(1**2 + 0.5**2)}" iyz="0"
-                izz="${1/12*tool_mass*(0.5**2 + 4.5**2)}"/>
+            <inertia ixx="${1/12*tool_mass*(1**2 + 4.5**2)}" ixy="0" ixz="0" iyy="${1/12*tool_mass*(1**2 + 0.5**2)}" iyz="0" izz="${1/12*tool_mass*(0.5**2 + 4.5**2)}"/>
         </inertial>
         <visual>
             <origin xyz="0 0 -0.4" rpy="0 0 1.57"/>
             <geometry>
-                <mesh filename="model://simple_car/resources/tool/tool.dae"/> 
+                <mesh filename="model://simple_car/resources/tool/tool.dae"/>
             </geometry>
         </visual>
         <collision>
@@ -190,7 +178,7 @@
         <child link="tool_link"/>
         <axis xyz="0 0 1"/>
     </joint>
-        
+
     <gazebo>
         <plugin name="vehicle" filename="libvehicle_body.so">
         </plugin>

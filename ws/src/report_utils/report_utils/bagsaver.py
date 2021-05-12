@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 
 import yaml
 import pickle
+from pathlib import Path
 
 
 from report_utils.listener import Listener
@@ -19,7 +20,7 @@ class ClockMonitor:
     def __init__(self, node):
         self.node = node
 
-        self.node.create_timer(1, self.check_clock_publishers)
+        self.node.create_timer(0.01, self.check_clock_publishers)
 
         publishers = self.node.get_publishers_info_by_topic("/clock")
         self._previous_pub_len = len(publishers)
@@ -90,32 +91,7 @@ def time_difference(time1: Time, time2: Time) -> float:
     return dt
 
 
-def main(args=None):
-    # TODO: there must be a better way to get arguments for
-    # console scripts
-    import sys
-    console_args = sys.argv[1:]
-    if not "--config" in console_args:
-        print("Config file not provided for bagsaver. arguments were", console_args)
-        sys.exit(1)
-
-    arguments = {}
-    value_arguments = ["--config"]
-    switch_arguments = ["--display"]
-    for i in range(len(console_args)):
-        if console_args[i] in value_arguments:
-            arguments[console_args[i]] = console_args[i+1]
-
-    for arg in switch_arguments:
-        if arg in console_args:
-            arguments[arg] = True
-        else:
-            arguments[arg] = False
-
-    config_yaml_file = arguments["--config"]
-    with open(config_yaml_file, "r") as file:
-        config = yaml.safe_load(file)
-
+def run_with_config(config, args=None, datafile=None):
     rclpy.init(args=args)
     node = Node("bagsaver_node")
 
@@ -154,15 +130,53 @@ def main(args=None):
         data[topic]["start_time"] = owner_start_time
 
     # Write to disk
-    outputfile = config.get("outputfile", None)
-    if not outputfile is None:
-        with open(outputfile, "wb") as file:
+    if not datafile is None:
+        datafile = Path(datafile)
+        datafile.parent.mkdir(parents=True, exist_ok=True)
+        with open(datafile, "wb") as file:
             pickle.dump(data, file)
 
-    plotlib.plot_from_bagsaver(
-        config, data, display=arguments["--display"])
+    return data
+
+
+def main(args=None):
+    # TODO: there must be a better way to get arguments for
+    # console scripts
+    import sys
+    console_args = sys.argv[1:]
+
+    # NOTE: something weird happens when used with
+    # subprocess.Popen
+    # Quickfix is to split the console arguments manually
+    if len(console_args) == 1 and " " in console_args[0]:
+        console_args = console_args.split(" ")
+        print(console_args)
+
+    if not "--config" in console_args:
+        print("Config file not provided for bagsaver. arguments were", console_args)
+        sys.exit(1)
+
+    arguments = {}
+    value_arguments = ["--config", "--datafile"]
+    switch_arguments = ["--display"]
+    for i in range(len(console_args)):
+        if console_args[i] in value_arguments:
+            arguments[console_args[i]] = console_args[i+1]
+
+    for arg in switch_arguments:
+        if arg in console_args:
+            arguments[arg] = True
+        else:
+            arguments[arg] = False
+
+    config_yaml_file = arguments["--config"]
+    with open(config_yaml_file, "r") as file:
+        config = yaml.safe_load(file)
+
+    run_with_config(config, args, arguments["--datafile"])
+
+    return 0
 
 
 if __name__ == "__main__":
-    import sys
-    main(args=sys.argv[1:])
+    main()

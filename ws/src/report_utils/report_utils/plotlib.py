@@ -11,6 +11,8 @@ PDF_FIG_DIR = Path(".")
 
 
 def subplots(*args, **kwargs):
+    # clear by default
+    kwargs['clear'] = kwargs.get('clear', True)
     return plt.subplots(*args, **kwargs)
 
 
@@ -35,6 +37,8 @@ def plot_timeseries(t, x, label, ax=None):
         _, ax = plt.subplots()
 
     ax.plot(t, x, label=label)
+
+    ax.set_xlim(t[0], t[~0])
 
     return ax
 

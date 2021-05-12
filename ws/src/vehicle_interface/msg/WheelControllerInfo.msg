@@ -12,6 +12,7 @@ float64 robust_rate_angular_rate_reference
 
 WheelState state
 WheelState reference
+WheelState error
 
 float64 steer_torque
 float64 drive_torque
