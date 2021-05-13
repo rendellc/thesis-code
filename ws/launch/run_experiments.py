@@ -12,6 +12,26 @@ import report_utils.bagsaver as bagsaver
 import report_utils.datalib as datalib
 import numpy as np
 from pathlib import Path
+from geometry_msgs.msg import PoseStamped
+
+
+class SingleTurnExperiment(ExperimentRunnerBase):
+    def __init__(self):
+        cmd = ["ros2",
+               "launch",
+               "launch/all.launch.py",
+               "gui:=true",
+               "use_single_turn:=true",
+               "bag:=true"]
+
+        super().__init__(cmd)
+
+        self._sub = self.create_subscription(
+            PoseStamped, "/vehicle/pose", self._pose_callback, 1)
+
+    def _pose_callback(self, msg: PoseStamped):
+        if abs(msg.pose.position.x - 30) + abs(msg.pose.position.y - 30) < 2.0:
+            self._set_done()
 
 
 def _point_to_numpy(point_str, numsep):

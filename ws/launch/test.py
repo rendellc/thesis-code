@@ -1,37 +1,31 @@
+from report_utils.experiments import ExperimentRunnerBase
 
-import asyncio
-from asyncio.tasks import sleep
-from rclpy.node import Node
+from geometry_msgs.msg import PoseStamped
 import rclpy
 
 
-from report_utils.experiments import Experiment
-from report_utils.experiments import ExperimentRunnerBase
+class SingleTurnExperiment(ExperimentRunnerBase):
+    def __init__(self):
+        cmd = ["ros2",
+               "launch",
+               "launch/all.launch.py",
+               "gui:=false",
+               "use_single_turn:=true",
+               "bag:=true"]
 
+        super().__init__(cmd)
 
-class ExperimentRunnerTest(ExperimentRunnerBase):
-    def __init__(self, experiment):
-        super().__init__(experiment, 1.0)
+        self._sub = self.create_subscription(
+            PoseStamped, "/vehicle/pose", self._pose_callback, 1)
 
-    def check_if_done(self):
-        t = self.get_clock().now()
-        if (t - self._start_time).nanoseconds > 20 * 10**9:
+    def _pose_callback(self, msg: PoseStamped):
+        if abs(msg.pose.position.x - 30) + abs(msg.pose.position.y - 30) < 5.0:
             self._set_done()
 
 
-experiment = Experiment(
-    ["ros2",
-     "launch",
-     "launch/all.launch.py",
-     "gui:=false",
-     "use_simple_lap:=true",
-     "bag:=true"])
-
-
 rclpy.init()
-runner = ExperimentRunnerTest(experiment)
-runner.start()
-rclpy.spin_until_future_complete(runner, runner.future)
-runner.stop()
-runner.destroy_node()
+
+e = SingleTurnExperiment()
+e.run()
+
 rclpy.shutdown()

@@ -1,5 +1,6 @@
 
 
+#include <algorithm>
 #include <cmath>
 #include <control/PID.hpp>
 #include <control/dynamics/no_slip_4wis.hpp>
@@ -129,6 +130,9 @@ class VehicleControllerNode : public rclcpp::Node {
     this->get_parameter<double>("I_approach", approach_pid.I);
     this->declare_parameter("D_approach");
     this->get_parameter<double>("D_approach", approach_pid.D);
+
+    this->declare_parameter("speed_desired");
+    this->get_parameter<double>("speed_desired", speed_desired);
 
     this->declare_parameter("ilqr_4wis_active");
     this->get_parameter<bool>("ilqr_4wis_active", ilqr_4wis_active);
@@ -285,7 +289,7 @@ class VehicleControllerNode : public rclcpp::Node {
   double yaw_error;
   double yawrate_error;
   double course_error;
-  double speed_desired = 2.0;
+  double speed_desired;
   double speed_error;
   Vector2d icr;
 
@@ -459,7 +463,10 @@ class VehicleControllerNode : public rclcpp::Node {
     const Vector3d pos_rr(-cg_to_rear, -rear_width / 2, 0);
     const Vector3d pos_fr(cg_to_front, -front_width / 2, 0);
 
-    speed_error = speed_desired - speed;
+    // double braking_factor =
+    //     0.8 * std::max(0.0, std::min(sidesliprate_desired, 1.0));
+    double braking_factor = 0.0;
+    speed_error = (1 - braking_factor) * speed_desired - speed;
     const Vector3d velocity_body_desired(speed_desired * cos(sideslip_desired),
                                          speed_desired * sin(sideslip_desired),
                                          0);
