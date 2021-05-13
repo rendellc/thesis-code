@@ -36,6 +36,7 @@ def _point_list_to_numpy(points_string, linesep, numsep):
 
 def make_path_plots(name, options):
     curvatures = options["curvatures"]
+    print(f"Making path plot for {name}")
 
     fig, ax = plotlib.subplots(num=name)
     for curvature in curvatures:

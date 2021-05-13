@@ -2,6 +2,7 @@ settings:
   pdfdir: ../figs
   rawdir: ../figs/raw
   datadir: ../data
+experiment_runners: null
 experiments:
   wheel_state_errors:
     method: make_bag_plots
@@ -186,47 +187,47 @@ experiments:
         #   type: timeseries
         # xlabel: "time [s]"
         # ylabel: "$\\tilde\\delta_w$ [deg]"
-  # fermat_line:
-  #   #command: python3 launch/make_path_plots.py
-  #   method: make_path_plots
-  #   #- ./../build/pathlib_testing
-  #   options:
-  #     num-samples: 100
-  #     waypoints:
-  #       - 0,0
-  #       - 10,2
-  #       - 20,0
-  #       - 20,10
-  #       - 0,10
-  #     smoothing: line
-  #     curvatures:
-  #       - 1.0
-  # fermat_smoothing_curvatures:
-  #   #command: python3 launch/make_path_plots.py
-  #   method: make_path_plots
-  #   #- ./../build/pathlib_testing
-  #   options:
-  #     num-samples: 100
-  #     waypoints:
-  #       - 0,0
-  #       - 10,2
-  #       - 20,0
-  #       - 20,10
-  #       - 0,10
-  #     smoothing: fermat
-  #     curvatures:
-  #       - 0.5
-  #       - 1.0
-  #       - 2.0
-  # fermat_smoothing_invalid:
-  #   method: make_path_plots
-  #   options:
-  #     num-samples: 100
-  #     waypoints:
-  #       - 0,0
-  #       - 5,0
-  #       - 5,5
-  #       - 10,5
-  #     smoothing: fermat
-  #     curvatures:
-  #       - 0.4
+  fermat_line:
+    #command: python3 launch/make_path_plots.py
+    method: make_path_plots
+    #- ./../build/pathlib_testing
+    options:
+      num-samples: 100
+      waypoints:
+        - 0,0
+        - 10,2
+        - 20,0
+        - 20,10
+        - 0,10
+      smoothing: line
+      curvatures:
+        - 1.0
+  fermat_smoothing_curvatures:
+    #command: python3 launch/make_path_plots.py
+    method: make_path_plots
+    #- ./../build/pathlib_testing
+    options:
+      num-samples: 100
+      waypoints:
+        - 0,0
+        - 10,2
+        - 20,0
+        - 20,10
+        - 0,10
+      smoothing: fermat
+      curvatures:
+        - 0.5
+        - 1.0
+        - 2.0
+  fermat_smoothing_invalid:
+    method: make_path_plots
+    options:
+      num-samples: 100
+      waypoints:
+        - 0,0
+        - 5,0
+        - 5,5
+        - 10,5
+      smoothing: fermat
+      curvatures:
+        - 0.4

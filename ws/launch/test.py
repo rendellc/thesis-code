@@ -1,28 +1,16 @@
-import matplotlib.pyplot as plt
-import yaml
-
-with open("launch/bagsaver.yaml", "r") as file:
-    data = yaml.safe_load(file)
 
 
-print(data)
+import time
+import signal
+import subprocess
 
-topiclist = list(data["topics"].keys())
-
-for topic, d in data["topics"].items():
-    mod = __import__(d["topic_type_module"], fromlist=[d["topic_type"]])
-    topic_type = getattr(mod, d["topic_type"])
+from report_utils.experiments import start_experiment, stop_experiment
 
 
-for plotname, plotdata in data["plots"].items():
-    pn, pd = plotname, plotdata
-    print("Plot config")
-    plt.plot([1, 2], [1, 2])
+exp = start_experiment(
+    ["ros2", "launch", "launch/all.launch.py", "gui:=false", "use_single_turn:=true"])
 
-    if pd["type"] == "timeseries":
-        print(pd["ylabel"])
-        plt.ylabel(pd["ylabel"])
 
-    plt.xlim(0, 5)
-    plt.ylim(0, 5)
-plt.show()
+time.sleep(10)
+
+stop_experiment(exp)

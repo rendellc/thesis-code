@@ -7,19 +7,10 @@ from launch.conditions import IfCondition
 from launch.conditions import UnlessCondition
 
 
-from report_utils.launch_parameters import WP_SIMPLE_LAP, WP_SINGLE_TURN, WP_SURVEY
+from report_utils.launch_parameters import WP_SURVEY
 
 
 def generate_launch_description():
-    arguments = [
-        DeclareLaunchArgument("use_survey", default_value="false",
-                              description="Use survey"),
-        DeclareLaunchArgument("use_single_turn", default_value="false",
-                              description="Use single turn"),
-        DeclareLaunchArgument("use_simple_lap", default_value="false",
-                              description="Use simple lap")
-    ]
-
     container_survey = ComposableNodeContainer(
         name="operation_container",
         namespace="vehicle",
@@ -36,10 +27,7 @@ def generate_launch_description():
                     {"waypoint_ys": list(WP_SURVEY[:, 1])}
                 ],
             )
-        ],
-        condition=IfCondition(LaunchConfiguration("use_survey")) and
-        UnlessCondition(LaunchConfiguration("use_simple_lap")) and
-        UnlessCondition(LaunchConfiguration("use_single_turn"))
+        ]
     )
 
-    return LaunchDescription([*arguments, container_survey])
+    return LaunchDescription([container_survey])

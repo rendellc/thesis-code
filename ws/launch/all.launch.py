@@ -1,4 +1,6 @@
+from threading import Condition
 from launch import LaunchDescription
+import launch
 from launch.substitution import Substitution
 
 from launch_ros.actions import ComposableNodeContainer
@@ -37,6 +39,20 @@ def generate_launch_description():
                                     description="Do rosbag")
     # bagfile = DeclareLaunchArgument("bagfile", default_value="",
     #                                 description="output of rosbag")
+
+    wp_args = [
+        DeclareLaunchArgument("use_manual", default_value="false",
+                              description="Use manual mode"),
+        DeclareLaunchArgument("use_wp_dev", default_value="false",
+                              description="Use waypoints.launch.py"),
+        DeclareLaunchArgument("use_survey", default_value="false",
+                              description="Use survey"),
+        DeclareLaunchArgument("use_single_turn", default_value="false",
+                              description="Use single turn"),
+        DeclareLaunchArgument("use_simple_lap", default_value="false",
+                              description="Use simple lap")
+    ]
+
     simulator = include_launch_file(
         "simulator", "launch/simulator.launch.py", [
             #("gui", IfCondition(LaunchConfiguration("gui"))),
@@ -44,9 +60,32 @@ def generate_launch_description():
         ]
     )
 
-    operation_manual = include_launch_file(
-        "operation", "launch/manual.launch.py")
-    operation = include_launch_file("operation", "launch/waypoints.launch.py")
+   # operation_manual = include_launch_file(
+   #     "operation", "launch/manual.launch.py")
+    # operation = include_launch_file(
+
+    operations = [
+        ExecuteProcess(
+            cmd=["ros2", "launch", "operation", "manual.launch.py"],
+            condition=IfCondition(LaunchConfiguration("use_manual"))),
+        ExecuteProcess(
+            cmd=["ros2", "launch", "operation",
+                 "waypoints.launch.py"],
+            condition=IfCondition(LaunchConfiguration("use_wp_dev"))),
+        ExecuteProcess(
+            cmd=["ros2", "launch", "operation",
+                 "report_waypoints_survey.launch.py"],
+            condition=IfCondition(LaunchConfiguration("use_survey"))),
+        ExecuteProcess(
+            cmd=["ros2", "launch", "operation",
+                 "report_waypoints_single_turn.launch.py"],
+            condition=IfCondition(LaunchConfiguration("use_single_turn"))),
+        ExecuteProcess(
+            cmd=["ros2", "launch", "operation",
+                 "report_waypoints_simple_lap.launch.py"],
+            condition=IfCondition(LaunchConfiguration("use_simple_lap"))),
+    ]
+
     state_estimator = include_launch_file(
         "state_estimator", "launch/state_estimator.launch.py")
     controllers = include_launch_file(
@@ -81,10 +120,9 @@ def generate_launch_description():
     )
 
     ld = LaunchDescription([
-        run_rviz, run_bag,
+        run_rviz, run_bag, *wp_args,
         simulator,
-        # operation_manual,
-        operation,
+        *operations,
         state_estimator,
         controllers,
         rviz,
