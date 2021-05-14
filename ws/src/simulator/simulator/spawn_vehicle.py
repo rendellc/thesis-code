@@ -43,7 +43,7 @@ def spawn(pos, yaw, args=None):
 
 
 def main(args=None):
-    spawn((2.0, -0.2, 1.3), 0)
+    spawn((1.0, 0.0, 1.3), 0.0)
 
 
 if __name__ == "__main__":

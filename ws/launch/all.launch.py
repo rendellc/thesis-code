@@ -35,7 +35,7 @@ def generate_launch_description():
     #                                 description="Start gzclient")
     run_rviz = DeclareLaunchArgument("rviz", default_value="true",
                                      description="Start rviz")
-    run_bag = DeclareLaunchArgument("bag", default_value="false",
+    run_bag = DeclareLaunchArgument("bag", default_value="true",
                                     description="Do rosbag")
     # bagfile = DeclareLaunchArgument("bagfile", default_value="",
     #                                 description="output of rosbag")
@@ -115,7 +115,7 @@ def generate_launch_description():
     )
 
     rosbag_process = ExecuteProcess(
-        cmd=["ros2", "bag", "record", "--all"],  # "--output", bagdir],
+        cmd=["ros2", "bag", "record", "--all", "--output", "bagfolder"],
         condition=IfCondition(LaunchConfiguration("bag"))
     )
 

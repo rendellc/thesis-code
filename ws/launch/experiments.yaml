@@ -2,11 +2,12 @@ settings:
   pdfdir: ../figs
   rawdir: ../figs/raw
   datadir: ../data
-experiment_runners: null
 experiments:
   wheel_state_errors:
-    method: make_bag_plots
+    runner: run_command
+    plotter: make_bag_plots
     options:
+      command: "ros2 launch launch/all.launch.py use_single_turn:=true gui:=false"
       bagsaver_config: launch/bagsaver.yaml
       bag:
         file: ../bags/single_turn.db3
@@ -56,7 +57,7 @@ experiments:
               label: fr
               scale: rad2deg
   sliding_mode_results:
-    method: make_bag_plots
+    plotter: make_bag_plots
     options:
       bagsaver_config: launch/bagsaver.yaml
       bag:
@@ -107,7 +108,7 @@ experiments:
               attribute: steer_torque
               label: fl
   robust_rate_results:
-    method: make_bag_plots
+    plotter: make_bag_plots
     options:
       bagsaver_config: launch/bagsaver.yaml
       bag:
@@ -159,7 +160,7 @@ experiments:
               label: fl
 
   vehicle_state_errors:
-    method: make_bag_plots
+    plotter: make_bag_plots
     options:
       bagsaver_config: launch/bagsaver.yaml
       bag:
@@ -189,7 +190,7 @@ experiments:
         # ylabel: "$\\tilde\\delta_w$ [deg]"
   fermat_line:
     #command: python3 launch/make_path_plots.py
-    method: make_path_plots
+    plotter: make_path_plots
     #- ./../build/pathlib_testing
     options:
       num-samples: 100
@@ -204,7 +205,7 @@ experiments:
         - 1.0
   fermat_smoothing_curvatures:
     #command: python3 launch/make_path_plots.py
-    method: make_path_plots
+    plotter: make_path_plots
     #- ./../build/pathlib_testing
     options:
       num-samples: 100
@@ -220,7 +221,7 @@ experiments:
         - 1.0
         - 2.0
   fermat_smoothing_invalid:
-    method: make_path_plots
+    plotter: make_path_plots
     options:
       num-samples: 100
       waypoints:

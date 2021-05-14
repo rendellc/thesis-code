@@ -13,16 +13,20 @@ import report_utils.datalib as datalib
 import numpy as np
 from pathlib import Path
 from geometry_msgs.msg import PoseStamped
+from report_utils.experiments import ExperimentRunnerBase
+import shlex
+from pathlib import Path
+import shutil
 
 
-class SingleTurnExperiment(ExperimentRunnerBase):
-    def __init__(self):
-        cmd = ["ros2",
-               "launch",
-               "launch/all.launch.py",
-               "gui:=true",
-               "use_single_turn:=true",
-               "bag:=true"]
+class CommandExperimentRunner(ExperimentRunnerBase):
+    def __init__(self, cmd):
+        # cmd = ["ros2",
+        #        "launch",
+        #        "launch/all.launch.py",
+        #        "gui:=true",
+        #        "use_single_turn:=true",
+        #        "bag:=true"]
 
         super().__init__(cmd)
 
@@ -32,6 +36,34 @@ class SingleTurnExperiment(ExperimentRunnerBase):
     def _pose_callback(self, msg: PoseStamped):
         if abs(msg.pose.position.x - 30) + abs(msg.pose.position.y - 30) < 2.0:
             self._set_done()
+
+
+def check_bags():
+    return set(Path("bagfolder").glob("*.db3"))
+
+
+def run_command(options):
+    cmd_str = options["command"]
+    bagsbefore = check_bags()
+    print("bags before", bagsbefore)
+    cmd = shlex.split(cmd_str)
+    import rclpy
+    rclpy.init()
+    e = CommandExperimentRunner(cmd)
+    e.run()
+    rclpy.shutdown()
+
+    bagsafter = check_bags()
+    print("bags after", bagsafter)
+    createdbag = next(iter(bagsafter - bagsbefore))
+    bagfile = Path(options["bag"]["file"])
+
+    shutil.copy(createdbag, bagfile)
+    print("Need to move", createdbag, "to", bagfile)
+    # sanity check to ensure we don't delete the entire project
+    assert createdbag.parent.absolute() == Path(
+        "/home/cale/thesis-code/ws/bagfolder")
+    shutil.rmtree(createdbag.parent)
 
 
 def _point_to_numpy(point_str, numsep):
@@ -199,8 +231,12 @@ def main():
     datalib.set_save_directories(config["settings"]["datadir"])
 
     for expname, expconfig in experiments.items():
-        method = globals()[expconfig["method"]]
-        method(expname, expconfig["options"])
+        if "runner" in expconfig:
+            runner = globals()[expconfig["runner"]]
+            runner(expconfig["options"])
+
+        plotter = globals()[expconfig["plotter"]]
+        plotter(expname, expconfig["options"])
 
 
 if __name__ == "__main__":
