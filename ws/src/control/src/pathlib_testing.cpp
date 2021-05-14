@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
     arguments.push_back(argv[i]);
   }
 
-  double minimum_turn_radius = -1.0;
+  double radius = -1.0;
   double maximum_curvature = -1.0;
   int num_samples = 0;
   std::string smoothing;
@@ -49,7 +49,7 @@ int main(int argc, char* argv[]) {
       } else if (command == "--curvature") {
         maximum_curvature = std::stod(arg);
       } else if (command == "--radius") {
-        minimum_turn_radius = std::stod(arg);
+        radius = std::stod(arg);
       } else if (command == "--num-samples") {
         num_samples = std::stoi(arg);
       }
@@ -62,7 +62,7 @@ int main(int argc, char* argv[]) {
     return 1;
   }
 
-  if (smoothing != "fermat" && smoothing != "cicle" && smoothing != "line") {
+  if (smoothing != "fermat" && smoothing != "circle" && smoothing != "line") {
     std::cerr << "Need to specify --smoothing [fermat|circle|line]\n";
     std::cerr << "Got " << smoothing << std::endl;
     return 1;
@@ -78,8 +78,7 @@ int main(int argc, char* argv[]) {
   if (smoothing == "fermat") {
     path = Path::fermat_smoothing(waypoints, maximum_curvature);
   } else if (smoothing == "circle") {
-    std::cerr << "circular smoothing not implemented in pathlib" << std::endl;
-    return 1;
+    path = Path::circular_smoothing(waypoints, radius);
   } else if (smoothing == "line") {
     path = Path::straight_line_path(waypoints);
   }

@@ -45,7 +45,6 @@ def check_bags():
 def run_command(options):
     cmd_str = options["command"]
     bagsbefore = check_bags()
-    print("bags before", bagsbefore)
     cmd = shlex.split(cmd_str)
     import rclpy
     rclpy.init()
@@ -54,12 +53,10 @@ def run_command(options):
     rclpy.shutdown()
 
     bagsafter = check_bags()
-    print("bags after", bagsafter)
     createdbag = next(iter(bagsafter - bagsbefore))
     bagfile = Path(options["bag"]["file"])
 
     shutil.copy(createdbag, bagfile)
-    print("Need to move", createdbag, "to", bagfile)
     # sanity check to ensure we don't delete the entire project
     assert createdbag.parent.absolute() == Path(
         "/home/cale/thesis-code/ws/bagfolder")
@@ -96,6 +93,7 @@ def make_path_plots(name, options):
             "./build/control/pathlib_testing",
             "--waypoints", *options["waypoints"],
             "--curvature", str(curvature),
+            "--radius", str(1.0/curvature),
             "--smoothing", options["smoothing"],
             "--num-samples", str(options["num-samples"])]
         # print(pathgenerator_cmd)
@@ -108,6 +106,10 @@ def make_path_plots(name, options):
             label = ""
         plotlib.plot_xy(smoothed_path[:, 0], smoothed_path[:, 1],
                         label=label, ax=ax)
+
+    waypoints = np.array([_point_to_numpy(wp, ",")
+                         for wp in options["waypoints"]])
+    plotlib.plot_waypoints(waypoints, "", ax=ax)
 
     waypoints = np.array(list(
         map(lambda s: _point_to_numpy(s, ','), options["waypoints"])))
@@ -233,7 +235,9 @@ def main():
     for expname, expconfig in experiments.items():
         if "runner" in expconfig:
             runner = globals()[expconfig["runner"]]
-            runner(expconfig["options"])
+
+            if expconfig["options"].get("rerun", True):
+                runner(expconfig["options"])
 
         plotter = globals()[expconfig["plotter"]]
         plotter(expname, expconfig["options"])

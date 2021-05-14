@@ -1,6 +1,7 @@
 #include <control/clip.hpp>
 #include <control/halley.hpp>
 #include <control/path/path.hpp>
+#include <control/path/path_circle.hpp>
 #include <control/path/path_collection.hpp>
 #include <control/path/path_line.hpp>
 #include <control/path/path_spiral.hpp>
@@ -8,6 +9,7 @@
 
 using control::halleys_method;
 using control::ssa;
+using ignition::math::Vector2d;
 
 std::shared_ptr<Path> Path::straight_line_path(
     const std::vector<ignition::math::Vector2d>& waypoints) {
@@ -94,6 +96,62 @@ std::shared_ptr<Path> Path::fermat_smoothing(
   }
 
   // Add straight line to final waypoint
+  const auto secondtolast =
+      (subpaths.empty()) ? waypoints[0] : (*subpaths.crbegin())->getEnd();
+  subpaths.push_back(
+      std::make_shared<PathLine>(secondtolast, *waypoints.crbegin()));
+
+  return std::make_shared<PathCollection>(subpaths);
+}
+
+std::shared_ptr<Path> Path::circular_smoothing(
+    const std::vector<ignition::math::Vector2d>& waypoints, double radius) {
+  std::vector<std::shared_ptr<Path>> subpaths;
+
+  const double PI = atan2(+0.0, -1.0);
+  for (int i = 1; i < waypoints.size() - 1; i++) {
+    const auto prev =
+        (subpaths.empty()) ? waypoints[i - 1] : (*subpaths.crbegin())->getEnd();
+    const auto& curr = waypoints[i];
+    const auto& next = waypoints[i + 1];
+
+    const auto v0 = curr - prev;
+    const auto v1 = next - curr;
+
+    const auto cross_2d = [](const Vector2d& v0, const Vector2d& v1) {
+      return v0.X() * v1.Y() - v1.X() * v0.Y();
+    };
+
+    const int turn_direction = cross_2d(v0, v1) > 0 ? 1 : -1;
+    const auto& s = turn_direction;
+
+    // Normals
+    const auto n0 = Vector2d(-v0.Y(), v0.X()).Normalized();
+    const auto n1 = Vector2d(-v1.Y(), v1.X()).Normalized();
+
+    const auto p0c = prev + radius * s * n0;
+    const auto p1c = curr + radius * s * n1;
+
+    // find intersection between lines
+    const double s0 = -1 / cross_2d(v0, v1) * cross_2d(v1, p1c - p0c);
+    const double s1 = -1 / cross_2d(v0, v1) * cross_2d(v0, p1c - p0c);
+
+    // circle center
+    const auto center = p0c + s0 * v0;
+
+    // tangent points
+    const auto t0 = prev + s0 * v0;
+    const auto t1 = curr + s1 * v1;
+
+    const double angle_begin = atan2(t0.Y() - center.Y(), t0.X() - center.X());
+    double angle_end = atan2(t1.Y() - center.Y(), t1.X() - center.X());
+    angle_end = angle_begin + ssa(angle_end - angle_begin);
+
+    subpaths.push_back(std::make_shared<PathLine>(prev, t0));
+    subpaths.push_back(
+        std::make_shared<PathCircle>(center, radius, angle_begin, angle_end));
+  }
+
   const auto secondtolast =
       (subpaths.empty()) ? waypoints[0] : (*subpaths.crbegin())->getEnd();
   subpaths.push_back(

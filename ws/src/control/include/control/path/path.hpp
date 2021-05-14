@@ -6,7 +6,7 @@
 
 class Path {
  public:
-  enum class Type { LINE, CIRCLE_ARC, SPIRAL, COLLECTION };
+  enum class Type { LINE, CIRCLE, SPIRAL, COLLECTION };
   const Type path_type;
 
   Path() = delete;
@@ -35,4 +35,6 @@ class Path {
   static std::shared_ptr<Path> fermat_smoothing(
       const std::vector<ignition::math::Vector2d>& waypoints,
       double maximum_curvature);
+  static std::shared_ptr<Path> circular_smoothing(
+      const std::vector<ignition::math::Vector2d>& waypoints, double radius);
 };

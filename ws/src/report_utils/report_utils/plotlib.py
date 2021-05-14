@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pickle
 from pathlib import Path
+import matplotlib
 
 # plt.style.use(["science", "grid", "ieee", "no-latex"])
 plt.style.use(["science", "grid", "no-latex"])
@@ -9,11 +10,25 @@ plt.style.use(["science", "grid", "no-latex"])
 RAW_FIG_DIR = Path(".")
 PDF_FIG_DIR = Path(".")
 
+FULL_SIZE = (7.0, 4.2)
+COL_SIZE = (3.5, 2.2)
+
 
 def subplots(*args, **kwargs):
     # clear by default
     kwargs['clear'] = kwargs.get('clear', True)
-    return plt.subplots(*args, **kwargs)
+    fig, ax = plt.subplots(*args, **kwargs)
+    # make_full_size(fig)
+
+    return fig, ax
+
+
+def make_full_size(fig: matplotlib.figure.Figure):
+    fig.set_size_inches(FULL_SIZE)
+
+
+def make_col_size(fig: matplotlib.figure.Figure):
+    fig.set_size_inches(COL_SIZE)
 
 
 def create_save_directories():
@@ -49,6 +64,15 @@ def plot_xy(x, y, label, ax=None):
 
     ax.plot(x, y, label=label)
     ax.set_aspect("equal")
+    return ax
+
+
+def plot_waypoints(waypoints, label, ax=None):
+    if ax is None:
+        _, ax = plt.subplots()
+
+    ax.scatter(waypoints[:, 0], waypoints[:, 1], 20,
+               marker='x', color="r", label=label, zorder=3)
     return ax
 
 

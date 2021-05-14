@@ -49,6 +49,7 @@ ament_target_dependencies(controllib
 add_library(pathlib SHARED
   "src/path/path_line.cpp"
   "src/path/path_spiral.cpp"
+  "src/path/path_circle.cpp"
   "src/path/path_collection.cpp"
   "src/path/path.cpp"
 )
