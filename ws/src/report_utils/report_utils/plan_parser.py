@@ -169,7 +169,8 @@ def plan_file_to_cartesian(path_file):
     waypoints, home = parse(path_file)
     xys = np.empty((len(waypoints), 2))
     for i, wp in enumerate(waypoints):
-        xys[i] = latlon_to_cartesian(wp.lat, wp.lon, home.lat, home.lon)
+        xy = latlon_to_cartesian(wp.lat, wp.lon, home.lat, home.lon)
+        xys[i] = xy[1], xy[0]
 
     return xys
 

@@ -215,8 +215,10 @@ experiments:
       num-samples: 100
       waypoints:
         - 1,1
-        - 10,1
-        - 10,10
+        - 3,4
+        - 10,5
+        - 18,3
+        - 18,10
       smoothing: circle
       curvatures:
         - 0.4
@@ -252,6 +254,10 @@ experiments:
         - 0.5
         - 1.0
         - 2.0
+      labels:
+        - "$\\kappa_{max} = 0.5$"
+        - "$\\kappa_{max} = 1.0$"
+        - "$\\kappa_{max} = 2.0$"
   fermat_smoothing_invalid:
     plotter: make_path_plots
     options:
@@ -264,3 +270,21 @@ experiments:
       smoothing: fermat
       curvatures:
         - 0.4
+  fermat_vs_circle:
+    plotter: make_path_plots
+    options:
+      num-samples: 100
+      waypoints:
+        - 0,0
+        - 5,0
+        - 4,5
+      smoothings:
+        - line
+        - fermat
+        - circle
+      curvatures:
+        - 0.5
+      labels:
+        - line
+        - circle
+        - fermat

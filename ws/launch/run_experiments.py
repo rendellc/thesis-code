@@ -84,24 +84,36 @@ def _point_list_to_numpy(points_string, linesep, numsep):
 
 
 def make_path_plots(name, options):
-    curvatures = options["curvatures"]
     print(f"Making path plot for {name}")
 
+    curvatures = options["curvatures"]
+    if "smoothings" in options:
+        smoothings = options["smoothings"]
+        if not len(curvatures) == 1:
+            print("Too many curvatures supplied, expected 1")
+            return
+        # make curvatures exactly as long as number of smoothings
+        curvatures = [curvatures[0]]*len(smoothings)
+    else:
+        smoothings = [options["smoothing"]]*len(curvatures)
+
     fig, ax = plotlib.subplots(num=name)
-    for curvature in curvatures:
+
+    labels = options.get("labels", [])
+    for i, (smoothing, curvature) in enumerate(zip(smoothings, curvatures)):
         pathgenerator_cmd = [
             "./build/control/pathlib_testing",
             "--waypoints", *options["waypoints"],
             "--curvature", str(curvature),
             "--radius", str(1.0/curvature),
-            "--smoothing", options["smoothing"],
+            "--smoothing", smoothing,
             "--num-samples", str(options["num-samples"])]
         # print(pathgenerator_cmd)
         smoothed_path = subprocess.check_output(pathgenerator_cmd)
         smoothed_path = _point_list_to_numpy(smoothed_path, b'\n', b',')
 
-        if len(curvatures) > 1:
-            label = rf"$\kappa={curvature}$"
+        if labels:
+            label = labels[i]
         else:
             label = ""
         plotlib.plot_xy(smoothed_path[:, 0], smoothed_path[:, 1],
@@ -114,7 +126,7 @@ def make_path_plots(name, options):
     waypoints = np.array(list(
         map(lambda s: _point_to_numpy(s, ','), options["waypoints"])))
 
-    if len(curvatures) > 1:
+    if labels:
         ax.legend()
 
     ax.grid(False)
