@@ -43,6 +43,9 @@ class WheelControllerNode : public rclcpp::Node {
     this->declare_parameter("I_omega");
     this->get_parameter("I_omega", angular_velocity_pid.I);
 
+    this->declare_parameter("D_omega");
+    this->get_parameter("D_omega", angular_velocity_pid.D);
+
     this->declare_parameter("P_delta");
     this->get_parameter("P_delta", steering_rate_pid.P);
     this->declare_parameter("steering_rate_limit");
@@ -81,6 +84,10 @@ class WheelControllerNode : public rclcpp::Node {
     this->declare_parameter("robust_rate_softregion");
     this->get_parameter("robust_rate_softregion", robust_rate_softregion);
 
+    this->declare_parameter("use_reference_optimization");
+    this->get_parameter("use_reference_optimization",
+                        use_reference_optimization);
+
     RCLCPP_INFO(this->get_logger(), "%s initialized", this->get_name());
   }
 
@@ -105,10 +112,13 @@ class WheelControllerNode : public rclcpp::Node {
   bool use_robust_rate;
   double robust_rate_softregion;
   double max_steering_accel;
+  bool use_reference_optimization;
 
   WheelState::SharedPtr wheel_state_p;
   WheelState::SharedPtr wheel_reference_p;
   WheelLoad::SharedPtr wheel_load_p;
+  WheelState reference;  //= find_closest_equivalent_reference(*wheel_state,
+                         //*wheel_reference_p);
 
   WheelCommand command_msg;
   PID angular_velocity_pid;
@@ -174,8 +184,16 @@ class WheelControllerNode : public rclcpp::Node {
     if (wheel_state_p && wheel_reference_p && wheel_load_p) {
       // Angular velocity control law
       const auto time_now = this->now();
+
+      if (use_reference_optimization) {
+        reference = find_closest_equivalent_reference(*wheel_state_p,
+                                                      *wheel_reference_p);
+      } else {
+        reference = *wheel_reference_p;
+      }
+
       const auto omega_error =
-          wheel_reference_p->angular_velocity - wheel_state_p->angular_velocity;
+          reference.angular_velocity - wheel_state_p->angular_velocity;
       command_msg.drive_torque =
           angular_velocity_pid.update(omega_error, time_now);
 
@@ -185,7 +203,7 @@ class WheelControllerNode : public rclcpp::Node {
       }
       if (use_robust_rate) {
         const double delta = wheel_state_p->steering_angle;
-        const double delta_r = wheel_reference_p->steering_angle;
+        const double delta_r = reference.steering_angle;
 
         // compute desired rate
         double desired_angular_rate =
@@ -203,7 +221,8 @@ class WheelControllerNode : public rclcpp::Node {
       info_msg.header.frame_id = this->get_namespace();
       info_msg.header.stamp = this->get_clock()->now();
       info_msg.state = *wheel_state_p;
-      info_msg.reference = *wheel_reference_p;
+      info_msg.reference = reference;
+      info_msg.reference_raw = *wheel_reference_p;
       const auto &x = info_msg.state;
       const auto &xr = info_msg.reference;
       auto &e = info_msg.error;
@@ -216,6 +235,48 @@ class WheelControllerNode : public rclcpp::Node {
 
       command_pub_p->publish(command_msg);
     }
+  }
+
+  double reference_cost(const WheelState &state,
+                        const WheelState &reference) const {
+    return fabs(ssa(state.steering_angle - reference.steering_angle));
+  }
+
+  WheelState find_closest_equivalent_reference(
+      const WheelState &state, const WheelState &reference) const {
+    // std::vector<WheelState> options;
+    const double PI = atan2(+0.0, -1);
+
+    WheelState fullturn_positive = reference;
+    fullturn_positive.steering_angle = reference.steering_angle + 2 * PI;
+
+    WheelState halfturn_positive = reference;
+    halfturn_positive.steering_angle = reference.steering_angle + PI;
+    halfturn_positive.angular_velocity = -reference.angular_velocity;
+
+    WheelState unchanged = reference;
+
+    WheelState halfturn_negative = reference;
+    halfturn_positive.steering_angle = reference.steering_angle - PI;
+    halfturn_positive.angular_velocity = reference.angular_velocity;
+
+    WheelState fullturn_negative = reference;
+    fullturn_negative.steering_angle = reference.steering_angle - 2 * PI;
+
+    std::array<WheelState, 5> options = {fullturn_positive, halfturn_positive,
+                                         unchanged, halfturn_negative,
+                                         fullturn_negative};
+
+    double lowest_cost = std::numeric_limits<double>::infinity();
+    int lowest_index = -1;
+    for (int i = 0; i < options.size(); i++) {
+      const double cost = reference_cost(state, options[i]);
+      if (cost < lowest_cost) {
+        lowest_cost = cost;
+        lowest_index = i;
+      }
+    }
+    return options[lowest_index];
   }
 
   void state_callback(WheelState::SharedPtr msg_p) {
