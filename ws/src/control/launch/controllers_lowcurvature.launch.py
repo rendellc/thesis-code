@@ -2,17 +2,18 @@ from launch import LaunchDescription
 from launch_ros.actions import ComposableNodeContainer
 from launch_ros.descriptions import ComposableNode
 
-from report_utils.launch_parameters import VEHICLE_CONTROLLER_PARAMETERS, WHEEL_CONTROLLER_PARAMETERS, update_parameter
+
+from report_utils.launch_parameters import update_parameter
+from report_utils.launch_parameters import VEHICLE_CONTROLLER_PARAMETERS, WHEEL_CONTROLLER_PARAMETERS
 
 
 def generate_launch_description():
+
     vehicle_controller_parameters = VEHICLE_CONTROLLER_PARAMETERS
     wheel_controller_parameters = WHEEL_CONTROLLER_PARAMETERS
 
-    wheel_controller_parameters = update_parameter(wheel_controller_parameters,
-                                                   "use_sliding_mode", True)
-    wheel_controller_parameters = update_parameter(wheel_controller_parameters,
-                                                   "use_robust_rate", False)
+    vehicle_controller_parameters = update_parameter(
+        VEHICLE_CONTROLLER_PARAMETERS, "maximum_curvature", 0.25)
 
     vehicle_namespace = "vehicle"
 

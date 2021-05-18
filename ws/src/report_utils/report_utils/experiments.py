@@ -18,7 +18,7 @@ class Experiment:
 
 
 class ExperimentRunnerBase(Node):
-    def __init__(self, cmd):
+    def __init__(self, cmd, parameters):
         super().__init__("experiment_runner")
         self._experiment = Experiment(cmd)
         self.future = asyncio.Future()

@@ -89,7 +89,7 @@ def savefig(fig: plt.figure, figurename=None):
     except TypeError as e:
         print(f"failed to pickle figure {fig}:", e)
 
-    fig.savefig((PDF_FIG_DIR/figurename).with_suffix(".pdf"))
+    fig.savefig((PDF_FIG_DIR/figurename).with_suffix(".pdf"), bbox_inches="tight")
 
 
 def plot_from_bagsaver(config, data, display=False):

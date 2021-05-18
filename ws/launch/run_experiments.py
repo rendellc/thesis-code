@@ -34,7 +34,7 @@ class CommandExperimentRunner(ExperimentRunnerBase):
             PoseStamped, "/vehicle/pose", self._pose_callback, 1)
 
     def _pose_callback(self, msg: PoseStamped):
-        if abs(msg.pose.position.x - 30) + abs(msg.pose.position.y - 30) < 2.0:
+        if abs(msg.pose.position.x - 15) + abs(msg.pose.position.y - 15) < 4.0:
             self._set_done()
 
 
