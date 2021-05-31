@@ -44,6 +44,15 @@ class ExperimentRunnerBase(Node):
         self.destroy_node()
 
 
+class ExperimentMonitor(Node):
+    def __init__(self):
+        super().__init__("experiment_monitor")
+        self.future = asyncio.Future()
+
+    def _set_done(self):
+        self.future.set_result(0)
+
+
 def start_experiment(experiment):
     experiment.process = subprocess.Popen(
         experiment.cmd, stdout=subprocess.DEVNULL)

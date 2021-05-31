@@ -45,9 +45,19 @@ ament_target_dependencies(waypoint_publisher
 )
 rclcpp_components_register_nodes(waypoint_publisher "WaypointPublisherNode")
 
+add_library(wheel_stepper SHARED src/wheel_stepper.cpp)
+target_include_directories(wheel_stepper PUBLIC include)
+ament_target_dependencies(wheel_stepper
+  "rclcpp"
+  "rclcpp_components"
+  "vehicle_interface"
+)
+rclcpp_components_register_nodes(wheel_stepper "WheelStepper")
+
+
 
 install(TARGETS
-  manual_joy waypoint_publisher
+  manual_joy waypoint_publisher wheel_stepper
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin

@@ -5,8 +5,8 @@ from report_utils.plan_parser import plan_file_to_cartesian
 from copy import deepcopy
 
 WP_SINGLE_TURN = np.array([[0, 0],
-                           [15, 0],
-                           [15, 15],
+                           [30, 0],
+                           [30, 15],
                            ],
                           dtype=float)
 
@@ -27,6 +27,8 @@ WP_SURVEY = plan_file_to_cartesian(
 
 VEHICLE_CONTROLLER_PARAMETERS = [
     {"update_rate": 50.0},
+    {"use_fermat_smoothing": False},
+    {"use_circular_smoothing": True},
     {"maximum_curvature": 0.75},
     {"pid_active": True},
     {"P_yaw": 2.0},

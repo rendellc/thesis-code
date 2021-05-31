@@ -17,7 +17,9 @@ PathCircle::PathCircle(const ignition::math::Vector2d& center, double radius,
 }
 
 double PathCircle::distance(const ignition::math::Vector2d& pos) {
-  return std::numeric_limits<double>::infinity();
+  const double angle = closest_angle(pos);
+  const auto circle_pos = circle_position(angle);
+  return circle_pos.Distance(pos);
 }
 
 ignition::math::Vector2d PathCircle::circle_position(double angle) const {
@@ -74,7 +76,8 @@ double PathCircle::closest_angle(const ignition::math::Vector2d& pos) {
   double closest_point_full_angle =
       atan2(closest_point_full.Y(), closest_point_full.X());
 
-  const double PI = atan2(+0, -1);
+  const double PI = 2 * atan2(+1.0, 0.0);
+
   while (closest_point_full_angle < domain_lower) {
     closest_point_full_angle += 2 * PI;
   }

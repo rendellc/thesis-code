@@ -19,6 +19,7 @@ def subplots(*args, **kwargs):
     kwargs['clear'] = kwargs.get('clear', True)
     fig, ax = plt.subplots(*args, **kwargs)
     # make_full_size(fig)
+    make_col_size(fig)
 
     return fig, ax
 
@@ -89,7 +90,8 @@ def savefig(fig: plt.figure, figurename=None):
     except TypeError as e:
         print(f"failed to pickle figure {fig}:", e)
 
-    fig.savefig((PDF_FIG_DIR/figurename).with_suffix(".pdf"), bbox_inches="tight")
+    fig.savefig((PDF_FIG_DIR/figurename).with_suffix(".pdf"),
+                bbox_inches="tight")
 
 
 def plot_from_bagsaver(config, data, display=False):
@@ -139,3 +141,7 @@ def plot_from_bagsaver(config, data, display=False):
 
     if display:
         plt.show()
+
+
+def open_figure(path):
+    return pickle.load(open(path, "rb"))

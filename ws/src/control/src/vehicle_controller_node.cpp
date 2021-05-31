@@ -105,6 +105,12 @@ class VehicleControllerNode : public rclcpp::Node {
     this->declare_parameter("maximum_curvature");
     this->get_parameter<double>("maximum_curvature", maximum_curvature);
 
+    this->declare_parameter("use_fermat_smoothing");
+    this->get_parameter<bool>("use_fermat_smoothing", use_fermat_smoothing);
+
+    this->declare_parameter("use_circular_smoothing");
+    this->get_parameter<bool>("use_circular_smoothing", use_circular_smoothing);
+
     this->declare_parameter("pid_active");
     this->get_parameter<bool>("pid_active", pid_active);
 
@@ -263,6 +269,9 @@ class VehicleControllerNode : public rclcpp::Node {
   double maximum_curvature;
   double approach_angle;
   double P_approach;
+
+  bool use_fermat_smoothing;
+  bool use_circular_smoothing;
 
   // Reference
   rclcpp::Time time_now;
@@ -781,7 +790,13 @@ class VehicleControllerNode : public rclcpp::Node {
       points.emplace_back(wp.x, wp.y);
     }
 
-    path_p = Path::fermat_smoothing(points, maximum_curvature);
+    if (use_fermat_smoothing) {
+      path_p = Path::fermat_smoothing(points, maximum_curvature);
+    } else if (use_circular_smoothing) {
+      path_p = Path::circular_smoothing(points, 1 / maximum_curvature);
+    } else {
+      path_p = Path::straight_line_path(points);
+    }
     // path_p = Path::straight_line_path(points);
     // path_p = std::make_shared<PathSpiral>(
     //     Vector2d(10 * sqrt(1.5) * cos(1.5), 10 * sqrt(1.5) * sin(1.5)), 0,

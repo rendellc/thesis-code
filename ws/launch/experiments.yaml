@@ -1,20 +1,65 @@
 settings:
-  pdfdir: ../figs
+  pdfdir: /home/cale/thesis/mainmatter/fig
   rawdir: ../figs/raw
   datadir: ../data
+  onlyrun: steering_smc
 experiments:
-  wheel_state_errors:
-    runner: run_command
+  steering_smc:
+    experimenter: run_commands
     plotter: make_bag_plots
     options:
-      command: "ros2 launch launch/low_curvature.launch.py use_single_turn:=true gui:=false"
+      commands:
+        - "ros2 launch launch/base.launch.py bag:=true rviz:=false"
+        - "ros2 launch control report_wheel_controllers.launch.py"
+        - "ros2 launch simulator simulator.launch.py gui:=false"
+        - "ros2 launch operation report_wheel_step.launch.py"
+      monitor: TimeLimit20SecMonitor
       bagsaver_config: launch/bagsaver.yaml
       rerun: true
       bag:
-        file: ../bags/single_turn.db3
+        file: ../bags/step_smc.db3
         force: true
         rate: 50
       plots:
+        error_fl:
+          type: timeseries
+          legend: true
+          ylabel: "[deg]"
+          datas:
+            - topic: /vehicle/wheel_fl/controller_info
+              attribute: error.steering_angle
+              label: fl
+              scale: rad2deg
+
+  wheel_state_errors:
+    experimenter: run_commands
+    plotter: make_bag_plots
+    options:
+      # command: "ros2 launch launch/low_curvature.launch.py use_single_turn:=true gui:=false"
+      commands:
+        - "ros2 launch launch/base.launch.py bag:=true rviz:=false"
+        - "ros2 launch control controllers_lowcurvature.launch.py"
+        - "ros2 launch simulator simulator.launch.py gui:=false"
+        - "ros2 launch operation report_waypoints_simple_lap.launch.py"
+      monitor: SimpleLapMonitor
+      bagsaver_config: launch/bagsaver.yaml
+      rerun: true
+      bag:
+        file: ../bags/simple_lap.db3
+        force: true
+        rate: 50
+      plots:
+        trajectory:
+          type: xy
+          legend: false
+          xlabel: "E [m]"
+          ylabel: "N [m]"
+          xdata:
+            topic: /vehicle/pose
+            attribute: pose.position.x
+          ydata:
+            topic: /vehicle/pose
+            attribute: pose.position.y
         steering_angle_error:
           type: timeseries
           legend: true
@@ -61,13 +106,20 @@ experiments:
               label: fr
               scale: rad2deg
   sliding_mode_results:
+    experimenter: run_commands
     plotter: make_bag_plots
     options:
-      command: "ros2 launch launch/all.launch.py use_survey:=true gui:=false"
+      #command: "ros2 launch launch/all.launch.py use_survey:=true gui:=false"
+      commands:
+        - "ros2 launch launch/base.launch.py bag:=true rviz:=false"
+        - "ros2 launch control controllers.launch.py"
+        - "ros2 launch simulator simulator.launch.py gui:=false"
+        - "ros2 launch operation report_waypoints_simple_lap.launch.py"
+      monitor: SimpleLapMonitor
       # Support multiple commands here. Then we dont need to put everything into a single launch file
       bagsaver_config: launch/bagsaver.yaml
       bag:
-        file: ../bags/survey_smc.db3
+        file: ../bags/simple_lap_smc.db3
         force: true
         rate: 50
       plots:
@@ -115,10 +167,17 @@ experiments:
               label: fl
   robust_rate_results:
     plotter: make_bag_plots
+    experimenter: run_commands
     options:
+      commands:
+        - "ros2 launch launch/base.launch.py bag:=true rviz:=false"
+        - "ros2 launch control controllers.launch.py"
+        - "ros2 launch simulator simulator.launch.py gui:=false"
+        - "ros2 launch operation report_waypoints_simple_lap.launch.py"
+      monitor: SimpleLapMonitor
       bagsaver_config: launch/bagsaver.yaml
       bag:
-        file: ../bags/survey_robust_rate.db3
+        file: ../bags/simplelap_robust_rate.db3
         force: true
         rate: 50
       plots:
@@ -164,13 +223,12 @@ experiments:
             - topic: /vehicle/wheel_fl/controller_info
               attribute: steer_torque
               label: fl
-
   vehicle_state_errors:
     plotter: make_bag_plots
     options:
       bagsaver_config: launch/bagsaver.yaml
       bag:
-        file: ../bags/single_turn.db3
+        file: ../bags/simple_lap.db3
         force: true
         rate: 50
       plots:
@@ -290,3 +348,17 @@ experiments:
         - line
         - circle
         - fermat
+
+  chattering_smc_vs_rr:
+    plotter: chattering_comparison
+    options:
+      figs:
+        - "../figs/raw/sliding_mode_results/steering_torque.fig"
+        - "../figs/raw/robust_rate_results/steering_torque.fig"
+      labels:
+        - SMC
+        - RR
+      tlim:
+        - 60
+        - 75
+      alpha: 0.5

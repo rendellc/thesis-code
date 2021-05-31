@@ -13,10 +13,14 @@ import report_utils.datalib as datalib
 import numpy as np
 from pathlib import Path
 from geometry_msgs.msg import PoseStamped
-from report_utils.experiments import ExperimentRunnerBase
+from report_utils.experiments import ExperimentMonitor, ExperimentRunnerBase
 import shlex
 from pathlib import Path
 import shutil
+import signal
+
+from report_utils.launch_parameters import WP_SIMPLE_LAP, WP_SINGLE_TURN
+from report_utils.chattering_analysis import chatter_signal
 
 
 class CommandExperimentRunner(ExperimentRunnerBase):
@@ -34,8 +38,102 @@ class CommandExperimentRunner(ExperimentRunnerBase):
             PoseStamped, "/vehicle/pose", self._pose_callback, 1)
 
     def _pose_callback(self, msg: PoseStamped):
-        if abs(msg.pose.position.x - 15) + abs(msg.pose.position.y - 15) < 4.0:
+        xfinal, yfinal = WP_SINGLE_TURN[~0]
+        if abs(msg.pose.position.x - xfinal) + abs(msg.pose.position.y - yfinal) < 4.0:
             self._set_done()
+
+
+class SingleTurnMonitor(ExperimentMonitor):
+    def __init__(self):
+        super().__init__()
+        self._sub = self.create_subscription(
+            PoseStamped, "/vehicle/pose", self._pose_callback, 1)
+
+    def _pose_callback(self, msg: PoseStamped):
+        xfinal, yfinal = WP_SINGLE_TURN[~0]
+        if abs(msg.pose.position.x - xfinal) + abs(msg.pose.position.y - yfinal) < 4.0:
+            self._set_done()
+
+
+class SimpleLapMonitor(ExperimentMonitor):
+    def __init__(self):
+        super().__init__()
+        self._sub = self.create_subscription(
+            PoseStamped, "/vehicle/pose", self._pose_callback, 1)
+
+        self._left_start = False
+
+    def _pose_callback(self, msg: PoseStamped):
+        xstart, ystart = WP_SIMPLE_LAP[0]
+        distance_to_start = abs(msg.pose.position.x - xstart) + \
+            abs(msg.pose.position.y - ystart)
+        if distance_to_start > 10:
+            self._left_start = True
+
+        xfinal, yfinal = WP_SIMPLE_LAP[~0]
+        if self._left_start and abs(msg.pose.position.x - xfinal) + abs(msg.pose.position.y - yfinal) < 4.0:
+            self._set_done()
+
+
+class TimeLimit20SecMonitor(ExperimentMonitor):
+    def __init__(self):
+        super().__init__()
+        self._start_time = self.get_clock().now()
+        self._timer = self.create_timer(1.0, self._timer_callback)
+
+    def _timer_callback(self):
+        t = self.get_clock().now()
+        if (t.seconds_nanoseconds - self._start_time.seconds_nanoseconds) > 20*10**9:
+            self._set_done()
+
+
+def _start_processes(commands):
+    processes = []
+    for cmd in commands:
+        processes.append(
+            subprocess.Popen(cmd)
+        )
+        #subprocess.Popen(cmd, stdout=subprocess.DEVNULL)
+    return processes
+
+
+def _stop_processes(processes):
+    for process in processes:
+        process.send_signal(signal.SIGINT)
+
+
+def _kill_processes(processes):
+    _stop_processes(processes)
+    escalate = False
+    try:
+        for p in processes:
+            p.wait(5)
+    except subprocess.TimeoutExpired:
+        escalate = True
+        pass
+
+    if escalate:
+        pidstokill = []
+        for p in processes:
+            p.poll()
+            if p.returncode is not None:
+                pids = subprocess.check_output(
+                    ["pgrep", "-P", str(p.pid)]).strip().split(b'\n')
+                pids = [int(pid) for pid in pids]
+
+                pidstokill.extend(pids)
+
+        for pid in pidstokill:
+            subprocess.run(["kill", str(pid)])
+
+        subprocess.run(["pkill", "gzserver"])
+        subprocess.run(["pkill", "gzclient"])
+        subprocess.run(["pkill", "static_transfor"])
+        subprocess.run(["pkill", "component_conta"])
+        subprocess.run(["pkill", "component_conta"])
+
+        # sometimes we need to force kill ros2
+        subprocess.run(["pkill", "-1", "ros2"])
 
 
 def check_bags():
@@ -61,6 +159,43 @@ def run_command(options):
     assert createdbag.parent.absolute() == Path(
         "/home/cale/thesis-code/ws/bagfolder")
     shutil.rmtree(createdbag.parent)
+
+
+def run_commands(options):
+    # print(options["commands"])
+    shutil.rmtree("/home/cale/thesis-code/ws/bagfolder", ignore_errors=True)
+
+    bagsbefore = check_bags()
+    commands = list(map(shlex.split, options["commands"]))
+    processes = _start_processes(commands)
+    Monitor = globals()[options["monitor"]]
+
+    import rclpy
+    rclpy.init()
+
+    monitor = Monitor()
+    rclpy.spin_until_future_complete(monitor, monitor.future)
+
+    rclpy.shutdown()
+    _kill_processes(processes)
+
+    for process in processes:
+        process.wait(5)
+        # print(process.pid, "done")
+
+    bagsafter = check_bags()
+    bagdifference = bagsafter - bagsbefore
+    if len(bagdifference) == 1:
+        createdbag = next(iter(bagsafter - bagsbefore))
+        bagfile = Path(options["bag"]["file"])
+
+        shutil.copy(createdbag, bagfile)
+        # sanity check to ensure we don't delete the entire project
+        assert createdbag.parent.absolute() == Path(
+            "/home/cale/thesis-code/ws/bagfolder")
+    elif len(bagdifference) > 1:
+        print(
+            f"{len(bagsafter-bagsbefore)} created bags in bagfolder. Don't know what to do")
 
 
 def _point_to_numpy(point_str, numsep):
@@ -207,6 +342,12 @@ def make_bag_plots(name, options):
                     x = scale*x
 
                 plotlib.plot_timeseries(t, x, d["label"], ax=ax)
+        if plotoptions["type"] == "xy":
+            x = data[plotoptions["xdata"]["topic"]
+                     ][plotoptions["xdata"]["attribute"]]
+            y = data[plotoptions["ydata"]["topic"]
+                     ][plotoptions["ydata"]["attribute"]]
+            plotlib.plot_xy(x, y, plotoptions.get("label", ""), ax=ax)
 
         if plotoptions.get("legend", False):
             ax.legend()
@@ -227,6 +368,33 @@ def make_bag_plots(name, options):
     plotlib.set_save_directories(*save_dirs_prev)
 
 
+def chattering_comparison(name, options):
+    print("Making", name)
+    figs = options["figs"]
+    labels = options["labels"]
+    alpha = options["alpha"]
+    tlim = options["tlim"]
+
+    fig, ax = plotlib.subplots(num=name+"_zoomed")
+    for i in range(len(figs)):
+        f = plotlib.open_figure(figs[i])
+        t = f.get_axes()[0].lines[0].get_xdata()
+        torque = f.get_axes()[0].lines[0].get_ydata()
+        chatter = chatter_signal(torque, alpha)
+
+        # tlim = plotregions[i]
+        # idx = (tlim[0] <= t)*(t <= tlim[1])
+        plotlib.plot_timeseries(t, chatter, label=labels[i], ax=ax)
+
+    ax.legend()
+    ax.set_ylabel("chatter [Nm]")
+    plotlib.savefig(fig)
+
+    ax.set_xlim(*tlim)
+    ax.autoscale(True)
+    plotlib.savefig(fig, name+"_zoomed")
+
+
 def main():
     if len(sys.argv) != 2:
         print("Need a config file")
@@ -237,7 +405,14 @@ def main():
     with open(experiment_config_file, "r") as file:
         config = yaml.safe_load(file)
 
+    settings = config["settings"]
     experiments = config["experiments"]
+
+    def should_run(experiment_name):
+        return True
+    if settings.get("onlyrun", None) != None:
+        def should_run(experiment_name):
+            return experiment_name == settings["onlyrun"]
 
     plotlib.set_save_directories(
         config["settings"]["rawdir"],
@@ -245,11 +420,14 @@ def main():
     datalib.set_save_directories(config["settings"]["datadir"])
 
     for expname, expconfig in experiments.items():
-        if "runner" in expconfig:
-            runner = globals()[expconfig["runner"]]
+        if not should_run(expname):
+            continue
+
+        if "experimenter" in expconfig:
+            experimenter = globals()[expconfig["experimenter"]]
 
             if expconfig["options"].get("rerun", True):
-                runner(expconfig["options"])
+                experimenter(expconfig["options"])
 
         plotter = globals()[expconfig["plotter"]]
         plotter(expname, expconfig["options"])
