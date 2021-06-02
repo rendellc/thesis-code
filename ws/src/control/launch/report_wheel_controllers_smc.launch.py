@@ -13,6 +13,10 @@ def generate_launch_description():
         vehicle_controller_parameters, "disable_all", True)
 
     wheel_controller_parameters = WHEEL_CONTROLLER_PARAMETERS
+    wheel_controller_parameters = update_parameter(wheel_controller_parameters,
+                                                   "use_sliding_mode", True)
+    wheel_controller_parameters = update_parameter(wheel_controller_parameters,
+                                                   "use_robust_rate", False)
 
     vehicle_namespace = "vehicle"
 

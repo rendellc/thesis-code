@@ -54,8 +54,10 @@ class Listener:
         self.node = node
         self.topic = topic
         self.subscriber = self.node.create_subscription(
-            topic_type, topic, self.callback, 1)
+            topic_type, topic, self.callback, 100)
         self.attributes = attributes
+
+        # print("Create listener for", self.topic)
 
     def get_nested_attr(self, msg, attribute):
         attribute_list = attribute.split(".")

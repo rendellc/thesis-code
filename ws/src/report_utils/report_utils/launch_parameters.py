@@ -49,7 +49,8 @@ VEHICLE_CONTROLLER_PARAMETERS = [
     {"ilqr_cost_angular_vel": 0.2},
     {"ilqr_cost_steering_angle": 1.0},
     {"ilqr_trajectory_length": 50},
-    {"ilqr_singletrack_active": False}
+    {"ilqr_singletrack_active": False},
+    {"disable_all": False}
 ]
 
 WHEEL_CONTROLLER_PARAMETERS = [
@@ -58,20 +59,19 @@ WHEEL_CONTROLLER_PARAMETERS = [
     #{"P_omega": 100.0},
     {"I_omega": 0.0},
     {"D_omega": 10.0},
-    {"P_delta": 10.0},
-    {"use_robust_rate": True},
+    {"P_delta": 5.0},
+    {"use_robust_rate": False},
     {"robust_rate_softregion": 5.0},
-    {"steering_rate_limit": (2*3.14)/2},
+    {"steering_rate_limit": 1*(2*3.14)/2},
     {"max_steering_accel": 0.1},
     {"wheel_mass": 200.0},
     {"wheel_radius": 0.505},
     {"wheel_width": 0.4},
-    {"use_sliding_mode": False},
+    {"use_sliding_mode": True},
     {"sliding_mode_softregion": 5.0},
     {"sliding_mode_eigenvalue": 5.0},
     {"steer_resistance_factor": 2.0},
     {"beta_0": 0.1},
-    {"sign_slide_eps": 10.0},
     {"use_reference_optimization": False}
 ]
 

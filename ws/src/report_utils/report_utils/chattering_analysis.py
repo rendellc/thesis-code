@@ -15,7 +15,7 @@ def alpha_filter(xs, alpha):
 
 
 def smoothening(xs):
-    w = np.hanning(11)
+    w = np.hanning(5)
     w = w/np.sum(w)
 
     return np.convolve(xs, w, "same")

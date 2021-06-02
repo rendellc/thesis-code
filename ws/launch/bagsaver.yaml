@@ -19,6 +19,11 @@ topics:
     data_attributes:
       - drive_torque
       - steer_torque
+      - sliding_mode_s
+      - sliding_mode_rho
+      - sliding_mode_beta
+      - robust_rate_error_rate
+      - robust_rate_angular_rate_reference
       - state.steering_angle
       - state.steering_angle_rate
       - state.angular_velocity

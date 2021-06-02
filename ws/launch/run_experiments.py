@@ -1,4 +1,3 @@
-from matplotlib.pyplot import plot
 import yaml
 
 import sys
@@ -83,7 +82,9 @@ class TimeLimit20SecMonitor(ExperimentMonitor):
 
     def _timer_callback(self):
         t = self.get_clock().now()
-        if (t.seconds_nanoseconds - self._start_time.seconds_nanoseconds) > 20*10**9:
+        d = t - self._start_time
+
+        if d.nanoseconds > 20*10**9:
             self._set_done()
 
 
@@ -95,6 +96,38 @@ def _start_processes(commands):
         )
         #subprocess.Popen(cmd, stdout=subprocess.DEVNULL)
     return processes
+
+
+def meanabs(data, options):
+    xs = data[options["data"]["topic"]][options["data"]["attribute"]]
+    return np.mean(np.abs(xs))
+
+
+def mean(data, options):
+    xs = data[options["data"]["topic"]][options["data"]["attribute"]]
+    return np.mean(xs)
+
+
+def finalabs(data, options):
+    xs = data[options["data"]["topic"]][options["data"]["attribute"]]
+    return np.abs(xs[~0])
+
+
+def peak(data, options):
+    xs = data[options["data"]["topic"]][options["data"]["attribute"]]
+    i = np.argmax(np.abs(xs))
+    return xs[i]
+
+
+def chatter(data, options):
+    xs = data[options["data"]["topic"]][options["data"]["attribute"]]
+    ch = chatter_signal(xs)
+    return np.std(ch)
+
+
+def std(data, options):
+    xs = data[options["data"]["topic"]][options["data"]["attribute"]]
+    return np.std(xs)
 
 
 def _stop_processes(processes):
@@ -287,6 +320,7 @@ def make_bag_plots(name, options):
             build_datafile = True
 
     if build_datafile:
+        print("datafile", str(datafile))
         bagsaver_ps = subprocess.Popen([
             "ros2",
             "run",
@@ -296,12 +330,12 @@ def make_bag_plots(name, options):
             options['bagsaver_config'],
             "--datafile",
             str(datafile)],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL
+            # stdout=subprocess.STDOUT,
+            # stderr=subprocess.DEVNULL
         )
 
         # wait for bagsaver to be ready
-        time.sleep(2.0)
+        time.sleep(5.0)
 
         bag_ps = subprocess.Popen([
             "ros2",
@@ -364,6 +398,26 @@ def make_bag_plots(name, options):
 
         plotlib.savefig(fig)
 
+    metricdir = plotlib.PDF_FIG_DIR
+    metricdir.mkdir(parents=True, exist_ok=True)
+    metrics = options.get("metrics", dict())
+    metricvalues = dict()
+    for metricname, metricoptions in metrics.items():
+        method = globals()[metricoptions["method"]]
+        metric = method(data, metricoptions)
+        scale = metricoptions.get("scale", None)
+        if scale == "rad2deg":
+            metric = np.rad2deg(metric)
+        if type(scale) == float or type(scale) == int:
+            metric = scale*metric
+        metricvalues[metricname] = metric
+
+        with (metricdir / metricname).open("w") as f:
+            # f.write(str(metric))
+            f.write(f"{metric:.3f}")
+
+    print("metrics", metricvalues)
+
     # restore save directories
     plotlib.set_save_directories(*save_dirs_prev)
 
@@ -408,11 +462,18 @@ def main():
     settings = config["settings"]
     experiments = config["experiments"]
 
+    rerunlist = settings.get("rerun", [])
+
     def should_run(experiment_name):
         return True
     if settings.get("onlyrun", None) != None:
         def should_run(experiment_name):
-            return experiment_name == settings["onlyrun"]
+            if isinstance(settings["onlyrun"], list):
+                onlyrunlist = settings["onlyrun"]
+            else:
+                onlyrunlist = [settings["onlyrun"]]
+
+            return experiment_name in onlyrunlist
 
     plotlib.set_save_directories(
         config["settings"]["rawdir"],
@@ -426,7 +487,9 @@ def main():
         if "experimenter" in expconfig:
             experimenter = globals()[expconfig["experimenter"]]
 
-            if expconfig["options"].get("rerun", True):
+            if len(rerunlist) == 0 or expname in rerunlist:
+                # if expname in rerunlist or rerunlist
+                # if expconfig["options"].get("rerun", True):
                 experimenter(expconfig["options"])
 
         plotter = globals()[expconfig["plotter"]]

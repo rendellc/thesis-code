@@ -1,36 +1,338 @@
 settings:
   pdfdir: /home/cale/thesis/mainmatter/fig
+  # metricdir: /home/cale/thesis/data
   rawdir: ../figs/raw
   datadir: ../data
-  onlyrun: steering_smc
+  rerun: # these will be simulated
+    - comment out this to run everything
+    # - smc_step
+    # - smc_turn
+  #   - rr_step
+  #   - rr_turn
+  onlyrun: # these will have new plots and metrics made
+    - smc_step
+    - smc_turn
+    - rr_step
+    - rr_turn
 experiments:
-  steering_smc:
+  # ---- WHEEL CONTROLLER CASE STUDIES ----
+  smc_step:
     experimenter: run_commands
     plotter: make_bag_plots
     options:
       commands:
         - "ros2 launch launch/base.launch.py bag:=true rviz:=false"
-        - "ros2 launch control report_wheel_controllers.launch.py"
+        - "ros2 launch control report_wheel_controllers_smc.launch.py"
         - "ros2 launch simulator simulator.launch.py gui:=false"
         - "ros2 launch operation report_wheel_step.launch.py"
       monitor: TimeLimit20SecMonitor
       bagsaver_config: launch/bagsaver.yaml
-      rerun: true
       bag:
-        file: ../bags/step_smc.db3
+        file: ../bags/smc_step.db3
         force: true
-        rate: 50
+        rate: 10
       plots:
+        reference_fl:
+          type: timeseries
+          ylabel: "[deg]"
+          datas:
+            - topic: /vehicle/wheel_fl/controller_info
+              attribute: reference.steering_angle
+              label: fl
+              scale: rad2deg
+        state_fl:
+          type: timeseries
+          ylabel: "[deg]"
+          datas:
+            - topic: /vehicle/wheel_fl/controller_info
+              attribute: state.steering_angle
+              label: fl
+              scale: rad2deg
+        torque_fl:
+          type: timeseries
+          ylabel: "[kNm]"
+          datas:
+            - topic: /vehicle/wheel_fl/controller_info
+              attribute: steer_torque
+              label: fl
+              scale: 0.001
         error_fl:
           type: timeseries
-          legend: true
           ylabel: "[deg]"
           datas:
             - topic: /vehicle/wheel_fl/controller_info
               attribute: error.steering_angle
               label: fl
               scale: rad2deg
+        sliding_surface_fl:
+          type: timeseries
+          ylabel: "[deg]"
+          datas:
+            - topic: /vehicle/wheel_fl/controller_info
+              attribute: sliding_mode_s
+              label: fl
+      metrics:
+        mean_abs_error:
+          method: meanabs
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: error.steering_angle
+          scale: rad2deg
+        final_abs_error:
+          method: finalabs
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: error.steering_angle
+          scale: rad2deg
+        chatter:
+          method: chatter
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: steer_torque
+          scale: 0.001
+        peak_torque:
+          method: peak
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: steer_torque
+          scale: 0.001
+        mean_torque:
+          method: mean
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: steer_torque
+          scale: 0.001
+  smc_turn:
+    experimenter: run_commands
+    plotter: make_bag_plots
+    options:
+      commands:
+        - "ros2 launch launch/base.launch.py bag:=true rviz:=false"
+        - "ros2 launch control report_wheel_controllers_smc.launch.py"
+        - "ros2 launch simulator simulator.launch.py gui:=false"
+        - "ros2 launch operation report_wheel_turn.launch.py"
+      monitor: TimeLimit20SecMonitor
+      bagsaver_config: launch/bagsaver.yaml
+      bag:
+        file: ../bags/smc_turn.db3
+        force: true
+        rate: 10
+      plots:
+        reference_fl:
+          type: timeseries
+          ylabel: "[deg]"
+          datas:
+            - topic: /vehicle/wheel_fl/controller_info
+              attribute: reference.steering_angle
+              label: fl
+              scale: rad2deg
+        state_fl:
+          type: timeseries
+          ylabel: "[deg]"
+          datas:
+            - topic: /vehicle/wheel_fl/controller_info
+              attribute: state.steering_angle
+              label: fl
+              scale: rad2deg
+        torque_fl:
+          type: timeseries
+          ylabel: "[kNm]"
+          datas:
+            - topic: /vehicle/wheel_fl/controller_info
+              attribute: steer_torque
+              label: fl
+              scale: 0.001
+        error_fl:
+          type: timeseries
+          ylabel: "[deg]"
+          datas:
+            - topic: /vehicle/wheel_fl/controller_info
+              attribute: error.steering_angle
+              label: fl
+              scale: rad2deg
+        sliding_surface_fl:
+          type: timeseries
+          ylabel: "[deg]"
+          datas:
+            - topic: /vehicle/wheel_fl/controller_info
+              attribute: sliding_mode_s
+              label: fl
+      metrics:
+        mean_abs_error:
+          method: meanabs
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: error.steering_angle
+          scale: rad2deg
+        final_abs_error:
+          method: finalabs
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: error.steering_angle
+          scale: rad2deg
+        chatter:
+          method: chatter
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: steer_torque
+          scale: 0.001
+        peak_torque:
+          method: peak
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: steer_torque
+          scale: 0.001
+        mean_torque:
+          method: mean
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: steer_torque
+          scale: 0.001
 
+  rr_step:
+    experimenter: run_commands
+    plotter: make_bag_plots
+    options:
+      commands:
+        - "ros2 launch launch/base.launch.py bag:=true rviz:=false"
+        - "ros2 launch control report_wheel_controllers_rr.launch.py"
+        - "ros2 launch simulator simulator.launch.py gui:=false"
+        - "ros2 launch operation report_wheel_step.launch.py"
+      monitor: TimeLimit20SecMonitor
+      bagsaver_config: launch/bagsaver.yaml
+      bag:
+        file: ../bags/rr_step.db3
+        force: true
+        rate: 10
+      plots:
+        state_fl:
+          type: timeseries
+          ylabel: "[deg]"
+          datas:
+            - topic: /vehicle/wheel_fl/controller_info
+              attribute: state.steering_angle
+              label: fl
+              scale: rad2deg
+        torque_fl:
+          type: timeseries
+          ylabel: "[kNm]"
+          datas:
+            - topic: /vehicle/wheel_fl/controller_info
+              attribute: steer_torque
+              label: fl
+              scale: 0.001
+        error_fl:
+          type: timeseries
+          ylabel: "[deg]"
+          datas:
+            - topic: /vehicle/wheel_fl/controller_info
+              attribute: error.steering_angle
+              label: fl
+              scale: rad2deg
+      metrics:
+        mean_abs_error:
+          method: meanabs
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: error.steering_angle
+          scale: rad2deg
+        final_abs_error:
+          method: finalabs
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: error.steering_angle
+          scale: rad2deg
+        chatter:
+          method: chatter
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: steer_torque
+          scale: 0.001
+        peak_torque:
+          method: peak
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: steer_torque
+          scale: 0.001
+        mean_torque:
+          method: mean
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: steer_torque
+          scale: 0.001
+  rr_turn:
+    experimenter: run_commands
+    plotter: make_bag_plots
+    options:
+      commands:
+        - "ros2 launch launch/base.launch.py bag:=true rviz:=false"
+        - "ros2 launch control report_wheel_controllers_rr.launch.py"
+        - "ros2 launch simulator simulator.launch.py gui:=false"
+        - "ros2 launch operation report_wheel_turn.launch.py"
+      monitor: TimeLimit20SecMonitor
+      bagsaver_config: launch/bagsaver.yaml
+      bag:
+        file: ../bags/rr_turn.db3
+        force: true
+        rate: 10
+      plots:
+        state_fl:
+          type: timeseries
+          ylabel: "[deg]"
+          datas:
+            - topic: /vehicle/wheel_fl/controller_info
+              attribute: state.steering_angle
+              label: fl
+              scale: rad2deg
+        torque_fl:
+          type: timeseries
+          ylabel: "[kNm]"
+          datas:
+            - topic: /vehicle/wheel_fl/controller_info
+              attribute: steer_torque
+              label: fl
+              scale: 0.001
+        error_fl:
+          type: timeseries
+          ylabel: "[deg]"
+          datas:
+            - topic: /vehicle/wheel_fl/controller_info
+              attribute: error.steering_angle
+              label: fl
+              scale: rad2deg
+      metrics:
+        mean_abs_error:
+          method: meanabs
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: error.steering_angle
+          scale: rad2deg
+        final_abs_error:
+          method: finalabs
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: error.steering_angle
+          scale: rad2deg
+        chatter:
+          method: chatter
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: steer_torque
+          scale: 0.001
+        peak_torque:
+          method: peak
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: steer_torque
+          scale: 0.001
+        mean_torque:
+          method: mean
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: steer_torque
+          scale: 0.001
+
+  # ---- UNCATEGORIZED ----
   wheel_state_errors:
     experimenter: run_commands
     plotter: make_bag_plots

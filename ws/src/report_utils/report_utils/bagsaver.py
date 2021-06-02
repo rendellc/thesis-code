@@ -60,12 +60,13 @@ class Timeseries:
         return start_time, elapsed_time
 
     def to_numpy(self):
-        # TODO: also need time
         return np.array(self.listener.data)
 
     def to_dict(self):
         data = {}
         raw = self.to_numpy()
+        # print(raw, self._time_attribute_index)
+
         time_msgs = raw[:, self._time_attribute_index]
         raw = np.delete(raw, self._time_attribute_index, axis=1)
         start_time, elapsed_time = self.convert_time_msgs(time_msgs)
@@ -130,6 +131,7 @@ def run_with_config(config, args=None, datafile=None):
         data[topic]["start_time"] = owner_start_time
 
     # Write to disk
+    print("saving to", datafile)
     if not datafile is None:
         datafile = Path(datafile)
         datafile.parent.mkdir(parents=True, exist_ok=True)

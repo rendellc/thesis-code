@@ -114,6 +114,9 @@ class VehicleControllerNode : public rclcpp::Node {
     this->declare_parameter("pid_active");
     this->get_parameter<bool>("pid_active", pid_active);
 
+    this->declare_parameter("disable_all");
+    this->get_parameter<bool>("disable_all", disable_vehicle_controller);
+
     this->declare_parameter("P_yaw");
     this->get_parameter<double>("P_yaw", yaw_pid.P);
     this->declare_parameter("I_yaw");
@@ -265,6 +268,7 @@ class VehicleControllerNode : public rclcpp::Node {
   bool pid_active;
   bool ilqr_4wis_active;
   bool ilqr_singletrack_active;
+  bool disable_vehicle_controller;
   double update_rate;
   double maximum_curvature;
   double approach_angle;
@@ -400,8 +404,8 @@ class VehicleControllerNode : public rclcpp::Node {
   }
 
   void update_dynamic_variables() {
+    time_now = this->get_clock()->now();
     if (pose_p && twist_p && path_p) {
-      time_now = this->get_clock()->now();
       const auto &q = pose_p->pose.orientation;
       vehicle_quat = Quaterniond(q.w, q.x, q.y, q.z);
       yaw = vehicle_quat.Yaw();
@@ -646,11 +650,9 @@ class VehicleControllerNode : public rclcpp::Node {
     //   // or add timestamp to message.
     //   reference_p.reset();
     // }
+    update_dynamic_variables();
+
     if (pose_p && twist_p && path_p && waypoints_p) {
-      // use waypoints if reference not supplied
-
-      update_dynamic_variables();
-
       using Marker = visualization_msgs::msg::Marker;
       controller_markers_msg.markers[0].header.frame_id = "map";
       controller_markers_msg.markers[0].header.stamp = this->get_clock()->now();
@@ -691,32 +693,34 @@ class VehicleControllerNode : public rclcpp::Node {
       }
 
       publish_markers();
+    }
 
-      // Update info message
-      info_msg.header.stamp = time_now;
-      info_msg.yaw = yaw;
-      info_msg.yawrate = yawrate;
-      info_msg.course = course;
-      info_msg.sideslip = sideslip;
-      info_msg.path_course = path_course;
-      info_msg.path_courserate = path_courserate;
-      info_msg.path_position.x = path_position.X();
-      info_msg.path_position.y = path_position.Y();
-      info_msg.path_error.x = path_error.X();
-      info_msg.path_error.y = path_error.Y();
-      info_msg.cross_track_error = cross_track_error;
-      info_msg.speed = speed;
-      info_msg.approach_error = approach_error;
-      info_msg.course_reference = course_reference;
-      info_msg.yaw_reference = yaw_reference;
-      info_msg.yaw_error = yaw_error;
-      info_msg.course_error = course_error;
-      info_msg.speed_error = speed_error;
-      info_msg.speed_desired = speed_desired;
-      info_msg.icr.x = icr.X();
-      info_msg.icr.y = icr.Y();
-      info_pub_p->publish(info_msg);
+    // Update info message
+    info_msg.header.stamp = time_now;
+    info_msg.yaw = yaw;
+    info_msg.yawrate = yawrate;
+    info_msg.course = course;
+    info_msg.sideslip = sideslip;
+    info_msg.path_course = path_course;
+    info_msg.path_courserate = path_courserate;
+    info_msg.path_position.x = path_position.X();
+    info_msg.path_position.y = path_position.Y();
+    info_msg.path_error.x = path_error.X();
+    info_msg.path_error.y = path_error.Y();
+    info_msg.cross_track_error = cross_track_error;
+    info_msg.speed = speed;
+    info_msg.approach_error = approach_error;
+    info_msg.course_reference = course_reference;
+    info_msg.yaw_reference = yaw_reference;
+    info_msg.yaw_error = yaw_error;
+    info_msg.course_error = course_error;
+    info_msg.speed_error = speed_error;
+    info_msg.speed_desired = speed_desired;
+    info_msg.icr.x = icr.X();
+    info_msg.icr.y = icr.Y();
+    info_pub_p->publish(info_msg);
 
+    if (!disable_vehicle_controller) {
       fl_pub_p->publish(fl_msg);
       rl_pub_p->publish(rl_msg);
       rr_pub_p->publish(rr_msg);

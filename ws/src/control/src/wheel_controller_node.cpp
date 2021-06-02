@@ -204,10 +204,11 @@ class WheelControllerNode : public rclcpp::Node {
       if (use_robust_rate) {
         const double delta = wheel_state_p->steering_angle;
         const double delta_r = reference.steering_angle;
+        const double ddelta_r = reference.steering_angle_rate;
 
         // compute desired rate
         double desired_angular_rate =
-            steering_rate_pid.update(ssa(delta_r - delta), time_now);
+            ddelta_r + steering_rate_pid.update(ssa(delta_r - delta), time_now);
         if (fabs(desired_angular_rate) >= steering_rate_limit) {
           desired_angular_rate = desired_angular_rate /
                                  fabs(desired_angular_rate) *
