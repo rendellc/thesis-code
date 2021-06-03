@@ -64,9 +64,28 @@ ament_target_dependencies(wheel_turner
 rclcpp_components_register_nodes(wheel_turner "WheelTurner")
 
 
+add_library(wheel_angvel_stepper SHARED src/wheel_angvel_stepper.cpp)
+target_include_directories(wheel_angvel_stepper PUBLIC include)
+ament_target_dependencies(wheel_angvel_stepper
+  "rclcpp"
+  "rclcpp_components"
+  "vehicle_interface"
+)
+rclcpp_components_register_nodes(wheel_angvel_stepper "WheelAngvelStepper")
+
+add_library(wheel_angvel_smooth_stepper SHARED src/wheel_angvel_smooth_stepper.cpp)
+target_include_directories(wheel_angvel_smooth_stepper PUBLIC include ${Eigen3_INCLUDE_DIRS} "/usr/include/eigen3")
+ament_target_dependencies(wheel_angvel_smooth_stepper
+  "rclcpp"
+  "rclcpp_components"
+  "vehicle_interface"
+)
+rclcpp_components_register_nodes(wheel_angvel_smooth_stepper "WheelAngvelSmoothStepper")
 
 install(TARGETS
-  manual_joy waypoint_publisher wheel_stepper wheel_turner
+  manual_joy waypoint_publisher 
+  wheel_stepper wheel_turner
+  wheel_angvel_stepper wheel_angvel_smooth_stepper
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin

@@ -98,35 +98,43 @@ def _start_processes(commands):
     return processes
 
 
-def meanabs(data, options):
+def _get_masked_metric_data(data, options):
     xs = data[options["data"]["topic"]][options["data"]["attribute"]]
+    t = data[options["data"]["topic"]]["elapsed_time"]
+    tlim = options["data"].get("tlim", [t[0], t[~0]])
+    mask = (tlim[0] <= t) * (t <= tlim[1])
+    return xs[mask]
+
+
+def meanabs(data, options):
+    xs = _get_masked_metric_data(data, options)
     return np.mean(np.abs(xs))
 
 
 def mean(data, options):
-    xs = data[options["data"]["topic"]][options["data"]["attribute"]]
+    xs = _get_masked_metric_data(data, options)
     return np.mean(xs)
 
 
 def finalabs(data, options):
-    xs = data[options["data"]["topic"]][options["data"]["attribute"]]
+    xs = _get_masked_metric_data(data, options)
     return np.abs(xs[~0])
 
 
 def peak(data, options):
-    xs = data[options["data"]["topic"]][options["data"]["attribute"]]
+    xs = _get_masked_metric_data(data, options)
     i = np.argmax(np.abs(xs))
     return xs[i]
 
 
 def chatter(data, options):
-    xs = data[options["data"]["topic"]][options["data"]["attribute"]]
+    xs = _get_masked_metric_data(data, options)
     ch = chatter_signal(xs)
     return np.std(ch)
 
 
 def std(data, options):
-    xs = data[options["data"]["topic"]][options["data"]["attribute"]]
+    xs = _get_masked_metric_data(data, options)
     return np.std(xs)
 
 
@@ -389,7 +397,7 @@ def make_bag_plots(name, options):
         ylim = plotoptions.get("ylim", None)
         if not ylim is None:
             ax.set_ylim(ylim[0], ylim[1])
-        xlim = plotoptions.get("xlim", None)
+        xlim = plotoptions.get("xlim", None) or plotoptions.get("tlim", None)
         if not xlim is None:
             ax.set_xlim(xlim[0], xlim[1])
 

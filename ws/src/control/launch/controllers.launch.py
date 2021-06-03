@@ -3,13 +3,14 @@ from launch_ros.actions import ComposableNodeContainer
 from launch_ros.descriptions import ComposableNode
 
 
-from report_utils.launch_parameters import VEHICLE_CONTROLLER_PARAMETERS, WHEEL_CONTROLLER_PARAMETERS
+from report_utils.launch_parameters import GUIDANCE_PARAMETERS, VEHICLE_CONTROLLER_PARAMETERS, WHEEL_CONTROLLER_PARAMETERS
 
 
 def generate_launch_description():
 
     vehicle_controller_parameters = VEHICLE_CONTROLLER_PARAMETERS
     wheel_controller_parameters = WHEEL_CONTROLLER_PARAMETERS
+    guidance_parameters = GUIDANCE_PARAMETERS
 
     vehicle_namespace = "vehicle"
 
@@ -19,6 +20,13 @@ def generate_launch_description():
         package="rclcpp_components",
         executable="component_container",
         composable_node_descriptions=[
+            ComposableNode(
+                package="control",
+                plugin="GuidanceNode",
+                name="guidance",
+                namespace=vehicle_namespace,
+                parameters=guidance_parameters,
+            ),
             ComposableNode(
                 package="control",
                 plugin="VehicleControllerNode",

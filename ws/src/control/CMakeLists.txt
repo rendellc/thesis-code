@@ -105,13 +105,30 @@ ament_target_dependencies(vehicle_controller
 )
 rclcpp_components_register_nodes(vehicle_controller "VehicleControllerNode")
 
+add_library(guidance SHARED src/guidance_node.cpp)
+target_include_directories(guidance PUBLIC include ${Eigen3_INCLUDE_DIRS})
+target_link_libraries(guidance
+  pathlib
+  controllib
+)
+ament_target_dependencies(guidance 
+  "rclcpp"
+  "rclcpp_components"
+  "geometry_msgs"
+  "visualization_msgs"
+  "nav_msgs"
+  "vehicle_interface"
+  "ignition-math6"
+)
+rclcpp_components_register_nodes(guidance "GuidanceNode")
+
 install(TARGETS
   controllib pathlib
   DESTINATION lib/${PROJECT_NAME}
 )
 
 install(TARGETS
-  wheel_controller vehicle_controller 
+  wheel_controller vehicle_controller guidance
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin

@@ -24,6 +24,8 @@ find_package(geometry_msgs REQUIRED)
 
 set(MSG_FILES
   "msg/Rotation.msg"
+  "msg/Guide.msg"
+  "msg/GuidanceInfo.msg"
   "msg/DriveMode.msg"
   "msg/VehicleControllerInfo.msg"
   "msg/WheelControllerInfo.msg"
@@ -32,6 +34,8 @@ set(MSG_FILES
   "msg/WheelState.msg"
   "msg/WheelLoad.msg"
   "msg/WheelLoads.msg"
+  "msg/YawReference.msg"
+  "msg/YawrateReference.msg"
 )
 rosidl_generate_interfaces(${PROJECT_NAME}
   ${MSG_FILES}

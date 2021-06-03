@@ -1,6 +1,17 @@
 time:
   relative_to: /vehicle/controller_info
 topics:
+  /vehicle/guidance_info:
+    topic_type_module: vehicle_interface.msg
+    topic_type: GuidanceInfo
+    time_attribute: header.stamp
+    data_attributes:
+      - guide.course
+      - guide.speed
+      - path_course
+      - path_courserate
+      - approach_error
+      - cross_track_error
   /vehicle/controller_info:
     topic_type_module: vehicle_interface.msg
     topic_type: VehicleControllerInfo
@@ -11,7 +22,6 @@ topics:
       - course
       - sideslip
       - speed
-      - cross_track_error
   /vehicle/wheel_fl/controller_info:
     topic_type_module: vehicle_interface.msg
     topic_type: WheelControllerInfo

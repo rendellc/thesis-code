@@ -31,6 +31,7 @@ VEHICLE_CONTROLLER_PARAMETERS = [
     {"use_circular_smoothing": True},
     {"maximum_curvature": 0.75},
     {"pid_active": True},
+    {"yaw_mode": "path"},
     {"P_yaw": 2.0},
     {"I_yaw": 0.0},
     {"D_yaw": 0.2},
@@ -55,10 +56,10 @@ VEHICLE_CONTROLLER_PARAMETERS = [
 
 WHEEL_CONTROLLER_PARAMETERS = [
     {"update_rate": 100.0},
-    {"P_omega": 100.0},
+    {"P_omega": 250.0},
     #{"P_omega": 100.0},
     {"I_omega": 0.0},
-    {"D_omega": 10.0},
+    {"D_omega": 0.0},
     {"P_delta": 5.0},
     {"use_robust_rate": False},
     {"robust_rate_softregion": 5.0},
@@ -73,6 +74,20 @@ WHEEL_CONTROLLER_PARAMETERS = [
     {"steer_resistance_factor": 2.0},
     {"beta_0": 0.1},
     {"use_reference_optimization": False}
+]
+
+
+GUIDANCE_PARAMETERS = [
+    {"update_rate": 50.0},
+    {"use_fermat_smoothing": True},
+    {"use_circular_smoothing": False},
+    {"maximum_curvature": 0.75},
+    {"approach_angle": np.deg2rad(30)},
+    # {"P_approach": 2.0}  # NOTE: mclain recommends 1/radius_min = maximum_curvature
+    {"P_approach": 2.0},
+    {"I_approach": 0.5},
+    {"D_approach": 0.0},
+    {"speed_desired": 2.0}
 ]
 
 

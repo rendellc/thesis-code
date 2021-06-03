@@ -4,16 +4,17 @@ from launch_ros.descriptions import ComposableNode
 
 
 from report_utils.launch_parameters import update_parameter
-from report_utils.launch_parameters import VEHICLE_CONTROLLER_PARAMETERS, WHEEL_CONTROLLER_PARAMETERS
+from report_utils.launch_parameters import VEHICLE_CONTROLLER_PARAMETERS, WHEEL_CONTROLLER_PARAMETERS, GUIDANCE_PARAMETERS
 
 
 def generate_launch_description():
 
     vehicle_controller_parameters = VEHICLE_CONTROLLER_PARAMETERS
     wheel_controller_parameters = WHEEL_CONTROLLER_PARAMETERS
+    guidance_parameters = GUIDANCE_PARAMETERS
 
-    vehicle_controller_parameters = update_parameter(
-        VEHICLE_CONTROLLER_PARAMETERS, "maximum_curvature", 0.25)
+    guidance_parameters = update_parameter(
+        guidance_parameters, "maximum_curvature", 0.25)
 
     vehicle_namespace = "vehicle"
 
@@ -23,6 +24,13 @@ def generate_launch_description():
         package="rclcpp_components",
         executable="component_container",
         composable_node_descriptions=[
+            ComposableNode(
+                package="control",
+                plugin="GuidanceNode",
+                name="guidance",
+                namespace=vehicle_namespace,
+                parameters=guidance_parameters,
+            ),
             ComposableNode(
                 package="control",
                 plugin="VehicleControllerNode",
