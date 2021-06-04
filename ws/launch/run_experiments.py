@@ -328,7 +328,6 @@ def make_bag_plots(name, options):
             build_datafile = True
 
     if build_datafile:
-        print("datafile", str(datafile))
         bagsaver_ps = subprocess.Popen([
             "ros2",
             "run",
@@ -380,6 +379,8 @@ def make_bag_plots(name, options):
                 scale = d.get("scale", None)
                 if scale == "rad2deg":
                     x = np.rad2deg(x)
+                if scale == "abs":
+                    x = np.abs(x)
                 if type(scale) == float or type(scale) == int:
                     x = scale*x
 

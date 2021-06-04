@@ -133,7 +133,8 @@ class WheelControllerNode : public rclcpp::Node {
 
     // Steering angle control law
     // calculation in goodnotes
-    const auto x1 = ssa(x_p->steering_angle - xr_p->steering_angle);
+    // const auto x1 = ssa(x_p->steering_angle - xr_p->steering_angle);
+    const auto x1 = x_p->steering_angle - xr_p->steering_angle;
     x1_integral = x1_integral + x1 / update_rate;
     const auto x2 = x_p->steering_angle_rate - xr_p->steering_angle_rate;
 
@@ -208,7 +209,7 @@ class WheelControllerNode : public rclcpp::Node {
 
         // compute desired rate
         double desired_angular_rate =
-            ddelta_r + steering_rate_pid.update(ssa(delta_r - delta), time_now);
+            ddelta_r + steering_rate_pid.update((delta_r - delta), time_now);
         if (fabs(desired_angular_rate) >= steering_rate_limit) {
           desired_angular_rate = desired_angular_rate /
                                  fabs(desired_angular_rate) *
@@ -240,33 +241,38 @@ class WheelControllerNode : public rclcpp::Node {
 
   double reference_cost(const WheelState &state,
                         const WheelState &reference) const {
-    return fabs(ssa(state.steering_angle - reference.steering_angle));
+    return fabs(state.steering_angle - reference.steering_angle);
   }
 
   WheelState find_closest_equivalent_reference(
       const WheelState &state, const WheelState &reference) const {
     // std::vector<WheelState> options;
-    const double PI = atan2(+0.0, -1);
+    const double PI = 2 * atan2(1.0, 0);
 
-    WheelState fullturn_positive = reference;
-    fullturn_positive.steering_angle = reference.steering_angle + 2 * PI;
+    const double angle_change =
+        ssa(reference.steering_angle - state.steering_angle);
 
-    WheelState halfturn_positive = reference;
-    halfturn_positive.steering_angle = reference.steering_angle + PI;
-    halfturn_positive.angular_velocity = -reference.angular_velocity;
+    WheelState unchanged;
+    unchanged.steering_angle = state.steering_angle + angle_change;
+    unchanged.steering_angle_rate = reference.steering_angle_rate;
+    unchanged.angular_velocity = reference.angular_velocity;
 
-    WheelState unchanged = reference;
+    // WheelState fullturn_positive = unchanged;
+    // fullturn_positive.steering_angle = unchanged.steering_angle + 2 * PI;
+    // WheelState fullturn_negative = unchanged;
+    // fullturn_negative.steering_angle = unchanged.steering_angle - 2 * PI;
 
-    WheelState halfturn_negative = reference;
-    halfturn_positive.steering_angle = reference.steering_angle - PI;
-    halfturn_positive.angular_velocity = reference.angular_velocity;
+    WheelState halfturn_positive = unchanged;
+    halfturn_positive.steering_angle = unchanged.steering_angle + PI;
+    halfturn_positive.angular_velocity = -unchanged.angular_velocity;
 
-    WheelState fullturn_negative = reference;
-    fullturn_negative.steering_angle = reference.steering_angle - 2 * PI;
+    WheelState halfturn_negative = unchanged;
+    halfturn_negative.steering_angle = unchanged.steering_angle - PI;
+    halfturn_negative.angular_velocity = -unchanged.angular_velocity;
 
-    std::array<WheelState, 5> options = {fullturn_positive, halfturn_positive,
-                                         unchanged, halfturn_negative,
-                                         fullturn_negative};
+    std::array<WheelState, 3> options = {
+        // fullturn_positive, fullturn_negative,
+        unchanged, halfturn_positive, halfturn_negative};
 
     double lowest_cost = std::numeric_limits<double>::infinity();
     int lowest_index = -1;

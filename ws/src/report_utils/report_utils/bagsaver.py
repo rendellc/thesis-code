@@ -63,10 +63,11 @@ class Timeseries:
         return np.array(self.listener.data)
 
     def to_dict(self):
-        data = {}
         raw = self.to_numpy()
-        # print(raw, self._time_attribute_index)
+        if raw.size == 0:
+            return {}
 
+        data = {}
         time_msgs = raw[:, self._time_attribute_index]
         raw = np.delete(raw, self._time_attribute_index, axis=1)
         start_time, elapsed_time = self.convert_time_msgs(time_msgs)

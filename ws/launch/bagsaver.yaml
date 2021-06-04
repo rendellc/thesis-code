@@ -22,6 +22,9 @@ topics:
       - course
       - sideslip
       - speed
+      - speed_reference
+      - speed_error
+      - curvature
   /vehicle/wheel_fl/controller_info:
     topic_type_module: vehicle_interface.msg
     topic_type: WheelControllerInfo

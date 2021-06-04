@@ -10,14 +10,26 @@ settings:
     # - rr_step
     # - rr_turn
     # - angvel_step
-    - angvel_smooth_step
+    # - angvel_smooth_step
+    # - simple_lap
+    # - simple_lap_low_curvature
+    # - simple_lap_low_speed
+    # - simple_lap_circular
+    - simple_lap_low_curvature_high_speed
+    - simple_lap_low_curvature_high_speed_circular
   onlyrun: # these will have new plots and metrics made
     # - smc_step
     # - smc_turn
     # - rr_step
     # - rr_turn
-    - angvel_step
-    - angvel_smooth_step
+    # - angvel_step
+    # - angvel_smooth_step
+    # - simple_lap
+    # - simple_lap_low_curvature
+    # - simple_lap_low_speed
+    # - simple_lap_circular
+    - simple_lap_low_curvature_high_speed
+    - simple_lap_low_curvature_high_speed_circular
 experiments:
   # ---- WHEEL SMC AND RR CASE STUDIES ----
   smc_step:
@@ -730,6 +742,374 @@ experiments:
             tlim:
               - 0
               - 20
+          scale: 0.001
+
+  # ---- GUIDANCE CASE STUDIES ----
+  simple_lap:
+    experimenter: run_commands
+    plotter: make_bag_plots
+    options:
+      commands:
+        - "ros2 launch launch/base.launch.py bag:=true rviz:=false"
+        - "ros2 launch control controllers.launch.py"
+        - "ros2 launch simulator simulator.launch.py gui:=false"
+        - "ros2 launch operation report_waypoints_simple_lap.launch.py"
+      monitor: SimpleLapMonitor
+      bagsaver_config: launch/bagsaver.yaml
+      bag:
+        file: ../bags/simple_lap.db3
+        force: true
+        rate: 10
+      plots:
+        cross_track_error:
+          type: timeseries
+          ylabel: "[m]"
+          datas:
+            - topic: /vehicle/guidance_info
+              attribute: cross_track_error
+              label: "$\\e_c$"
+              scale: abs
+        speed_error:
+          type: timeseries
+          ylabel: "[m/s]"
+          datas:
+            - topic: /vehicle/controller_info
+              attribute: speed_error
+              label: "$\\e_c$"
+              scale: abs
+        trajectory:
+          type: xy
+          legend: false
+          xlabel: "E [m]"
+          ylabel: "N [m]"
+          xdata:
+            topic: /vehicle/pose
+            attribute: pose.position.x
+          ydata:
+            topic: /vehicle/pose
+            attribute: pose.position.y
+        curvature:
+          type: timeseries
+          ylabel: "[m]"
+          datas:
+            - topic: /vehicle/controller_info
+              attribute: curvature
+              label: "$\\e_c$"
+              scale: abs
+      metrics:
+        mean_abs_cross_track_error:
+          method: meanabs
+          data:
+            topic: /vehicle/guidance_info
+            attribute: cross_track_error
+        peak_torque:
+          method: peak
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: steer_torque
+          scale: 0.001
+  simple_lap_low_curvature:
+    experimenter: run_commands
+    plotter: make_bag_plots
+    options:
+      commands:
+        - "ros2 launch launch/base.launch.py bag:=true rviz:=false"
+        - "ros2 launch control controllers_lowcurvature.launch.py"
+        - "ros2 launch simulator simulator.launch.py gui:=false"
+        - "ros2 launch operation report_waypoints_simple_lap.launch.py"
+      monitor: SimpleLapMonitor
+      bagsaver_config: launch/bagsaver.yaml
+      bag:
+        file: ../bags/simple_lap_low_curvature.db3
+        force: true
+        rate: 10
+      plots:
+        cross_track_error:
+          type: timeseries
+          ylabel: "[m]"
+          datas:
+            - topic: /vehicle/guidance_info
+              attribute: cross_track_error
+              label: "$\\e_c$"
+              scale: abs
+        speed_error:
+          type: timeseries
+          ylabel: "[m/s]"
+          datas:
+            - topic: /vehicle/controller_info
+              attribute: speed_error
+              label: "$\\e_c$"
+              scale: abs
+        trajectory:
+          type: xy
+          legend: false
+          xlabel: "E [m]"
+          ylabel: "N [m]"
+          xdata:
+            topic: /vehicle/pose
+            attribute: pose.position.x
+          ydata:
+            topic: /vehicle/pose
+            attribute: pose.position.y
+        curvature:
+          type: timeseries
+          ylabel: "[m]"
+          datas:
+            - topic: /vehicle/controller_info
+              attribute: curvature
+              label: "$\\e_c$"
+              scale: abs
+      metrics:
+        mean_abs_cross_track_error:
+          method: meanabs
+          data:
+            topic: /vehicle/guidance_info
+            attribute: cross_track_error
+  simple_lap_low_speed:
+    experimenter: run_commands
+    plotter: make_bag_plots
+    options:
+      commands:
+        - "ros2 launch launch/base.launch.py bag:=true rviz:=false"
+        - "ros2 launch control controllers_lowspeed.launch.py"
+        - "ros2 launch simulator simulator.launch.py gui:=false"
+        - "ros2 launch operation report_waypoints_simple_lap.launch.py"
+      monitor: SimpleLapMonitor
+      bagsaver_config: launch/bagsaver.yaml
+      bag:
+        file: ../bags/simple_lap_low_speed.db3
+        force: true
+        rate: 10
+      plots:
+        cross_track_error:
+          type: timeseries
+          ylabel: "[m]"
+          datas:
+            - topic: /vehicle/guidance_info
+              attribute: cross_track_error
+              label: "$\\e_c$"
+              scale: abs
+        speed_error:
+          type: timeseries
+          ylabel: "[m/s]"
+          datas:
+            - topic: /vehicle/controller_info
+              attribute: speed_error
+              label: "$\\e_c$"
+              scale: abs
+        trajectory:
+          type: xy
+          legend: false
+          xlabel: "E [m]"
+          ylabel: "N [m]"
+          xdata:
+            topic: /vehicle/pose
+            attribute: pose.position.x
+          ydata:
+            topic: /vehicle/pose
+            attribute: pose.position.y
+        curvature:
+          type: timeseries
+          ylabel: "[m]"
+          datas:
+            - topic: /vehicle/controller_info
+              attribute: curvature
+              label: "$\\e_c$"
+              scale: abs
+      metrics:
+        mean_abs_cross_track_error:
+          method: meanabs
+          data:
+            topic: /vehicle/guidance_info
+            attribute: cross_track_error
+  simple_lap_circular:
+    experimenter: run_commands
+    plotter: make_bag_plots
+    options:
+      commands:
+        - "ros2 launch launch/base.launch.py bag:=true rviz:=false"
+        - "ros2 launch control controllers_circular.launch.py"
+        - "ros2 launch simulator simulator.launch.py gui:=false"
+        - "ros2 launch operation report_waypoints_simple_lap.launch.py"
+      monitor: SimpleLapMonitor
+      bagsaver_config: launch/bagsaver.yaml
+      bag:
+        file: ../bags/simple_lap_circular.db3
+        force: true
+        rate: 10
+      plots:
+        cross_track_error:
+          type: timeseries
+          ylabel: "[m]"
+          datas:
+            - topic: /vehicle/guidance_info
+              attribute: cross_track_error
+              label: "$\\e_c$"
+              scale: abs
+        speed_error:
+          type: timeseries
+          ylabel: "[m/s]"
+          datas:
+            - topic: /vehicle/controller_info
+              attribute: speed_error
+              label: "$\\e_c$"
+              scale: abs
+        trajectory:
+          type: xy
+          legend: false
+          xlabel: "E [m]"
+          ylabel: "N [m]"
+          xdata:
+            topic: /vehicle/pose
+            attribute: pose.position.x
+          ydata:
+            topic: /vehicle/pose
+            attribute: pose.position.y
+        curvature:
+          type: timeseries
+          ylabel: "[m]"
+          datas:
+            - topic: /vehicle/controller_info
+              attribute: curvature
+              label: "$\\e_c$"
+              scale: abs
+      metrics:
+        mean_abs_cross_track_error:
+          method: meanabs
+          data:
+            topic: /vehicle/guidance_info
+            attribute: cross_track_error
+        peak_torque:
+          method: peak
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: steer_torque
+          scale: 0.001
+  simple_lap_low_curvature_high_speed:
+    experimenter: run_commands
+    plotter: make_bag_plots
+    options:
+      commands:
+        - "ros2 launch launch/base.launch.py bag:=true rviz:=false"
+        - "ros2 launch control controllers_lowcurvature_highspeed.launch.py"
+        - "ros2 launch simulator simulator.launch.py gui:=false"
+        - "ros2 launch operation report_waypoints_simple_lap.launch.py"
+      monitor: SimpleLapMonitor
+      bagsaver_config: launch/bagsaver.yaml
+      bag:
+        file: ../bags/simple_lap_low_curvature_high_speed.db3
+        force: true
+        rate: 10
+      plots:
+        cross_track_error:
+          type: timeseries
+          ylabel: "[m]"
+          datas:
+            - topic: /vehicle/guidance_info
+              attribute: cross_track_error
+              label: "$\\e_c$"
+              scale: abs
+        speed_error:
+          type: timeseries
+          ylabel: "[m/s]"
+          datas:
+            - topic: /vehicle/controller_info
+              attribute: speed_error
+              label: "$\\e_c$"
+              scale: abs
+        trajectory:
+          type: xy
+          legend: false
+          xlabel: "E [m]"
+          ylabel: "N [m]"
+          xdata:
+            topic: /vehicle/pose
+            attribute: pose.position.x
+          ydata:
+            topic: /vehicle/pose
+            attribute: pose.position.y
+        curvature:
+          type: timeseries
+          ylabel: "[m]"
+          datas:
+            - topic: /vehicle/controller_info
+              attribute: curvature
+              label: "$\\e_c$"
+              scale: abs
+      metrics:
+        mean_abs_cross_track_error:
+          method: meanabs
+          data:
+            topic: /vehicle/guidance_info
+            attribute: cross_track_error
+        peak_torque:
+          method: peak
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: steer_torque
+          scale: 0.001
+  simple_lap_low_curvature_high_speed_circular:
+    experimenter: run_commands
+    plotter: make_bag_plots
+    options:
+      commands:
+        - "ros2 launch launch/base.launch.py bag:=true rviz:=false"
+        - "ros2 launch control controllers_lowcurvature_highspeed.launch.py"
+        - "ros2 launch simulator simulator.launch.py gui:=false"
+        - "ros2 launch operation report_waypoints_simple_lap.launch.py"
+      monitor: SimpleLapMonitor
+      bagsaver_config: launch/bagsaver.yaml
+      bag:
+        file: ../bags/simple_lap_low_curvature_high_speed_circular.db3
+        force: true
+        rate: 10
+      plots:
+        cross_track_error:
+          type: timeseries
+          ylabel: "[m]"
+          datas:
+            - topic: /vehicle/guidance_info
+              attribute: cross_track_error
+              label: "$\\e_c$"
+              scale: abs
+        speed_error:
+          type: timeseries
+          ylabel: "[m/s]"
+          datas:
+            - topic: /vehicle/controller_info
+              attribute: speed_error
+              label: "$\\e_c$"
+              scale: abs
+        trajectory:
+          type: xy
+          legend: false
+          xlabel: "E [m]"
+          ylabel: "N [m]"
+          xdata:
+            topic: /vehicle/pose
+            attribute: pose.position.x
+          ydata:
+            topic: /vehicle/pose
+            attribute: pose.position.y
+        curvature:
+          type: timeseries
+          ylabel: "[m]"
+          datas:
+            - topic: /vehicle/controller_info
+              attribute: curvature
+              label: "$\\e_c$"
+              scale: abs
+      metrics:
+        mean_abs_cross_track_error:
+          method: meanabs
+          data:
+            topic: /vehicle/guidance_info
+            attribute: cross_track_error
+        peak_torque:
+          method: peak
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: steer_torque
           scale: 0.001
 
   # ---- UNCATEGORIZED ----

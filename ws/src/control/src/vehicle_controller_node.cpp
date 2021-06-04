@@ -345,29 +345,6 @@ class VehicleControllerNode : public rclcpp::Node {
     // #endif
   }
 
-  void update_dynamic_variables() {
-    time_now = this->get_clock()->now();
-
-    if (guidance_p) {
-      // guidance_p->course
-      // guidance_p->speed
-    }
-
-    if (twist_p && pose_p) {
-      // approach_error = approach_pid.update(cross_track_error, time_now);
-      // course_reference =
-      //     path_course - approach_angle * atan(approach_error) / PI_HALF;
-      // course_error = ssa(course_reference - course);
-
-      // TODO(rendellc): select yaw_reference source
-      // yaw_reference = 0;
-      // yaw_reference = PI_HALF;
-      // yaw_reference = path_course;
-      // yaw_error = ssa(yaw_reference - yaw);
-      // yawrate_error = path_courserate - yawrate;
-    }
-  }
-
   // void ilqr() {}
   Vector2d compute_icr(const Vector2d &velocity_body, double yawrate) {
     return Vector2d(-velocity_body.Y() / yawrate, velocity_body.X() / yawrate);
@@ -426,20 +403,21 @@ class VehicleControllerNode : public rclcpp::Node {
     info_msg.header.stamp = time_now;
     //
     if (guidance_p && pose_p && twist_p) {
-      info_msg.yaw_error = ssa(info_msg.yaw_reference - info_msg.yaw);
       info_msg.speed_error = info_msg.speed_reference - info_msg.speed;
       info_msg.course_error = ssa(info_msg.course_reference - info_msg.course);
       // info_msg.yawrate_error = info_msg.yawrate_reference - info_msg.yawrate;
+    }
 
+    if (pose_p && twist_p) {
+      info_msg.yaw_error = ssa(info_msg.yaw_reference - info_msg.yaw);
       if (!info_msg.use_yawrate) {
         // override yawrate_reference set by YawReference msg
         info_msg.yawrate_reference = yaw_pid.update(
             info_msg.yaw_error, info_msg.yawrate_error, time_now);
       }
-
-      yawrate_course_noslip_transformation();
     }
 
+    yawrate_course_noslip_transformation();
     // if (pose_p && twist_p) {
     //   using Marker = visualization_msgs::msg::Marker;
     //   controller_markers_msg.markers[0].header.frame_id = "map";
@@ -541,6 +519,8 @@ class VehicleControllerNode : public rclcpp::Node {
     const Vector2d icr = compute_icr(velocity_body, info_msg.yawrate);
     info_msg.icr.x = icr.X();
     info_msg.icr.y = icr.Y();
+    const double icr_radius = icr.Length();
+    info_msg.curvature = 1 / icr_radius;
 
     RCLCPP_INFO_ONCE(this->get_logger(), "twist message recieved");
   }
@@ -562,12 +542,12 @@ class VehicleControllerNode : public rclcpp::Node {
     if (msg_p->mode == yaw_mode) {
       info_msg.yaw_reference = msg_p->yaw;
       info_msg.yawrate_reference = msg_p->yawrate;
-    }
 
-    if (msg_p->mode == YawReference::YAWRATE) {
-      info_msg.use_yawrate = true;
-    } else {
-      info_msg.use_yawrate = false;
+      if (msg_p->mode == YawReference::YAWRATE) {
+        info_msg.use_yawrate = true;
+      } else {
+        info_msg.use_yawrate = false;
+      }
     }
   }
 };

@@ -22,3 +22,4 @@ float64 yawrate_error
 bool use_yawrate
 
 geometry_msgs/Point icr
+float64 curvature

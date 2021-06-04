@@ -12,8 +12,13 @@ PathCircle::PathCircle(const ignition::math::Vector2d& center, double radius,
       radius(radius),
       angle_begin(angle_begin),
       angle_end(angle_end) {
-  domain_lower = angle_begin < angle_end ? angle_begin : angle_end;
-  domain_upper = angle_begin < angle_end ? angle_end : angle_begin;
+  if (angle_begin < angle_end) {
+    domain_lower = angle_begin;
+    domain_upper = angle_end;
+  } else {
+    domain_lower = angle_end;
+    domain_upper = angle_begin;
+  }
 }
 
 double PathCircle::distance(const ignition::math::Vector2d& pos) {
@@ -71,28 +76,44 @@ std::vector<ignition::math::Vector2d> PathCircle::sample_direction(
 double PathCircle::closest_angle(const ignition::math::Vector2d& pos) {
   const auto circle_to_pos = (pos - center).Normalized();
 
-  // with a full circle segment this is the closest point
-  const auto closest_point_full = center + radius * circle_to_pos;
-  double closest_point_full_angle =
-      atan2(closest_point_full.Y(), closest_point_full.X());
+  constexpr int num_samples = 100;
+  const auto samples = sample(num_samples);
+  double closest = angle_begin;
+  double smallest_distance = std::numeric_limits<double>::infinity();
+  for (int i = 0; i < samples.size(); i++) {
+    const double distance = pos.Distance(samples[i]);
+    if (distance < smallest_distance) {
+      const double n = static_cast<double>(num_samples);
+      const double interpolation = n / (n - 1) * (i / n);
 
-  const double PI = 2 * atan2(+1.0, 0.0);
-
-  while (closest_point_full_angle < domain_lower) {
-    closest_point_full_angle += 2 * PI;
-  }
-  if (closest_point_full_angle < domain_upper) {
-    return closest_point_full_angle;
+      closest = angle_begin + interpolation * (angle_end - angle_begin);
+      smallest_distance = distance;
+    }
   }
 
-  // It's either begin or end
-  const auto begin = getBegin();
-  const auto end = getEnd();
-  if (begin.Distance(pos) < end.Distance(pos)) {
-    return angle_begin;
-  } else {
-    return angle_end;
-  }
+  return closest;
+  // // with a full circle segment this is the closest point
+  // const auto closest_point_full = center + radius * circle_to_pos;
+  // double closest_point_full_angle =
+  //     atan2(closest_point_full.Y(), closest_point_full.X());
+
+  // const double PI = 2 * atan2(+1.0, 0.0);
+
+  // while (closest_point_full_angle < domain_lower) {
+  //   closest_point_full_angle += 2 * PI;
+  // }
+  // if (closest_point_full_angle < domain_upper) {
+  //   return closest_point_full_angle;
+  // }
+
+  // // It's either begin or end
+  // const auto begin = getBegin();
+  // const auto end = getEnd();
+  // if (begin.Distance(pos) < end.Distance(pos)) {
+  //   return angle_begin;
+  // } else {
+  //   return angle_end;
+  // }
 }
 
 ignition::math::Vector2d PathCircle::closest_point(
@@ -104,7 +125,8 @@ ignition::math::Vector2d PathCircle::closest_point(
 ignition::math::Vector2d PathCircle::closest_direction(
     const ignition::math::Vector2d& pos) {
   const double angle = closest_angle(pos);
-  return circle_velocity(angle).Normalized();
+  const int sign = angle_end > angle_begin ? 1 : -1;
+  return sign * circle_velocity(angle).Normalized();
 }
 
 double PathCircle::closest_courserate(const ignition::math::Vector2d& pos) {

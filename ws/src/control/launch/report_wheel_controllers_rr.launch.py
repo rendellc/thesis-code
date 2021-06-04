@@ -4,6 +4,7 @@ from launch_ros.descriptions import ComposableNode
 
 
 from report_utils.launch_parameters import VEHICLE_CONTROLLER_PARAMETERS, WHEEL_CONTROLLER_PARAMETERS, update_parameter
+from report_utils.launch_parameters import GUIDANCE_PARAMETERS
 
 
 def generate_launch_description():
@@ -26,6 +27,13 @@ def generate_launch_description():
         package="rclcpp_components",
         executable="component_container",
         composable_node_descriptions=[
+            ComposableNode(
+                package="control",
+                plugin="GuidanceNode",
+                name="guidance",
+                namespace=vehicle_namespace,
+                parameters=GUIDANCE_PARAMETERS,
+            ),
             ComposableNode(
                 package="control",
                 plugin="VehicleControllerNode",
