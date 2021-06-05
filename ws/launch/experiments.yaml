@@ -12,12 +12,14 @@ settings:
     # - angvel_step
     # - angvel_smooth_step
     # - simple_lap
+    - simple_lap_no_braking
     # - simple_lap_low_curvature
     # - simple_lap_low_speed
     # - simple_lap_circular
     # - simple_lap_low_curvature_high_speed
     # - simple_lap_low_curvature_high_speed_circular
-    - noslip_yawrate
+    # - noslip_yawrate
+    # - noslip_yaw
   onlyrun: # these will have new plots and metrics made
     # - smc_step
     # - smc_turn
@@ -25,13 +27,15 @@ settings:
     # - rr_turn
     # - angvel_step
     # - angvel_smooth_step
-    # - simple_lap
+    - simple_lap
+    - simple_lap_no_braking
     # - simple_lap_low_curvature
     # - simple_lap_low_speed
     # - simple_lap_circular
     # - simple_lap_low_curvature_high_speed
     # - simple_lap_low_curvature_high_speed_circular
-    - noslip_yawrate
+    # - noslip_yawrate
+    # - noslip_yaw
 experiments:
   # ---- WHEEL SMC AND RR CASE STUDIES ----
   smc_step:
@@ -769,7 +773,92 @@ experiments:
           datas:
             - topic: /vehicle/guidance_info
               attribute: cross_track_error
+              label: ""
+              scale: abs
+        speed_error:
+          type: timeseries
+          ylabel: "[km/h]"
+          datas:
+            - topic: /vehicle/controller_info
+              attribute: speed_error
+              label: ""
+              scale: 3.6
+        speed_reference:
+          type: timeseries
+          ylabel: "[km/h]"
+          datas:
+            - topic: /vehicle/controller_info
+              attribute: speed_reference
+              label: ""
+              scale: 3.6
+        trajectory:
+          type: xy
+          legend: false
+          xlabel: "E [m]"
+          ylabel: "N [m]"
+          xdata:
+            topic: /vehicle/pose
+            attribute: pose.position.x
+          ydata:
+            topic: /vehicle/pose
+            attribute: pose.position.y
+        curvature:
+          type: timeseries
+          ylabel: "[m]"
+          datas:
+            - topic: /vehicle/controller_info
+              attribute: curvature
               label: "$\\e_c$"
+              scale: abs
+        path_course:
+          type: timeseries
+          ylabel: "[m]"
+          datas:
+            - topic: /vehicle/guidance_info
+              attribute: path_course
+              label: "$\\chi_p$"
+        path_courserate:
+          type: timeseries
+          ylabel: "[m]"
+          datas:
+            - topic: /vehicle/guidance_info
+              attribute: path_courserate
+              label: "$\\dot{\\chi}_p$"
+      metrics:
+        mean_abs_cross_track_error:
+          method: meanabs
+          data:
+            topic: /vehicle/guidance_info
+            attribute: cross_track_error
+        peak_torque:
+          method: peak
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: steer_torque
+          scale: 0.001
+  simple_lap_no_braking:
+    experimenter: run_commands
+    plotter: make_bag_plots
+    options:
+      commands:
+        - "ros2 launch launch/base.launch.py bag:=true rviz:=true"
+        - "ros2 launch control controllers_no_braking.launch.py"
+        - "ros2 launch simulator simulator.launch.py gui:=false"
+        - "ros2 launch operation report_waypoints_simple_lap.launch.py"
+      monitor: SimpleLapMonitor
+      bagsaver_config: launch/bagsaver.yaml
+      bag:
+        file: ../bags/simple_lap.db3
+        force: true
+        rate: 10
+      plots:
+        cross_track_error:
+          type: timeseries
+          ylabel: "[m]"
+          datas:
+            - topic: /vehicle/guidance_info
+              attribute: cross_track_error
+              label: ""
               scale: abs
         speed_error:
           type: timeseries
@@ -777,7 +866,15 @@ experiments:
           datas:
             - topic: /vehicle/controller_info
               attribute: speed_error
-              label: "$\\e_c$"
+              label: ""
+              scale: abs
+        speed_reference:
+          type: timeseries
+          ylabel: "[m/s]"
+          datas:
+            - topic: /vehicle/controller_info
+              attribute: speed_reference
+              label: ""
               scale: abs
         trajectory:
           type: xy
@@ -1136,7 +1233,8 @@ experiments:
         - "ros2 launch launch/base.launch.py bag:=true rviz:=false"
         - "ros2 launch control controllers_yawrate.launch.py"
         - "ros2 launch simulator simulator.launch.py gui:=false"
-        - "ros2 topic pub /vehicle/yaw_reference vehicle_interface/msg/YawReference '{mode: yawrate, yaw: 0.0, yawrate: 0.3}'"
+        - "ros2 launch operation report_yawrate_step.launch.py"
+        # - "ros2 topic pub /vehicle/yaw_reference vehicle_interface/msg/YawReference '{mode: yawrate, yaw: 0.0, yawrate: 0.3}'"
       monitor: TimeLimit20SecMonitor
       bagsaver_config: launch/bagsaver.yaml
       bag:
@@ -1162,10 +1260,51 @@ experiments:
               scale: rad2deg
         yawrate_error:
           type: timeseries
-          ylabel: "[m/s]"
+          ylabel: "[deg/s]"
           datas:
             - topic: /vehicle/controller_info
               attribute: yawrate_error
+              label: ""
+              scale: rad2deg
+      # metrics:
+  noslip_yaw:
+    experimenter: run_commands
+    plotter: make_bag_plots
+    options:
+      commands:
+        - "ros2 launch launch/base.launch.py bag:=true rviz:=false"
+        - "ros2 launch control controllers_yaw.launch.py"
+        - "ros2 launch simulator simulator.launch.py gui:=false"
+        - "ros2 launch operation report_yaw_step.launch.py"
+      monitor: TimeLimit20SecMonitor
+      bagsaver_config: launch/bagsaver.yaml
+      bag:
+        file: ../bags/noslip_yaw.db3
+        force: true
+        rate: 10
+      plots:
+        yaw:
+          type: timeseries
+          ylabel: "[deg]"
+          datas:
+            - topic: /vehicle/controller_info
+              attribute: yaw
+              label: "$\\psi$"
+              scale: rad2deg
+        yawrate:
+          type: timeseries
+          ylabel: "[deg/s]"
+          datas:
+            - topic: /vehicle/controller_info
+              attribute: yawrate
+              label: "$\\dot{\\psi}$"
+              scale: rad2deg
+        yaw_error:
+          type: timeseries
+          ylabel: "[deg]"
+          datas:
+            - topic: /vehicle/controller_info
+              attribute: yaw_error
               label: ""
               scale: rad2deg
       # metrics:

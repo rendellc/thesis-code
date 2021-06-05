@@ -82,10 +82,30 @@ ament_target_dependencies(wheel_angvel_smooth_stepper
 )
 rclcpp_components_register_nodes(wheel_angvel_smooth_stepper "WheelAngvelSmoothStepper")
 
+add_library(yawrate_stepper SHARED src/yawrate_stepper.cpp)
+target_include_directories(yawrate_stepper PUBLIC include)
+ament_target_dependencies(yawrate_stepper
+  "rclcpp"
+  "rclcpp_components"
+  "vehicle_interface"
+)
+rclcpp_components_register_nodes(yawrate_stepper "YawrateStepper")
+
+add_library(yaw_stepper SHARED src/yaw_stepper.cpp)
+target_include_directories(yaw_stepper PUBLIC include)
+ament_target_dependencies(yaw_stepper
+  "rclcpp"
+  "rclcpp_components"
+  "vehicle_interface"
+)
+rclcpp_components_register_nodes(yaw_stepper "YawStepper")
+
+
 install(TARGETS
   manual_joy waypoint_publisher 
   wheel_stepper wheel_turner
   wheel_angvel_stepper wheel_angvel_smooth_stepper
+  yawrate_stepper yaw_stepper
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin

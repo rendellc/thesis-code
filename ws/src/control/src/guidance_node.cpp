@@ -1,6 +1,7 @@
 
 #include <control/PID.hpp>
 #include <control/path/path.hpp>
+#include <control/ssa.hpp>
 #include <geometry_msgs/msg/point.hpp>
 #include <geometry_msgs/msg/pose_stamped.hpp>
 #include <ignition/math/Quaternion.hh>
@@ -13,6 +14,7 @@
 #include <vehicle_interface/msg/yaw_reference.hpp>
 #include <visualization_msgs/msg/marker.hpp>
 
+using control::ssa;
 using ignition::math::Quaterniond;
 using ignition::math::Vector2d;
 using ignition::math::Vector3d;
@@ -59,6 +61,9 @@ class GuidanceNode : public rclcpp::Node {
     this->declare_parameter("use_circular_smoothing");
     this->get_parameter<bool>("use_circular_smoothing", use_circular_smoothing);
 
+    this->declare_parameter("use_braking");
+    this->get_parameter<bool>("use_braking", use_braking);
+
     this->declare_parameter("approach_angle");
     this->get_parameter<double>("approach_angle", approach_angle);
 
@@ -100,6 +105,7 @@ class GuidanceNode : public rclcpp::Node {
   double approach_angle;
   bool use_fermat_smoothing;
   bool use_circular_smoothing;
+  bool use_braking;
   double speed_desired;
 
   PID approach_pid;
@@ -134,7 +140,30 @@ class GuidanceNode : public rclcpp::Node {
           info_msg.path_course -
           approach_angle * atan(info_msg.approach_error) / PI_HALF;
 
-      info_msg.guide.speed = speed_desired;
+      if (use_braking) {
+        // Step path position a couple seconds into the future to see if
+        // movement direction will change
+        Vector2d path_position_future = path_position;
+        Vector2d path_direction_future = path_direction;
+        const int n_steps = 20;
+        const double dt = 0.1;
+        for (int i = 0; i < n_steps; i++) {
+          path_position_future += dt * speed_desired * path_direction_future;
+          path_direction_future =
+              path_p->closest_direction(path_position_future);
+        }
+        const double path_course_future =
+            atan2(path_direction_future.Y(), path_direction_future.X());
+        const double direction_difference =
+            fabs(ssa(info_msg.path_course - path_course_future));
+        const double direction_difference_normalized =
+            direction_difference / (2 * PI_HALF);
+
+        const double brake_factor = direction_difference_normalized;
+        info_msg.guide.speed = speed_desired * (1 - brake_factor);
+      } else {
+        info_msg.guide.speed = speed_desired;
+      }
 
       guidance_pub_p->publish(info_msg.guide);
 
