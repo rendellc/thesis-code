@@ -15,8 +15,9 @@ settings:
     # - simple_lap_low_curvature
     # - simple_lap_low_speed
     # - simple_lap_circular
-    - simple_lap_low_curvature_high_speed
-    - simple_lap_low_curvature_high_speed_circular
+    # - simple_lap_low_curvature_high_speed
+    # - simple_lap_low_curvature_high_speed_circular
+    - noslip_yawrate
   onlyrun: # these will have new plots and metrics made
     # - smc_step
     # - smc_turn
@@ -28,8 +29,9 @@ settings:
     # - simple_lap_low_curvature
     # - simple_lap_low_speed
     # - simple_lap_circular
-    - simple_lap_low_curvature_high_speed
-    - simple_lap_low_curvature_high_speed_circular
+    # - simple_lap_low_curvature_high_speed
+    # - simple_lap_low_curvature_high_speed_circular
+    - noslip_yawrate
 experiments:
   # ---- WHEEL SMC AND RR CASE STUDIES ----
   smc_step:
@@ -796,6 +798,20 @@ experiments:
               attribute: curvature
               label: "$\\e_c$"
               scale: abs
+        path_course:
+          type: timeseries
+          ylabel: "[m]"
+          datas:
+            - topic: /vehicle/guidance_info
+              attribute: path_course
+              label: "$\\chi_p$"
+        path_courserate:
+          type: timeseries
+          ylabel: "[m]"
+          datas:
+            - topic: /vehicle/guidance_info
+              attribute: path_courserate
+              label: "$\\dot{\\chi}_p$"
       metrics:
         mean_abs_cross_track_error:
           method: meanabs
@@ -1111,6 +1127,48 @@ experiments:
             topic: /vehicle/wheel_fl/controller_info
             attribute: steer_torque
           scale: 0.001
+
+  noslip_yawrate:
+    experimenter: run_commands
+    plotter: make_bag_plots
+    options:
+      commands:
+        - "ros2 launch launch/base.launch.py bag:=true rviz:=false"
+        - "ros2 launch control controllers_yawrate.launch.py"
+        - "ros2 launch simulator simulator.launch.py gui:=false"
+        - "ros2 topic pub /vehicle/yaw_reference vehicle_interface/msg/YawReference '{mode: yawrate, yaw: 0.0, yawrate: 0.3}'"
+      monitor: TimeLimit20SecMonitor
+      bagsaver_config: launch/bagsaver.yaml
+      bag:
+        file: ../bags/noslip_yawrate.db3
+        force: true
+        rate: 10
+      plots:
+        yaw:
+          type: timeseries
+          ylabel: "[deg]"
+          datas:
+            - topic: /vehicle/controller_info
+              attribute: yaw
+              label: "$\\psi$"
+              scale: rad2deg
+        yawrate:
+          type: timeseries
+          ylabel: "[deg/s]"
+          datas:
+            - topic: /vehicle/controller_info
+              attribute: yawrate
+              label: "$\\dot{\\psi}$"
+              scale: rad2deg
+        yawrate_error:
+          type: timeseries
+          ylabel: "[m/s]"
+          datas:
+            - topic: /vehicle/controller_info
+              attribute: yawrate_error
+              label: ""
+              scale: rad2deg
+      # metrics:
 
   # ---- UNCATEGORIZED ----
   wheel_state_errors:

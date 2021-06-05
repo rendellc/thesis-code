@@ -158,11 +158,15 @@ def _kill_processes(processes):
         for p in processes:
             p.poll()
             if p.returncode is not None:
-                pids = subprocess.check_output(
-                    ["pgrep", "-P", str(p.pid)]).strip().split(b'\n')
-                pids = [int(pid) for pid in pids]
+                try:
+                    pids = subprocess.check_output(
+                        ["pgrep", "-P", str(p.pid)]).strip().split(b'\n')
+                    pids = [int(pid) for pid in pids]
 
-                pidstokill.extend(pids)
+                    pidstokill.extend(pids)
+                except subprocess.CalledProcessError:
+                    print(f"pgrep -P {p.pid} failed")
+                    pass
 
         for pid in pidstokill:
             subprocess.run(["kill", str(pid)])

@@ -2,7 +2,7 @@ string PATH="path"
 string YAW="yaw"
 string YAWRATE="yawrate"
 
-# Subscriber can use mode to filter for relevant messages
-string mode
+# Subscriber can use source to filter for relevant messages
+string source
 float64 yaw
 float64 yawrate

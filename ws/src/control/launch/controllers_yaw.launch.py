@@ -14,7 +14,7 @@ def generate_launch_description():
     guidance_parameters = GUIDANCE_PARAMETERS
 
     vehicle_controller_parameters = update_parameter(vehicle_controller_parameters,
-                                                     "yaw_mode", "yaw"
+                                                     "yaw_source", "yaw"
                                                      )
 
     vehicle_namespace = "vehicle"

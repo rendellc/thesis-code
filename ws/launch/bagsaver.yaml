@@ -19,6 +19,8 @@ topics:
     data_attributes:
       - yaw
       - yaw_error
+      - yawrate
+      - yawrate_error
       - course
       - sideslip
       - speed

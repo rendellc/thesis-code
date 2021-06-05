@@ -138,7 +138,7 @@ class GuidanceNode : public rclcpp::Node {
 
       guidance_pub_p->publish(info_msg.guide);
 
-      info_msg.yaw_reference.mode = YawReference::PATH;
+      info_msg.yaw_reference.source = YawReference::PATH;
       info_msg.yaw_reference.yaw = info_msg.path_course;
       info_msg.yaw_reference.yawrate = info_msg.path_courserate;
 
