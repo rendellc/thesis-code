@@ -27,6 +27,10 @@ def chatter_signal(xs, alpha=0.5):
     return xs - xs_smoothed
 
 
+def chatter_metric(xs):
+    return np.median(np.sort(np.abs(np.diff(xs))))
+
+
 if __name__ == "__main__":
     import report_utils.plotlib as pl
     import pathlib

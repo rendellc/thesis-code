@@ -20,15 +20,15 @@ settings:
     # - simple_lap_low_curvature_high_speed_circular
     # - noslip_yawrate
     # - noslip_yaw
-  onlyrun: # these will have new plots and metrics made
+  onlyrun:# these will have new plots and metrics made
     # - smc_step
     # - smc_turn
     # - rr_step
     # - rr_turn
     # - angvel_step
     # - angvel_smooth_step
-    - simple_lap
-    - simple_lap_no_braking
+    # - simple_lap
+    # - simple_lap_no_braking
     # - simple_lap_low_curvature
     # - simple_lap_low_speed
     # - simple_lap_circular

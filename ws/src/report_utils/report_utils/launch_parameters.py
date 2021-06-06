@@ -36,7 +36,7 @@ VEHICLE_CONTROLLER_PARAMETERS = [
     {"I_yawrate": 0.5},
     {"D_yawrate": 0.0},
     {"P_speed": 0.0},
-    {"I_speed": 0.2},
+    {"I_speed": 0.0},
     {"D_speed": 0.0},
     {"ilqr_4wis_active": False},
     {"ilqr_cost_x": 1.0},
@@ -76,14 +76,14 @@ GUIDANCE_PARAMETERS = [
     {"update_rate": 50.0},
     {"use_fermat_smoothing": True},
     {"use_circular_smoothing": False},
-    {"use_braking": True},
+    {"use_braking": False},
     {"maximum_curvature": 0.75},
     {"approach_angle": np.deg2rad(30)},
     # {"P_approach": 2.0}  # NOTE: mclain recommends 1/radius_min = maximum_curvature
     {"P_approach": 2.0},
-    {"I_approach": 0.5},
+    {"I_approach": 0.0},
     {"D_approach": 0.0},
-    {"speed_desired": 15.0/3.6}
+    {"speed_desired": 8.0/3.6}
 ]
 
 

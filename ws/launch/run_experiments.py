@@ -19,6 +19,7 @@ import shutil
 import signal
 
 from report_utils.launch_parameters import WP_SIMPLE_LAP, WP_SINGLE_TURN
+from report_utils.chattering_analysis import chatter_metric, chatter_signal
 from report_utils.chattering_analysis import chatter_signal
 
 
@@ -129,8 +130,8 @@ def peak(data, options):
 
 def chatter(data, options):
     xs = _get_masked_metric_data(data, options)
-    ch = chatter_signal(xs)
-    return np.std(ch)
+    #ch = chatter_signal(xs)
+    return chatter_metric(xs)
 
 
 def std(data, options):

@@ -373,8 +373,9 @@ class VehicleControllerNode : public rclcpp::Node {
           yawrate_pid.update(info_msg.yawrate_error, time_now);
     } else {
       // ignore yawrate_reference
-      info_msg.yawrate_command =
-          yaw_pid.update(info_msg.yaw_error, info_msg.yawrate_error, time_now);
+      info_msg.yawrate_command = yaw_pid.update(info_msg.yaw_error, time_now);
+      // yaw_pid.update(info_msg.yaw_error, info_msg.yawrate_error,
+      // time_now);
     }
 
     info_msg.sideslip_reference = info_msg.course_reference - info_msg.yaw;
