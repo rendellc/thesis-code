@@ -28,7 +28,7 @@ def chatter_signal(xs, alpha=0.5):
 
 
 def chatter_metric(xs):
-    return np.median(np.sort(np.abs(np.diff(xs))))
+    return np.median(np.abs(np.diff(xs)))
 
 
 if __name__ == "__main__":

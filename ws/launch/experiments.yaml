@@ -7,8 +7,8 @@ settings:
     - comment out this to run everything
     # - smc_step
     # - smc_turn
-    # - rr_step
-    # - rr_turn
+    - rr_step
+    - rr_turn
     # - angvel_step
     # - angvel_smooth_step
     # - simple_lap
@@ -20,11 +20,11 @@ settings:
     # - simple_lap_low_curvature_high_speed_circular
     # - noslip_yawrate
     # - noslip_yaw
-  onlyrun:# these will have new plots and metrics made
+  onlyrun:
     # - smc_step
     # - smc_turn
-    # - rr_step
-    # - rr_turn
+    - rr_step
+    - rr_turn
     # - angvel_step
     # - angvel_smooth_step
     # - simple_lap

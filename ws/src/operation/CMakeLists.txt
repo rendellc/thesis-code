@@ -30,6 +30,7 @@ ament_target_dependencies(manual_joy
   "rclcpp"
   "rclcpp_components"
   "sensor_msgs"
+  "geometry_msgs"
   "vehicle_interface"
 )
 rclcpp_components_register_nodes(manual_joy "ManualOperationJoyNode")

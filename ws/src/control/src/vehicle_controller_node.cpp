@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <cmath>
 #include <control/PID.hpp>
+#include <control/clip.hpp>
 #include <control/dynamics/no_slip_4wis.hpp>
 #include <control/dynamics/singletrack_kinematic.hpp>
 #include <control/iterative_lqr.hpp>
@@ -24,6 +25,7 @@
 #include <vehicle_interface/msg/yawrate_reference.hpp>
 #include <visualization_msgs/msg/marker_array.hpp>
 
+using control::clip;
 using control::ssa;
 using Eigen::VectorXd;
 using ignition::math::Quaterniond;
@@ -123,6 +125,8 @@ class VehicleControllerNode : public rclcpp::Node {
     this->get_parameter<double>("I_yawrate", yawrate_pid.I);
     this->declare_parameter("D_yawrate");
     this->get_parameter<double>("D_yawrate", yawrate_pid.D);
+    this->declare_parameter("yawrate_sat");
+    this->get_parameter<double>("yawrate_sat", yawrate_sat);
 
     this->declare_parameter("P_speed");
     this->get_parameter<double>("P_speed", speed_pid.P);
@@ -249,6 +253,7 @@ class VehicleControllerNode : public rclcpp::Node {
   PID yaw_pid;
   PID yawrate_pid;
   double yawrate_ff;
+  double yawrate_sat;
 
   // Parameters
   bool pid_active;
@@ -364,20 +369,6 @@ class VehicleControllerNode : public rclcpp::Node {
   }
 
   void yawrate_course_noslip_transformation() {
-    info_msg.speed_command = info_msg.speed_reference +
-                             speed_pid.update(info_msg.speed_error, time_now);
-
-    if (yaw_source == YawReference::YAWRATE) {
-      info_msg.yawrate_command =
-          yawrate_ff * info_msg.yawrate_reference +
-          yawrate_pid.update(info_msg.yawrate_error, time_now);
-    } else {
-      // ignore yawrate_reference
-      info_msg.yawrate_command = yaw_pid.update(info_msg.yaw_error, time_now);
-      // yaw_pid.update(info_msg.yaw_error, info_msg.yawrate_error,
-      // time_now);
-    }
-
     info_msg.sideslip_reference = info_msg.course_reference - info_msg.yaw;
 
     const Vector3d pos_fl(cg_to_front, front_width / 2, 0);
@@ -425,6 +416,26 @@ class VehicleControllerNode : public rclcpp::Node {
     fr_msg.steering_angle_rate = 0.0;
   }
 
+  void yaw_control() {
+    if (yaw_source == YawReference::YAWRATE) {
+      info_msg.yawrate_command =
+          yawrate_ff * info_msg.yawrate_reference +
+          yawrate_pid.update(info_msg.yawrate_error, time_now);
+    }
+    if (yaw_source != YawReference::YAWRATE) {
+      info_msg.yawrate_reference =
+          clip(yaw_pid.update(info_msg.yaw_error, time_now), -yawrate_sat,
+               yawrate_sat);
+      info_msg.yawrate_command = info_msg.yawrate_reference;
+    }
+
+    info_msg.yawrate_error = info_msg.yawrate_reference - info_msg.yawrate;
+  }
+  void speed_control() {
+    info_msg.speed_command = info_msg.speed_reference +
+                             speed_pid.update(info_msg.speed_error, time_now);
+  }
+
   void update_command() {
     time_now = this->get_clock()->now();
     info_msg.header.stamp = time_now;
@@ -441,11 +452,13 @@ class VehicleControllerNode : public rclcpp::Node {
     if (yaw_reference_p && pose_p && twist_p) {
       info_msg.yaw_ready = true;
       info_msg.yaw_error = ssa(info_msg.yaw_reference - info_msg.yaw);
-      info_msg.yawrate_error = info_msg.yawrate_reference - info_msg.yawrate;
     }
 
     // Do control if either of the reference sources are ready
     if (info_msg.guidance_ready || info_msg.yaw_ready) {
+      yaw_control();
+      speed_control();
+
       yawrate_course_noslip_transformation();
     }
     // if (pose_p && twist_p) {
