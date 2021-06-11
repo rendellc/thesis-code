@@ -32,8 +32,8 @@ topics:
     topic_type: WheelControllerInfo
     time_attribute: header.stamp
     data_attributes:
-      - drive_torque
-      - steer_torque
+      - cmd.drive_torque
+      - cmd.steer_torque
       - sliding_mode_s
       - sliding_mode_rho
       - sliding_mode_beta
@@ -43,8 +43,16 @@ topics:
       - state.steering_angle_rate
       - state.angular_velocity
       - reference.steering_angle
+      - reference.steering_angle_rate
       - reference.angular_velocity
+      - reference_optimal.steering_angle
+      - reference_optimal.steering_angle_rate
+      - reference_optimal.angular_velocity
+      - reference_raw.steering_angle
+      - reference_raw.steering_angle_rate
+      - reference_raw.angular_velocity
       - error.steering_angle
+      - error.steering_angle_rate
       - error.angular_velocity
   /vehicle/wheel_rl/controller_info:
     topic_type_module: vehicle_interface.msg

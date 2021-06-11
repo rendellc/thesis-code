@@ -7,7 +7,7 @@
 
 class IterativeLQR {
  private:
-  std::shared_ptr<DynamicalSystem> dynsys_p;
+  std::shared_ptr<control::dynamics::DynamicalSystem> dynsys_p;
   const double stepsize;
 
   Eigen::MatrixXd Q;
@@ -29,12 +29,12 @@ class IterativeLQR {
 
  public:
   IterativeLQR() = delete;
-  explicit IterativeLQR(std::shared_ptr<DynamicalSystem> dynsys_p,
-                        const Eigen::VectorXd& cost_states,
-                        const Eigen::VectorXd& cost_states_final,
-                        const Eigen::VectorXd& cost_inputs,
-                        const std::vector<Eigen::VectorXd>& input_sequence,
-                        double stepsize);
+  IterativeLQR(std::shared_ptr<control::dynamics::DynamicalSystem> dynsys_p,
+               const Eigen::VectorXd& cost_states,
+               const Eigen::VectorXd& cost_states_final,
+               const Eigen::VectorXd& cost_inputs,
+               const std::vector<Eigen::VectorXd>& input_sequence,
+               double stepsize);
 
   Eigen::VectorXd update(const Eigen::VectorXd& state,
                          const Eigen::VectorXd& state_target);

@@ -9,6 +9,9 @@ using Eigen::Vector2d;
 using Eigen::Vector3d;
 using Eigen::VectorXd;
 
+namespace control {
+namespace dynamics {
+
 NoSlip4WISSystem::NoSlip4WISSystem(double length_to_front,
                                    double length_to_rear, double front_width,
                                    double rear_width, double wheel_radius,
@@ -235,3 +238,6 @@ void NoSlip4WISSystem::linearize(const VectorXd& states, const VectorXd& inputs,
 
 int NoSlip4WISSystem::number_of_states() const { return NX; }
 int NoSlip4WISSystem::number_of_inputs() const { return NU; }
+
+}  // namespace dynamics
+}  // namespace control

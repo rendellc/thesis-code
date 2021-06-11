@@ -36,8 +36,8 @@ VEHICLE_CONTROLLER_PARAMETERS = [
     {"P_yawrate": 0.0},
     {"I_yawrate": 0.5},
     {"D_yawrate": 0.0},
-    {"P_speed": 0.0},
-    {"I_speed": 0.0},
+    {"P_speed": 1.0},
+    {"I_speed": 0.1},
     {"D_speed": 0.0},
     {"ilqr_4wis_active": False},
     {"ilqr_cost_x": 1.0},
@@ -57,19 +57,23 @@ WHEEL_CONTROLLER_PARAMETERS = [
     {"I_omega": 0.0},
     {"D_omega": 0.0},
     {"P_delta": 5.0},
-    {"use_robust_rate": True},
+    {"use_robust_rate": False},
     {"robust_rate_softregion": 5.0},
     {"steering_rate_limit": np.deg2rad(60.0)},
     {"max_steering_accel": 0.1},
     {"wheel_mass": 200.0},
     {"wheel_radius": 0.505},
     {"wheel_width": 0.4},
-    {"use_sliding_mode": False},
+    {"use_sliding_mode": True},
     {"sliding_mode_softregion": 5.0},
     {"sliding_mode_eigenvalue": 5.0},
     {"steer_resistance_factor": 2.0},
     {"beta_0": 0.1},
-    {"use_reference_optimization": True}
+    {"use_reference_optimization": True},
+    {"use_reference_model": True},
+    {"steer_damping_ratio": 0.9},
+    {"steer_natural_frequency": 3.0},
+    {"drive_time_constant": 1.0}
 ]
 
 
@@ -81,6 +85,7 @@ GUIDANCE_PARAMETERS = [
     {"maximum_curvature": 0.75},
     {"approach_angle": np.deg2rad(30)},
     # {"P_approach": 2.0}  # NOTE: mclain recommends 1/radius_min = maximum_curvature
+    # {"P_approach": 2.0},
     {"P_approach": 2.0},
     {"I_approach": 0.0},
     {"D_approach": 0.0},

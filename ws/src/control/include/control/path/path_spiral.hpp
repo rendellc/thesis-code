@@ -23,7 +23,8 @@ class PathSpiral : public Path {
       const ignition::math::Vector2d& pos) override;
   ignition::math::Vector2d closest_direction(
       const ignition::math::Vector2d& pos) override;
-  double closest_courserate(const ignition::math::Vector2d& pos) override;
+  double closest_courserate(const ignition::math::Vector2d& pos,
+                            const ignition::math::Vector2d& vel) override;
   // ignition::math::Vector2d closest_point_step_ahead(
   //     const ignition::math::Vector2d& pos, double velocity, double time,
   //     double* time_left) override;
@@ -39,6 +40,9 @@ class PathSpiral : public Path {
 
   double theta_to_u(double theta) const;
   double u_to_theta(double u) const;
+
+  double u_derivative(double u, double desired_speed) const;
+  double u_double_derivative(double u, double desired_speed) const;
 
   ignition::math::Vector2d spiral(double theta) const;
   ignition::math::Vector2d spiral_u(double u) const;

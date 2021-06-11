@@ -6,6 +6,8 @@ using Eigen::MatrixXd;
 using Eigen::VectorXd;
 
 #include <iostream>
+namespace control {
+namespace dynamics {
 
 void DynamicalSystem::discretize(const VectorXd& states, const VectorXd& inputs,
                                  double stepsize, MatrixXd& Ak, MatrixXd& Bk) {
@@ -73,3 +75,6 @@ void DynamicalSystem::linearize(const Eigen::VectorXd& states,
     B.block(0, col, NX, 1) = dinputs;
   }
 }
+
+}  // namespace dynamics
+}  // namespace control

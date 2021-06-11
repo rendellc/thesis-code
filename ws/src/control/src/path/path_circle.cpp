@@ -129,7 +129,8 @@ ignition::math::Vector2d PathCircle::closest_direction(
   return sign * circle_velocity(angle).Normalized();
 }
 
-double PathCircle::closest_courserate(const ignition::math::Vector2d& pos) {
+double PathCircle::closest_courserate(const ignition::math::Vector2d& pos,
+                                      const ignition::math::Vector2d& vel) {
   // const double angle = closest_angle(pos);
   // NOTE: not implemented
   return 0.0;

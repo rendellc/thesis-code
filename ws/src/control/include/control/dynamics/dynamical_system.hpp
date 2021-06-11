@@ -2,6 +2,9 @@
 
 #include <eigen3/Eigen/Dense>
 
+namespace control {
+namespace dynamics {
+
 class DynamicalSystem {
  public:
   DynamicalSystem() = default;
@@ -23,3 +26,5 @@ class DynamicalSystem {
   virtual int number_of_states() const = 0;
   virtual int number_of_inputs() const = 0;
 };
+}  // namespace dynamics
+}  // namespace control

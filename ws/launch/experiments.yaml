@@ -5,28 +5,26 @@ settings:
   datadir: ../data
   rerun:
     - comment out this to run everything
-    # - smc_step
-    # - smc_turn
+    - smc_step
+    - smc_turn
     - rr_step
     - rr_turn
-    # - angvel_step
-    # - angvel_smooth_step
-    # - simple_lap
+    - angvel_step
+    - simple_lap
     - simple_lap_no_braking
-    # - simple_lap_low_curvature
-    # - simple_lap_low_speed
-    # - simple_lap_circular
-    # - simple_lap_low_curvature_high_speed
-    # - simple_lap_low_curvature_high_speed_circular
-    # - noslip_yawrate
-    # - noslip_yaw
+    - simple_lap_low_curvature
+    - simple_lap_low_speed
+    - simple_lap_circular
+    - simple_lap_low_curvature_high_speed
+    - simple_lap_low_curvature_high_speed_circular
+    - noslip_yawrate
+    - noslip_yaw
   onlyrun:
     # - smc_step
     # - smc_turn
-    - rr_step
-    - rr_turn
+    # - rr_step
+    # - rr_turn
     # - angvel_step
-    # - angvel_smooth_step
     # - simple_lap
     # - simple_lap_no_braking
     # - simple_lap_low_curvature
@@ -54,13 +52,29 @@ experiments:
         force: true
         rate: 10
       plots:
-        reference_fl:
+        reference_fl_raw:
           type: timeseries
           ylabel: "[deg]"
           datas:
             - topic: /vehicle/wheel_fl/controller_info
-              attribute: reference.steering_angle
+              attribute: reference_optimal.steering_angle
               label: fl
+              scale: rad2deg
+          tlim:
+            - 0
+            - 20
+        reference_fl:
+          type: timeseries
+          ylabel: "[deg]"
+          legend: true
+          datas:
+            - topic: /vehicle/wheel_fl/controller_info
+              attribute: reference.steering_angle
+              label: "$\\delta_r$"
+              scale: rad2deg
+            - topic: /vehicle/wheel_fl/controller_info
+              attribute: reference_optimal.steering_angle
+              label: "$\\delta_r^*$"
               scale: rad2deg
           tlim:
             - 0
@@ -81,7 +95,7 @@ experiments:
           ylabel: "[kNm]"
           datas:
             - topic: /vehicle/wheel_fl/controller_info
-              attribute: steer_torque
+              attribute: cmd.steer_torque
               label: fl
               scale: 0.001
           tlim:
@@ -131,16 +145,15 @@ experiments:
           method: chatter
           data:
             topic: /vehicle/wheel_fl/controller_info
-            attribute: steer_torque
+            attribute: cmd.steer_torque
             tlim:
               - 0
               - 20
-          scale: 0.001
         peak_torque:
           method: peak
           data:
             topic: /vehicle/wheel_fl/controller_info
-            attribute: steer_torque
+            attribute: cmd.steer_torque
             tlim:
               - 0
               - 20
@@ -149,7 +162,7 @@ experiments:
           method: mean
           data:
             topic: /vehicle/wheel_fl/controller_info
-            attribute: steer_torque
+            attribute: cmd.steer_torque
             tlim:
               - 0
               - 20
@@ -170,13 +183,29 @@ experiments:
         force: true
         rate: 10
       plots:
-        reference_fl:
+        reference_fl_raw:
           type: timeseries
           ylabel: "[deg]"
           datas:
             - topic: /vehicle/wheel_fl/controller_info
-              attribute: reference.steering_angle
+              attribute: reference_optimal.steering_angle
               label: fl
+              scale: rad2deg
+          tlim:
+            - 0
+            - 20
+        reference_fl:
+          type: timeseries
+          ylabel: "[deg]"
+          legend: true
+          datas:
+            - topic: /vehicle/wheel_fl/controller_info
+              attribute: reference.steering_angle
+              label: "$\\delta_r$"
+              scale: rad2deg
+            - topic: /vehicle/wheel_fl/controller_info
+              attribute: reference_optimal.steering_angle
+              label: "$\\delta_r^*$"
               scale: rad2deg
           tlim:
             - 0
@@ -197,7 +226,7 @@ experiments:
           ylabel: "[kNm]"
           datas:
             - topic: /vehicle/wheel_fl/controller_info
-              attribute: steer_torque
+              attribute: cmd.steer_torque
               label: fl
               scale: 0.001
           tlim:
@@ -247,16 +276,15 @@ experiments:
           method: chatter
           data:
             topic: /vehicle/wheel_fl/controller_info
-            attribute: steer_torque
+            attribute: cmd.steer_torque
             tlim:
               - 0
               - 20
-          scale: 0.001
         peak_torque:
           method: peak
           data:
             topic: /vehicle/wheel_fl/controller_info
-            attribute: steer_torque
+            attribute: cmd.steer_torque
             tlim:
               - 0
               - 20
@@ -265,7 +293,7 @@ experiments:
           method: mean
           data:
             topic: /vehicle/wheel_fl/controller_info
-            attribute: steer_torque
+            attribute: cmd.steer_torque
             tlim:
               - 0
               - 20
@@ -314,7 +342,7 @@ experiments:
           ylabel: "[kNm]"
           datas:
             - topic: /vehicle/wheel_fl/controller_info
-              attribute: steer_torque
+              attribute: cmd.steer_torque
               label: fl
               scale: 0.001
           tlim:
@@ -364,16 +392,15 @@ experiments:
           method: chatter
           data:
             topic: /vehicle/wheel_fl/controller_info
-            attribute: steer_torque
+            attribute: cmd.steer_torque
             tlim:
               - 0
               - 20
-          scale: 0.001
         peak_torque:
           method: peak
           data:
             topic: /vehicle/wheel_fl/controller_info
-            attribute: steer_torque
+            attribute: cmd.steer_torque
             tlim:
               - 0
               - 20
@@ -382,7 +409,7 @@ experiments:
           method: mean
           data:
             topic: /vehicle/wheel_fl/controller_info
-            attribute: steer_torque
+            attribute: cmd.steer_torque
             tlim:
               - 0
               - 20
@@ -430,7 +457,7 @@ experiments:
           ylabel: "[kNm]"
           datas:
             - topic: /vehicle/wheel_fl/controller_info
-              attribute: steer_torque
+              attribute: cmd.steer_torque
               label: fl
               scale: 0.001
           tlim:
@@ -480,16 +507,15 @@ experiments:
           method: chatter
           data:
             topic: /vehicle/wheel_fl/controller_info
-            attribute: steer_torque
+            attribute: cmd.steer_torque
             tlim:
               - 0
               - 20
-          scale: 0.001
         peak_torque:
           method: peak
           data:
             topic: /vehicle/wheel_fl/controller_info
-            attribute: steer_torque
+            attribute: cmd.steer_torque
             tlim:
               - 0
               - 20
@@ -498,7 +524,7 @@ experiments:
           method: mean
           data:
             topic: /vehicle/wheel_fl/controller_info
-            attribute: steer_torque
+            attribute: cmd.steer_torque
             tlim:
               - 0
               - 20
@@ -524,10 +550,15 @@ experiments:
         reference_fl:
           type: timeseries
           ylabel: "[deg/s]"
+          legend: true
           datas:
             - topic: /vehicle/wheel_fl/controller_info
+              attribute: reference_optimal.angular_velocity
+              label: "$\\omega_r^*$"
+              scale: rad2deg
+            - topic: /vehicle/wheel_fl/controller_info
               attribute: reference.angular_velocity
-              label: fl
+              label: "$\\omega_r$"
               scale: rad2deg
           tlim:
             - 0
@@ -564,7 +595,7 @@ experiments:
           ylabel: "[kNm]"
           datas:
             - topic: /vehicle/wheel_fl/controller_info
-              attribute: drive_torque
+              attribute: cmd.drive_torque
               label: fl
               scale: 0.001
           tlim:
@@ -604,16 +635,15 @@ experiments:
           method: chatter
           data:
             topic: /vehicle/wheel_fl/controller_info
-            attribute: drive_torque
+            attribute: cmd.drive_torque
             tlim:
               - 0
               - 20
-          scale: 0.001
         peak_torque:
           method: peak
           data:
             topic: /vehicle/wheel_fl/controller_info
-            attribute: drive_torque
+            attribute: cmd.drive_torque
             tlim:
               - 0
               - 20
@@ -622,7 +652,7 @@ experiments:
           method: mean
           data:
             topic: /vehicle/wheel_fl/controller_info
-            attribute: drive_torque
+            attribute: cmd.drive_torque
             tlim:
               - 0
               - 20
@@ -686,7 +716,7 @@ experiments:
           ylabel: "[kNm]"
           datas:
             - topic: /vehicle/wheel_fl/controller_info
-              attribute: drive_torque
+              attribute: cmd.drive_torque
               label: fl
               scale: 0.001
           tlim:
@@ -726,16 +756,15 @@ experiments:
           method: chatter
           data:
             topic: /vehicle/wheel_fl/controller_info
-            attribute: drive_torque
+            attribute: cmd.drive_torque
             tlim:
               - 0
               - 20
-          scale: 0.001
         peak_torque:
           method: peak
           data:
             topic: /vehicle/wheel_fl/controller_info
-            attribute: drive_torque
+            attribute: cmd.drive_torque
             tlim:
               - 0
               - 20
@@ -744,7 +773,7 @@ experiments:
           method: mean
           data:
             topic: /vehicle/wheel_fl/controller_info
-            attribute: drive_torque
+            attribute: cmd.drive_torque
             tlim:
               - 0
               - 20
@@ -834,14 +863,14 @@ experiments:
           method: peak
           data:
             topic: /vehicle/wheel_fl/controller_info
-            attribute: steer_torque
+            attribute: cmd.steer_torque
           scale: 0.001
   simple_lap_no_braking:
     experimenter: run_commands
     plotter: make_bag_plots
     options:
       commands:
-        - "ros2 launch launch/base.launch.py bag:=true rviz:=true"
+        - "ros2 launch launch/base.launch.py bag:=true rviz:=false"
         - "ros2 launch control controllers_no_braking.launch.py"
         - "ros2 launch simulator simulator.launch.py gui:=false"
         - "ros2 launch operation report_waypoints_simple_lap.launch.py"
@@ -919,7 +948,7 @@ experiments:
           method: peak
           data:
             topic: /vehicle/wheel_fl/controller_info
-            attribute: steer_torque
+            attribute: cmd.steer_torque
           scale: 0.001
   simple_lap_low_curvature:
     experimenter: run_commands
@@ -1096,7 +1125,7 @@ experiments:
           method: peak
           data:
             topic: /vehicle/wheel_fl/controller_info
-            attribute: steer_torque
+            attribute: cmd.steer_torque
           scale: 0.001
   simple_lap_low_curvature_high_speed:
     experimenter: run_commands
@@ -1159,7 +1188,7 @@ experiments:
           method: peak
           data:
             topic: /vehicle/wheel_fl/controller_info
-            attribute: steer_torque
+            attribute: cmd.steer_torque
           scale: 0.001
   simple_lap_low_curvature_high_speed_circular:
     experimenter: run_commands
@@ -1222,7 +1251,7 @@ experiments:
           method: peak
           data:
             topic: /vehicle/wheel_fl/controller_info
-            attribute: steer_torque
+            attribute: cmd.steer_torque
           scale: 0.001
 
   noslip_yawrate:
@@ -1429,7 +1458,7 @@ experiments:
           ylabel: "[Nm]"
           datas:
             - topic: /vehicle/wheel_fl/controller_info
-              attribute: steer_torque
+              attribute: cmd.steer_torque
               label: fl
         steering_torque_straight:
           type: timeseries
@@ -1442,7 +1471,7 @@ experiments:
             - 100
           datas:
             - topic: /vehicle/wheel_fl/controller_info
-              attribute: steer_torque
+              attribute: cmd.steer_torque
               label: fl
   robust_rate_results:
     plotter: make_bag_plots
@@ -1487,7 +1516,7 @@ experiments:
           ylabel: "[Nm]"
           datas:
             - topic: /vehicle/wheel_fl/controller_info
-              attribute: steer_torque
+              attribute: cmd.steer_torque
               label: fl
         steering_torque_straight:
           type: timeseries
@@ -1500,7 +1529,7 @@ experiments:
             - 100
           datas:
             - topic: /vehicle/wheel_fl/controller_info
-              attribute: steer_torque
+              attribute: cmd.steer_torque
               label: fl
   vehicle_state_errors:
     plotter: make_bag_plots

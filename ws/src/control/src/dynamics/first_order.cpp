@@ -2,6 +2,9 @@
 
 using namespace Eigen;
 
+namespace control {
+namespace dynamics {
+
 FirstOrder::FirstOrder(double gain) : gain(gain) {}
 
 Eigen::VectorXd FirstOrder::derivatives(const VectorXd& states,
@@ -25,3 +28,6 @@ void FirstOrder::linearize(const VectorXd& states, const VectorXd& inputs,
 
 int FirstOrder::number_of_states() const { return NX; }
 int FirstOrder::number_of_inputs() const { return NU; }
+
+}  // namespace dynamics
+}  // namespace control

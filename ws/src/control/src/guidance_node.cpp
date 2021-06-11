@@ -1,9 +1,13 @@
 
 #include <control/PID.hpp>
+#include <control/clip.hpp>
+#include <control/cross2d.hpp>
 #include <control/path/path.hpp>
 #include <control/ssa.hpp>
 #include <geometry_msgs/msg/point.hpp>
 #include <geometry_msgs/msg/pose_stamped.hpp>
+#include <geometry_msgs/msg/twist_stamped.hpp>
+#include <ignition/math/Matrix3.hh>
 #include <ignition/math/Quaternion.hh>
 #include <ignition/math/Vector2.hh>
 #include <ignition/math/Vector3.hh>
@@ -15,6 +19,7 @@
 #include <visualization_msgs/msg/marker.hpp>
 
 using control::ssa;
+using ignition::math::Matrix3d;
 using ignition::math::Quaterniond;
 using ignition::math::Vector2d;
 using ignition::math::Vector3d;
@@ -29,6 +34,8 @@ class GuidanceNode : public rclcpp::Node {
       : Node("vehicle_controller_node", options) {
     pose_sub_p = this->create_subscription<geometry_msgs::msg::PoseStamped>(
         "pose", 1, std::bind(&GuidanceNode::pose_callback, this, _1));
+    twist_sub_p = this->create_subscription<geometry_msgs::msg::TwistStamped>(
+        "twist", 1, std::bind(&GuidanceNode::twist_callback, this, _1));
     waypoints_sub_p =
         this->create_subscription<vehicle_interface::msg::Waypoints>(
             "waypoints", 1,
@@ -80,6 +87,7 @@ class GuidanceNode : public rclcpp::Node {
 
  private:
   rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr pose_sub_p;
+  rclcpp::Subscription<geometry_msgs::msg::TwistStamped>::SharedPtr twist_sub_p;
   rclcpp::Subscription<vehicle_interface::msg::Waypoints>::SharedPtr
       waypoints_sub_p;
 
@@ -93,6 +101,7 @@ class GuidanceNode : public rclcpp::Node {
   rclcpp::TimerBase::SharedPtr timer_p;
 
   geometry_msgs::msg::PoseStamped::SharedPtr pose_p;
+  geometry_msgs::msg::TwistStamped::SharedPtr twist_p;
   vehicle_interface::msg::Waypoints::SharedPtr waypoints_p;
 
   std::shared_ptr<Path> path_p;
@@ -117,28 +126,41 @@ class GuidanceNode : public rclcpp::Node {
   void update_command() {
     time_now = this->get_clock()->now();
     info_msg.header.stamp = time_now;
-    if (path_p && pose_p) {
+    if (path_p && pose_p && twist_p) {
       const Vector2d position(pose_p->pose.position.x, pose_p->pose.position.y);
+      const Vector2d velocity(twist_p->twist.linear.x, twist_p->twist.linear.y);
       const Vector2d path_position = path_p->closest_point(position);
       const Vector2d path_direction = path_p->closest_direction(position);
+
+      const double speed = velocity.Length();
 
       info_msg.path_position.x = path_position.X();
       info_msg.path_position.y = path_position.Y();
       info_msg.path_course = atan2(path_direction.Y(), path_direction.X());
-      info_msg.path_courserate = path_p->closest_courserate(position);
+      info_msg.path_courserate = path_p->closest_courserate(position, velocity);
 
       const Vector2d path_error = position - path_position;
       info_msg.path_error.x = path_error.X();
       info_msg.path_error.y = path_error.Y();
-      info_msg.cross_track_error = Quaterniond(0, 0, info_msg.path_course)
+      const auto path_quaternion = Quaterniond(0, 0, info_msg.path_course);
+      info_msg.cross_track_error = path_quaternion
                                        .RotateVectorReverse(Vector3d(
                                            path_error.X(), path_error.Y(), 0.0))
                                        .Y();
+      info_msg.cross_track_error_derivative =
+          path_quaternion
+              .RotateVectorReverse(Vector3d(velocity.X(), velocity.Y(), 0.0))
+              .Y();
+
       info_msg.approach_error =
           approach_pid.update(info_msg.cross_track_error, time_now);
       info_msg.guide.course =
           info_msg.path_course -
           approach_angle * atan(info_msg.approach_error) / PI_HALF;
+      info_msg.guide.courserate =
+          info_msg.path_courserate -
+          approach_angle / PI_HALF / (1 + pow(approach_pid.command, 2)) *
+              (approach_pid.P * info_msg.cross_track_error_derivative);
 
       if (use_braking) {
         // Step path position a couple seconds into the future to see if
@@ -147,19 +169,20 @@ class GuidanceNode : public rclcpp::Node {
         Vector2d path_direction_future = path_direction;
         const int n_steps = 20;
         const double dt = 0.1;
+        double brake_factor = 0.0;
+        auto path_direction_prev = path_direction;
         for (int i = 0; i < n_steps; i++) {
-          path_position_future += dt * speed_desired * path_direction_future;
+          path_position_future +=
+              dt * (speed_desired + speed) / 2 * path_direction_future;
           path_direction_future =
               path_p->closest_direction(path_position_future);
-        }
-        const double path_course_future =
-            atan2(path_direction_future.Y(), path_direction_future.X());
-        const double direction_difference =
-            fabs(ssa(info_msg.path_course - path_course_future));
-        const double direction_difference_normalized =
-            direction_difference / (2 * PI_HALF);
+          brake_factor += fabs(
+              control::cross2d(path_direction_prev, path_direction_future));
 
-        const double brake_factor = direction_difference_normalized;
+          path_direction_prev = path_direction_future;
+        }
+
+        brake_factor = control::clip(brake_factor, 0.0, 0.9);
         info_msg.guide.speed = speed_desired * (1 - brake_factor);
       } else {
         info_msg.guide.speed = speed_desired;
@@ -180,6 +203,10 @@ class GuidanceNode : public rclcpp::Node {
   void pose_callback(geometry_msgs::msg::PoseStamped::SharedPtr msg_p) {
     pose_p = msg_p;
     RCLCPP_INFO_ONCE(this->get_logger(), "pose message recieved");
+  }
+  void twist_callback(geometry_msgs::msg::TwistStamped::SharedPtr msg_p) {
+    twist_p = msg_p;
+    RCLCPP_INFO_ONCE(this->get_logger(), "twist message recieved");
   }
 
   void waypoints_callback(vehicle_interface::msg::Waypoints::SharedPtr msg_p) {

@@ -24,7 +24,8 @@ class Path {
       const ignition::math::Vector2d& pos) = 0;
   virtual ignition::math::Vector2d closest_direction(
       const ignition::math::Vector2d& pos) = 0;
-  virtual double closest_courserate(const ignition::math::Vector2d& pos) = 0;
+  virtual double closest_courserate(const ignition::math::Vector2d& pos,
+                                    const ignition::math::Vector2d& vel) = 0;
 
   virtual ignition::math::Vector2d getBegin() const = 0;
   virtual ignition::math::Vector2d getEnd() const = 0;

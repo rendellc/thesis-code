@@ -130,8 +130,9 @@ def peak(data, options):
 
 def chatter(data, options):
     xs = _get_masked_metric_data(data, options)
-    #ch = chatter_signal(xs)
-    return chatter_metric(xs)
+    ch = chatter_signal(xs)
+    return np.std(ch)
+    # return chatter_metric(xs)
 
 
 def std(data, options):

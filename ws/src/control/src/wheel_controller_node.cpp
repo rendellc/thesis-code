@@ -2,8 +2,10 @@
 #include <chrono>
 #include <cmath>
 #include <control/PID.hpp>
+#include <control/reference_model.hpp>
 #include <control/softsign.hpp>
 #include <control/ssa.hpp>
+#include <eigen3/Eigen/Dense>
 #include <rclcpp/rclcpp.hpp>
 #include <vehicle_interface/msg/wheel_command.hpp>
 #include <vehicle_interface/msg/wheel_controller_info.hpp>
@@ -12,8 +14,12 @@
 
 using control::softsign;
 using control::ssa;
+using Eigen::Matrix2d;
+using Eigen::Vector2d;
 using std::placeholders::_1;
 using namespace vehicle_interface::msg;
+using control::reference_model::FirstOrder;
+using control::reference_model::SecondOrder;
 
 class WheelControllerNode : public rclcpp::Node {
  public:
@@ -88,6 +94,23 @@ class WheelControllerNode : public rclcpp::Node {
     this->get_parameter("use_reference_optimization",
                         use_reference_optimization);
 
+    this->declare_parameter("use_reference_model");
+    this->get_parameter("use_reference_model", use_reference_model);
+
+    double steer_damping_ratio;
+    this->declare_parameter("steer_damping_ratio");
+    this->get_parameter("steer_damping_ratio", steer_damping_ratio);
+
+    double steer_natural_frequency, drive_time_constant;
+    this->declare_parameter("steer_natural_frequency");
+    this->get_parameter("steer_natural_frequency", steer_natural_frequency);
+    this->declare_parameter("drive_time_constant");
+    this->get_parameter("drive_time_constant", drive_time_constant);
+
+    steer_model = std::make_shared<SecondOrder>(steer_damping_ratio,
+                                                steer_natural_frequency, 0, 0);
+    drive_model = std::make_shared<FirstOrder>(drive_time_constant, 0);
+
     RCLCPP_INFO(this->get_logger(), "%s initialized", this->get_name());
   }
 
@@ -97,6 +120,10 @@ class WheelControllerNode : public rclcpp::Node {
   rclcpp::Subscription<WheelState>::SharedPtr state_sub_p, reference_sub_p;
   rclcpp::Subscription<WheelLoad>::SharedPtr wheel_load_sub_p;
   rclcpp::TimerBase::SharedPtr timer_p;
+
+  // Reference models
+  std::shared_ptr<FirstOrder> drive_model;
+  std::shared_ptr<SecondOrder> steer_model;
 
   double update_rate;
   double wheel_mass;
@@ -113,30 +140,30 @@ class WheelControllerNode : public rclcpp::Node {
   double robust_rate_softregion;
   double max_steering_accel;
   bool use_reference_optimization;
+  bool use_reference_model;
 
-  WheelState::SharedPtr wheel_state_p;
-  WheelState::SharedPtr wheel_reference_p;
-  WheelLoad::SharedPtr wheel_load_p;
-  WheelState reference;  //= find_closest_equivalent_reference(*wheel_state,
-                         //*wheel_reference_p);
+  bool state_valid = false;
+  bool reference_valid = false;
+  bool load_valid = false;
+  // WheelState::SharedPtr wheel_state_p;
+  // WheelState::SharedPtr wheel_reference_p;
+  // WheelLoad::SharedPtr wheel_load_p;
+  // WheelState reference_optimal;
+  // WheelState reference;
 
-  WheelCommand command_msg;
   PID angular_velocity_pid;
   PID steering_rate_pid;
 
-  WheelControllerInfo info_msg;
+  WheelControllerInfo info;
 
   void sliding_mode_steering_angle() {
-    const auto &x_p = wheel_state_p;
-    const auto &xr_p = wheel_reference_p;
-    const auto &F_z = wheel_load_p->load;
-
     // Steering angle control law
     // calculation in goodnotes
     // const auto x1 = ssa(x_p->steering_angle - xr_p->steering_angle);
-    const auto x1 = x_p->steering_angle - xr_p->steering_angle;
+    const auto x1 = info.state.steering_angle - info.reference.steering_angle;
     x1_integral = x1_integral + x1 / update_rate;
-    const auto x2 = x_p->steering_angle_rate - xr_p->steering_angle_rate;
+    const auto x2 =
+        info.state.steering_angle_rate - info.reference.steering_angle_rate;
 
     const double steer_inertia =
         wheel_mass *
@@ -145,25 +172,25 @@ class WheelControllerNode : public rclcpp::Node {
     // in gazebo, should actually be different for each wheel and load
     // dependent
     // const double steer_resistance_factor = 2.5;
-    const double max_steer_resistance = steer_resistance_factor * F_z;
+    const double &Fz = info.load.load;
+    const double max_steer_resistance = steer_resistance_factor * Fz;
     // const double beta_0 = 0.1;
-    const double rho = steer_inertia * sliding_mode_eigenvalue * fabs(x2) +
-                       max_steer_resistance;
-    const double beta = rho + beta_0;
+    info.sliding_mode_rho = steer_inertia * sliding_mode_eigenvalue * fabs(x2) +
+                            max_steer_resistance;
+    const double &rho = info.sliding_mode_rho;
+    info.sliding_mode_beta = rho + beta_0;
     // const double s = x1 + (1 / sliding_mode_eigenvalue) * x2;
-    const double s = sliding_mode_eigenvalue * x1 + x2;
+    info.sliding_mode_s = sliding_mode_eigenvalue * x1 + x2;
 
-    info_msg.sliding_mode_s = s;
-    info_msg.sliding_mode_rho = rho;
-    info_msg.sliding_mode_beta = beta;
-
-    command_msg.steer_torque = -beta * softsign(s, sliding_mode_softregion);
+    const double &s = info.sliding_mode_s;
+    const double &beta = info.sliding_mode_beta;
+    info.cmd.steer_torque = -beta * softsign(s, sliding_mode_softregion);
   }
 
-  void robust_rate(double desired_rate) {
-    const auto &x = wheel_state_p;
+  void robust_rate() {
+    info.mode = "robust_rate";
     // const auto &xr = wheel_reference_p;
-    const auto &F_z = wheel_load_p->load;
+    const auto &Fz = info.load.load;
 
     // Steering angle rate control law
     // calculation in goodnotes
@@ -171,41 +198,60 @@ class WheelControllerNode : public rclcpp::Node {
         wheel_mass *
         (3 * wheel_radius * wheel_radius + wheel_width * wheel_width) / 12;
 
-    const double rate_error = desired_rate - x->steering_angle_rate;
-    const double max_steer_resistance = steer_resistance_factor * F_z;
+    info.robust_rate_error_rate = info.robust_rate_angular_rate_reference -
+                                  info.state.steering_angle_rate;
+    const double max_steer_resistance = steer_resistance_factor * Fz;
 
-    info_msg.robust_rate_error_rate = rate_error;
-
-    command_msg.steer_torque =
+    const double &rate_error = info.robust_rate_error_rate;
+    info.cmd.steer_torque =
         (steer_inertia * max_steering_accel + max_steer_resistance + beta_0) *
         softsign(rate_error, robust_rate_softregion);
   }
 
+  void reference_model() {
+    // Use opt to filter this->reference
+    const auto dt = 1 / update_rate;
+    // Steering angle model
+    // deltaddot + 2*zeta*omega0* deltadot + omega0^2 delta = delta_r
+    steer_model->update(info.reference_optimal.steering_angle, dt);
+    drive_model->update(info.reference_optimal.angular_velocity, dt);
+
+    info.reference.steering_angle = steer_model->getReference();
+    info.reference.steering_angle_rate = steer_model->getReferenceDerivative();
+    info.reference.angular_velocity = drive_model->getReference();
+  }
+
   void update_command() {
-    if (wheel_state_p && wheel_reference_p && wheel_load_p) {
+    if (state_valid && reference_valid && load_valid) {
       // Angular velocity control law
       const auto time_now = this->now();
 
       if (use_reference_optimization) {
-        reference = find_closest_equivalent_reference(*wheel_state_p,
-                                                      *wheel_reference_p);
+        info.reference_optimal =
+            find_closest_equivalent_reference(info.state, info.reference_raw);
       } else {
-        reference = *wheel_reference_p;
+        info.reference_optimal = info.reference_raw;
+      }
+
+      if (use_reference_model) {
+        reference_model();
+      } else {
+        info.reference = info.reference_optimal;
       }
 
       const auto omega_error =
-          reference.angular_velocity - wheel_state_p->angular_velocity;
-      command_msg.drive_torque =
+          info.reference.angular_velocity - info.state.angular_velocity;
+      info.cmd.drive_torque =
           angular_velocity_pid.update(omega_error, time_now);
 
       if (use_sliding_mode) {
         sliding_mode_steering_angle();
-        info_msg.mode = "sliding_mode";
+        info.mode = "sliding_mode";
       }
       if (use_robust_rate) {
-        const double delta = wheel_state_p->steering_angle;
-        const double delta_r = reference.steering_angle;
-        const double ddelta_r = reference.steering_angle_rate;
+        const double delta = info.state.steering_angle;
+        const double delta_r = info.reference.steering_angle;
+        const double ddelta_r = info.reference.steering_angle_rate;
 
         // compute desired rate
         double desired_angular_rate =
@@ -215,33 +261,32 @@ class WheelControllerNode : public rclcpp::Node {
                                  fabs(desired_angular_rate) *
                                  steering_rate_limit;
         }
-        robust_rate(desired_angular_rate);
-        info_msg.mode = "robust_rate";
-        info_msg.robust_rate_angular_rate_reference = desired_angular_rate;
+        info.robust_rate_angular_rate_reference = desired_angular_rate;
+        robust_rate();
       }
 
-      info_msg.header.frame_id = this->get_namespace();
-      info_msg.header.stamp = this->get_clock()->now();
-      info_msg.state = *wheel_state_p;
-      info_msg.reference = reference;
-      info_msg.reference_raw = *wheel_reference_p;
-      const auto &x = info_msg.state;
-      const auto &xr = info_msg.reference;
-      auto &e = info_msg.error;
+      info.header.frame_id = this->get_namespace();
+      info.header.stamp = this->get_clock()->now();
+      const auto &x = info.state;
+      const auto &xr = info.reference;
+      auto &e = info.error;
       e.steering_angle = xr.steering_angle - x.steering_angle;
       e.steering_angle_rate = xr.steering_angle_rate - x.steering_angle_rate;
       e.angular_velocity = xr.angular_velocity - x.angular_velocity;
-      info_msg.steer_torque = command_msg.steer_torque;
-      info_msg.drive_torque = command_msg.drive_torque;
-      info_pub_p->publish(info_msg);
+      info_pub_p->publish(info);
 
-      command_pub_p->publish(command_msg);
+      command_pub_p->publish(info.cmd);
     }
   }
 
   double reference_cost(const WheelState &state,
                         const WheelState &reference) const {
-    return fabs(state.steering_angle - reference.steering_angle);
+    const double steer_cost =
+        fabs(state.steering_angle - reference.steering_angle);
+    const double drive_cost =
+        fabs(state.angular_velocity - reference.angular_velocity);
+
+    return steer_cost + 0.2 * drive_cost;
   }
 
   WheelState find_closest_equivalent_reference(
@@ -275,8 +320,10 @@ class WheelControllerNode : public rclcpp::Node {
         unchanged, halfturn_positive, halfturn_negative};
 
     double lowest_cost = std::numeric_limits<double>::infinity();
-    int lowest_index = -1;
-    for (int i = 0; i < options.size(); i++) {
+    size_t lowest_index = 0;
+
+    // [[sign-compare]]
+    for (size_t i = 0; i < options.size(); i++) {
       const double cost = reference_cost(state, options[i]);
       if (cost < lowest_cost) {
         lowest_cost = cost;
@@ -287,16 +334,19 @@ class WheelControllerNode : public rclcpp::Node {
   }
 
   void state_callback(WheelState::SharedPtr msg_p) {
+    state_valid = true;
+    info.state = *msg_p;
     RCLCPP_INFO_ONCE(this->get_logger(), "state message recieved");
-    wheel_state_p = msg_p;
   }
   void reference_callback(WheelState::SharedPtr msg_p) {
+    reference_valid = true;
+    info.reference_raw = *msg_p;
     RCLCPP_INFO_ONCE(this->get_logger(), "reference message recieved");
-    wheel_reference_p = msg_p;
   }
   void load_callback(WheelLoad::SharedPtr msg_p) {
+    load_valid = true;
+    info.load = *msg_p;
     RCLCPP_INFO_ONCE(this->get_logger(), "load message recieved");
-    wheel_load_p = msg_p;
   }
 };
 

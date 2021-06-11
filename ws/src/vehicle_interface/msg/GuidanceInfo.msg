@@ -6,5 +6,6 @@ float64 path_course
 float64 path_courserate
 float64 approach_error
 float64 cross_track_error
+float64 cross_track_error_derivative
 geometry_msgs/Vector3 path_position
 geometry_msgs/Vector3 path_error

@@ -77,6 +77,15 @@ def plot_waypoints(waypoints, label, ax=None):
     return ax
 
 
+def plot_quiver_function(x, y, u, v, ax=None):
+    if ax is None:
+        _, ax = plt.subplots()
+
+    ax.quiver(x, y, u, v)
+
+    return ax
+
+
 def savefig(fig: plt.figure, figurename=None):
     """
     Save figure as .pdf and .fig

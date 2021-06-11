@@ -84,7 +84,8 @@
 			"typeinfo": "cpp",
 			"variant": "cpp",
 			"*.ipp": "cpp",
-			"codecvt": "cpp"
+			"codecvt": "cpp",
+			"dense": "cpp"
 		},
 		"ros.distro": "foxy",
 		"python.analysis.extraPaths": [

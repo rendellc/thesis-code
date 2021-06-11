@@ -160,9 +160,9 @@ class VehicleControllerNode : public rclcpp::Node {
     this->get_parameter<int>("ilqr_trajectory_length", ilqr_trajectory_length);
 
     // iLQR for 4WIS no slip model
-    dynsys_4wis_p =
-        std::make_shared<NoSlip4WISSystem>(cg_to_front, cg_to_rear, front_width,
-                                           rear_width, wheel_radius, 3.0, 3.0);
+    dynsys_4wis_p = std::make_shared<control::dynamics::NoSlip4WISSystem>(
+        cg_to_front, cg_to_rear, front_width, rear_width, wheel_radius, 3.0,
+        3.0);
     VectorXd cost_states(dynsys_4wis_p->number_of_states());
     cost_states.fill(0.0);
     cost_states(0) = ilqr_cost_x;
@@ -267,9 +267,9 @@ class VehicleControllerNode : public rclcpp::Node {
   rclcpp::Time time_now;
 
   // Iterative LQR variables
-  std::shared_ptr<DynamicalSystem> dynsys_4wis_p;
+  std::shared_ptr<control::dynamics::DynamicalSystem> dynsys_4wis_p;
   std::shared_ptr<IterativeLQR> ilqr_4wis;
-  std::shared_ptr<DynamicalSystem> dynsys_singletrack_p;
+  std::shared_ptr<control::dynamics::DynamicalSystem> dynsys_singletrack_p;
   std::shared_ptr<IterativeLQR> ilqr_singletrack;
 
   void do_reference_control() {
@@ -576,6 +576,7 @@ class VehicleControllerNode : public rclcpp::Node {
   void guidance_callback(vehicle_interface::msg::Guide::SharedPtr msg_p) {
     guidance_p = msg_p;
     info_msg.course_reference = msg_p->course;
+    info_msg.courserate_reference = msg_p->courserate;
     info_msg.speed_reference = msg_p->speed;
     info_msg.guidance_ready = true;
     RCLCPP_INFO_ONCE(this->get_logger(), "guidance message recieved");

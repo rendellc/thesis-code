@@ -1,5 +1,6 @@
 #include <control/iterative_lqr.hpp>
 
+using control::dynamics::DynamicalSystem;
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 

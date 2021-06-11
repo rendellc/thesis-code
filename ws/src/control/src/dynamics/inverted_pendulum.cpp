@@ -1,5 +1,8 @@
 #include <control/dynamics/inverted_pendulum.hpp>
 
+namespace control {
+namespace dynamics {
+
 InvertedPendulum::InvertedPendulum(double mass, double friction, double length,
                                    double gravity)
     : m(mass), mu(friction), l(length), g(gravity) {}
@@ -21,3 +24,6 @@ Eigen::VectorXd InvertedPendulum::derivatives(const Eigen::VectorXd& states,
 
 int InvertedPendulum::number_of_states() const { return NX; }
 int InvertedPendulum::number_of_inputs() const { return NU; }
+
+}  // namespace dynamics
+}  // namespace control

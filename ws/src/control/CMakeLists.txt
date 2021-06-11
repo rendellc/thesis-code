@@ -36,12 +36,15 @@ add_library(controllib SHARED
   "src/iterative_lqr.cpp"
   "src/halley.cpp"
   "src/softsign.cpp"
+  "src/reference_model.cpp"
   "src/ssa.cpp"
   "src/clip.cpp"
+  "src/cross2d.cpp"
   "src/PID.cpp"
 )
 target_include_directories(controllib PUBLIC include ${Eigen3_INCLUDE_DIRS} "/usr/include/eigen3")
 ament_target_dependencies(controllib
+  "ignition-math6"
   "rclcpp"
 )
 

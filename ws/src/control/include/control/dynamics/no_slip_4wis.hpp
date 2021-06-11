@@ -3,6 +3,9 @@
 #include <control/dynamics/dynamical_system.hpp>
 #include <eigen3/Eigen/Dense>
 
+namespace control {
+namespace dynamics {
+
 class NoSlip4WISSystem : public DynamicalSystem {
   void velocity_and_yawrate(const Eigen::VectorXd& states,
                             Eigen::Vector2d& velocity, double& yawrate) const;
@@ -41,3 +44,5 @@ class NoSlip4WISSystem : public DynamicalSystem {
   int number_of_states() const override;
   int number_of_inputs() const override;
 };
+}  // namespace dynamics
+}  // namespace control

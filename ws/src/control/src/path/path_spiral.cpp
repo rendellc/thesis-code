@@ -44,6 +44,15 @@ ignition::math::Vector2d PathSpiral::spiral_u(double u) const {
                                                sin(sign * u * u + orientation));
 }
 
+double PathSpiral::u_derivative(double u, double desired_speed) const {
+  return desired_speed / (scale * sqrt(2 * (1 + 4 * u * u * u * u)));
+}
+
+double PathSpiral::u_double_derivative(double u, double desired_speed) const {
+  return -desired_speed / (scale * sqrt(2)) * 8 * u * u * u /
+         pow(1 + 4 * u * u * u * u, 1.5);
+}
+
 ignition::math::Vector2d PathSpiral::spiral_u_derivative(double u) const {
   const auto sign = u > 0 ? 1 : -1;
   const auto& k = scale;
@@ -116,16 +125,24 @@ ignition::math::Vector2d PathSpiral::closest_direction(
   return sign * spiral_u_derivative(u).Normalized();
 }
 
-double PathSpiral::closest_courserate(const ignition::math::Vector2d& pos) {
+double PathSpiral::closest_courserate(const ignition::math::Vector2d& pos,
+                                      const ignition::math::Vector2d& vel) {
   const auto sign = theta_end > theta_begin ? 1 : -1;
   const double theta = find_closest_theta(pos);
   const double u = theta_to_u(theta);
 
+  const double speed = vel.Length();
+  const double u_dot = u_derivative(u, speed);
+  const double u_ddot = u_double_derivative(u, speed);
+
   using ignition::math::Vector2d;
   using ignition::math::Vector3d;
 
-  const Vector2d v2 = spiral_u_derivative(u);
-  const Vector2d vdot2 = spiral_u_double_derivative(u);
+  const auto dpdu = spiral_u_derivative(u);
+  const auto dvdu = spiral_u_double_derivative(u);
+
+  const Vector2d v2 = dpdu * u_dot;
+  const Vector2d vdot2 = dvdu * u_dot + dpdu * u_ddot;
 
   const Vector3d v(v2.X(), v2.Y(), 0);
   const Vector3d vdot(vdot2.X(), vdot2.Y(), 0);

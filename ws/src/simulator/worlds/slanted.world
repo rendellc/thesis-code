@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<sdf version="1.5">
+  <world name="default">
+    <!-- A global light source -->
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    <!-- A ground plane -->
+    <model name="slanted_plane">
+      <static>1</static>
+      <pose>0 0 0 0 0.26 0</pose>
+      <link name="link">
+        <visual name="slanted_plane_visual">
+          <geometry>
+            <plane>
+              <normal>0.26 0 0.96</normal>
+              <size>10 10</size>
+            </plane>
+          </geometry>
+        </visual>
+        <collision name="slanted_plane_collision">
+          <geometry>
+            <plane>
+              <normal>0.26 0 0.96</normal>
+              <size>10 10</size>
+            </plane>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+  </world>
+</sdf>

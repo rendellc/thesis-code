@@ -3,6 +3,8 @@
 #include <control/dynamics/dynamical_system.hpp>
 #include <eigen3/Eigen/Dense>
 
+namespace control {
+namespace dynamics {
 class InvertedPendulum : public DynamicalSystem {
   static constexpr int NX = 2;
   static constexpr int NU = 1;
@@ -23,3 +25,5 @@ class InvertedPendulum : public DynamicalSystem {
   int number_of_states() const override;
   int number_of_inputs() const override;
 };
+}  // namespace dynamics
+}  // namespace control

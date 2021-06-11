@@ -13,7 +13,8 @@ int main() {
   // std::shared_ptr<DynamicalSystem> sys =
   //     std::make_shared<InvertedPendulum>(1.0, 0.01, 1.0, 9.8);
   const double gain = 2.0;
-  std::shared_ptr<DynamicalSystem> sys = std::make_shared<FirstOrder>(gain);
+  std::shared_ptr<control::dynamics::DynamicalSystem> sys =
+      std::make_shared<control::dynamics::FirstOrder>(gain);
 
   Eigen::VectorXd cost_states(2);
   cost_states << 0.0, 0.0;

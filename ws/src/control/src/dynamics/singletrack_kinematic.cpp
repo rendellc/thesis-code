@@ -3,6 +3,9 @@
 
 using namespace Eigen;
 
+namespace control {
+namespace dynamics {
+
 SingletrackKinematicSystem::SingletrackKinematicSystem(
     double length_to_front, double length_to_rear, double wheel_radius,
     double time_constant_omega, double time_constant_delta)
@@ -155,3 +158,6 @@ void SingletrackKinematicSystem::linearize(const VectorXd& states,
 
 int SingletrackKinematicSystem::number_of_states() const { return NX; }
 int SingletrackKinematicSystem::number_of_inputs() const { return NU; }
+
+}  // namespace dynamics
+}  // namespace control
