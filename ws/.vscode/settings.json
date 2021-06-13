@@ -5,5 +5,27 @@
         "/home/cale/thesis-code/ws/install/tuts/lib/python3.8/site-packages",
         "/opt/ros/foxy/lib/python3.8/site-packages"
     ],
-    "colcon.provideTasks": true
+    "colcon.provideTasks": true,
+    "search.exclude": {
+        "**/bagfolder": true,
+        "**/build": true,
+        "**/log": true,
+        "**/install": true
+    },
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/node_modules/**": true,
+        "**/.hg/store/**": true,
+        "**/bagfolder": true,
+        "**/build": true,
+        "**/install": true,
+        "**/log": true
+    },
+    "files.exclude": {
+        "**/bagfolder": true,
+        "**/log": true,
+        "**/build": true,
+        "**/install": true
+    }
 }

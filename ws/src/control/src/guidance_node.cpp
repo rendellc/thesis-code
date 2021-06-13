@@ -81,6 +81,9 @@ class GuidanceNode : public rclcpp::Node {
     this->declare_parameter("D_approach");
     this->get_parameter<double>("D_approach", approach_pid.D);
 
+    this->declare_parameter("curvature_ff");
+    this->get_parameter<double>("curvature_ff", curvature_ff);
+
     this->declare_parameter("speed_desired");
     this->get_parameter<double>("speed_desired", speed_desired);
   }
@@ -116,6 +119,7 @@ class GuidanceNode : public rclcpp::Node {
   bool use_circular_smoothing;
   bool use_braking;
   double speed_desired;
+  double curvature_ff;
 
   PID approach_pid;
 
@@ -137,11 +141,12 @@ class GuidanceNode : public rclcpp::Node {
       info_msg.path_position.x = path_position.X();
       info_msg.path_position.y = path_position.Y();
       info_msg.path_course = atan2(path_direction.Y(), path_direction.X());
-      info_msg.path_courserate = path_p->closest_courserate(position, velocity);
+      info_msg.path_curvature = path_p->closest_curvature(position, velocity);
 
       const Vector2d path_error = position - path_position;
       info_msg.path_error.x = path_error.X();
       info_msg.path_error.y = path_error.Y();
+
       const auto path_quaternion = Quaterniond(0, 0, info_msg.path_course);
       info_msg.cross_track_error = path_quaternion
                                        .RotateVectorReverse(Vector3d(
@@ -152,15 +157,32 @@ class GuidanceNode : public rclcpp::Node {
               .RotateVectorReverse(Vector3d(velocity.X(), velocity.Y(), 0.0))
               .Y();
 
-      info_msg.approach_error =
-          approach_pid.update(info_msg.cross_track_error, time_now);
-      info_msg.guide.course =
-          info_msg.path_course -
-          approach_angle * atan(info_msg.approach_error) / PI_HALF;
-      info_msg.guide.courserate =
-          info_msg.path_courserate -
-          approach_angle / PI_HALF / (1 + pow(approach_pid.command, 2)) *
-              (approach_pid.P * info_msg.cross_track_error_derivative);
+      bool use_vector_field_guidance = false;
+      if (use_vector_field_guidance) {
+        const double course_to_path = -atan2(path_error.Y(), path_error.X());
+        const double distance_to_path = path_error.Length();
+
+        const double smoothing = control::clip(distance_to_path / 5, 0, 1);
+        info_msg.guide.course =
+            smoothing * course_to_path + (1 - smoothing) * info_msg.path_course;
+      }
+
+      bool use_atan_guidance = true;
+      if (use_atan_guidance) {
+        info_msg.approach_error =
+            approach_pid.update(info_msg.cross_track_error, time_now);
+        info_msg.guide.course =
+            info_msg.path_course -
+            approach_angle * atan(info_msg.approach_error) / PI_HALF +
+            curvature_ff * info_msg.path_curvature;
+      }
+
+      // info_msg.guide.courserate =
+      //     info_msg.path_courserate -
+      //     approach_angle / PI_HALF / (1 + pow(approach_pid.command, 2)) *
+      //         (approach_pid.P * info_msg.cross_track_error_derivative);
+
+      // info_msg.guide.course += 0.05 * info_msg.guide.courserate;
 
       if (use_braking) {
         // Step path position a couple seconds into the future to see if
@@ -192,7 +214,7 @@ class GuidanceNode : public rclcpp::Node {
 
       info_msg.yaw_reference.source = YawReference::PATH;
       info_msg.yaw_reference.yaw = info_msg.path_course;
-      info_msg.yaw_reference.yawrate = info_msg.path_courserate;
+      // info_msg.yaw_reference.yawrate = info_msg.path_courserate;
 
       yaw_reference_pub_p->publish(info_msg.yaw_reference);
     }
@@ -235,7 +257,7 @@ class GuidanceNode : public rclcpp::Node {
     const auto path_points = path_p->sample(num_samples);
     path_marker_msg.points.resize(path_points.size());
     geometry_msgs::msg::Point p_geom;
-    for (int i = 0; i < path_points.size(); i++) {
+    for (size_t i = 0; i < path_points.size(); i++) {
       const auto &p = path_points[i];
 
       p_geom.x = p.X();

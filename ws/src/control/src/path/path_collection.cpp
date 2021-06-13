@@ -51,10 +51,10 @@ ignition::math::Vector2d PathCollection::closest_direction(
   return collection[closest]->closest_direction(pos);
 }
 
-double PathCollection::closest_courserate(const ignition::math::Vector2d& pos,
-                                          const ignition::math::Vector2d& vel) {
+double PathCollection::closest_curvature(const ignition::math::Vector2d& pos,
+                                         const ignition::math::Vector2d& vel) {
   update_closest(pos);
-  return collection[closest]->closest_courserate(pos, vel);
+  return collection[closest]->closest_curvature(pos, vel);
 }
 
 // ignition::math::Vector2d PathCollection::closest_point_step_ahead(

@@ -171,14 +171,14 @@ class ManualOperationJoyNode : public rclcpp::Node {
 
       const double dx = joy_p->axes[LEFT_LR];
       const double dy = joy_p->axes[LEFT_UD];
-      const double sideslip = atan2(dy, dx);
+      // const double sideslip = atan2(dy, dx);
       sideslip_rate = joy_p->axes[LEFT_LR];
 
       bool brake = joy_p->buttons[BUTTONS::L2] == 1;
       bool accel = joy_p->buttons[BUTTONS::R2] == 1;
 
       double acceleration = 1.0;
-      double brake_factor = 15.0;
+      // double brake_factor = 15.0;
       if (accel) {
         guide.speed = guide.speed + acceleration / update_rate;
       }

@@ -9,9 +9,11 @@ topics:
       - guide.course
       - guide.speed
       - path_course
-      - path_courserate
+      - path_curvature
       - approach_error
       - cross_track_error
+      - path_position.x
+      - path_position.y
   /vehicle/controller_info:
     topic_type_module: vehicle_interface.msg
     topic_type: VehicleControllerInfo
@@ -59,6 +61,9 @@ topics:
     topic_type: WheelControllerInfo
     time_attribute: header.stamp
     data_attributes:
+      - state.steering_angle
+      - state.steering_angle_rate
+      - state.angular_velocity
       - error.steering_angle
       - error.angular_velocity
   /vehicle/wheel_rr/controller_info:

@@ -10,6 +10,10 @@ WP_SINGLE_TURN = np.array([[0, 0],
                            ],
                           dtype=float)
 
+WP_STRAIGHT_LINE = np.array([[0, 0],
+                             [500, 0]],
+                            dtype=float)
+
 
 WP_SIMPLE_LAP = np.array([[0, 0],
                           [15, 0],
@@ -29,9 +33,9 @@ VEHICLE_CONTROLLER_PARAMETERS = [
     {"pid_active": True},
     {"yaw_source": "path"},
     {"yawrate_sat": 1.0},
-    {"P_yaw": 10.0},
+    {"P_yaw": 1.0},
     {"I_yaw": 0.0},
-    {"D_yaw": 5.0},
+    {"D_yaw": 0.5},
     {"yawrate_ff": 1.0},
     {"P_yawrate": 0.0},
     {"I_yawrate": 0.5},
@@ -72,7 +76,7 @@ WHEEL_CONTROLLER_PARAMETERS = [
     {"use_reference_optimization": True},
     {"use_reference_model": True},
     {"steer_damping_ratio": 0.9},
-    {"steer_natural_frequency": 3.0},
+    {"steer_natural_frequency": 4.0},
     {"drive_time_constant": 1.0}
 ]
 
@@ -82,14 +86,15 @@ GUIDANCE_PARAMETERS = [
     {"use_fermat_smoothing": True},
     {"use_circular_smoothing": False},
     {"use_braking": False},
-    {"maximum_curvature": 0.75},
-    {"approach_angle": np.deg2rad(30)},
+    {"maximum_curvature": 0.50},
+    {"approach_angle": np.deg2rad(60)},
     # {"P_approach": 2.0}  # NOTE: mclain recommends 1/radius_min = maximum_curvature
     # {"P_approach": 2.0},
-    {"P_approach": 2.0},
+    {"curvature_ff": 0.0},
+    {"P_approach": 0.5},
     {"I_approach": 0.0},
     {"D_approach": 0.0},
-    {"speed_desired": 8.0/3.6}
+    {"speed_desired": 10.0/3.6}
 ]
 
 

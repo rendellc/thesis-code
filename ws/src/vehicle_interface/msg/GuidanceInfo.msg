@@ -3,7 +3,7 @@ std_msgs/Header header
 Guide guide
 YawReference yaw_reference
 float64 path_course
-float64 path_courserate
+float64 path_curvature
 float64 approach_error
 float64 cross_track_error
 float64 cross_track_error_derivative

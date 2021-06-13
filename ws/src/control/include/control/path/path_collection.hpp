@@ -21,8 +21,8 @@ class PathCollection : public Path {
       const ignition::math::Vector2d& pos) override;
   ignition::math::Vector2d closest_direction(
       const ignition::math::Vector2d& pos) override;
-  double closest_courserate(const ignition::math::Vector2d& pos,
-                            const ignition::math::Vector2d& vel) override;
+  double closest_curvature(const ignition::math::Vector2d& pos,
+                           const ignition::math::Vector2d& vel) override;
   // ignition::math::Vector2d closest_point_step_ahead(
   //     const ignition::math::Vector2d& pos, double velocity, double time,
   //     double* time_left) override;

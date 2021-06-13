@@ -369,7 +369,7 @@ class VehicleControllerNode : public rclcpp::Node {
   }
 
   void yawrate_course_noslip_transformation() {
-    info_msg.sideslip_reference = info_msg.course_reference - info_msg.yaw;
+    info_msg.sideslip_reference = info_msg.course_command - info_msg.yaw;
 
     const Vector3d pos_fl(cg_to_front, front_width / 2, 0);
     const Vector3d pos_rl(-cg_to_rear, rear_width / 2, 0);
@@ -445,6 +445,8 @@ class VehicleControllerNode : public rclcpp::Node {
       info_msg.guidance_ready = true;
       info_msg.speed_error = info_msg.speed_reference - info_msg.speed;
       info_msg.course_error = ssa(info_msg.course_reference - info_msg.course);
+      info_msg.course_command = info_msg.course_reference;
+
       // info_msg.yawrate_error = info_msg.yawrate_reference - info_msg.yawrate;
     }
 
@@ -576,7 +578,7 @@ class VehicleControllerNode : public rclcpp::Node {
   void guidance_callback(vehicle_interface::msg::Guide::SharedPtr msg_p) {
     guidance_p = msg_p;
     info_msg.course_reference = msg_p->course;
-    info_msg.courserate_reference = msg_p->courserate;
+    // info_msg.courserate_reference = msg_p->courserate;
     info_msg.speed_reference = msg_p->speed;
     info_msg.guidance_ready = true;
     RCLCPP_INFO_ONCE(this->get_logger(), "guidance message recieved");

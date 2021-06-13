@@ -12,6 +12,7 @@ from launch.actions import ExecuteProcess
 from launch.actions import DeclareLaunchArgument
 
 from launch.conditions import IfCondition
+from launch.conditions import UnlessCondition
 from launch.substitutions import LaunchConfiguration
 from launch.substitutions import ThisLaunchFileDir
 from launch.launch_context import LaunchContext
@@ -34,6 +35,8 @@ def generate_launch_description():
                                      description="Start rviz")
     run_bag = DeclareLaunchArgument("bag", default_value="true",
                                     description="Do rosbag")
+    spawn_origin = DeclareLaunchArgument("spawn_origin", default_value="true",
+                                         description="Spawn vehicle in origin")
     # bagfile = DeclareLaunchArgument("bagfile", default_value="",
     #                                 description="output of rosbag")
 
@@ -57,10 +60,17 @@ def generate_launch_description():
         arguments=["0", "0", "0", "0", "0", "0", "world", "map"]
     )
 
-    spawner_process = ExecuteProcess(
+    spawn_origin_process = ExecuteProcess(
         cmd=["python3",
              "/home/cale/thesis-code/ws/src/simulator/simulator/spawn_vehicle.py"],
-        output="screen"
+        output="screen",
+        condition=IfCondition(LaunchConfiguration("spawn_origin"))
+    )
+    spawn_offcenter_process = ExecuteProcess(
+        cmd=["python3",
+             "/home/cale/thesis-code/ws/src/simulator/simulator/spawn_vehicle_offcenter.py"],
+        output="screen",
+        condition=UnlessCondition(LaunchConfiguration("spawn_origin"))
     )
 
     rosbag_process = ExecuteProcess(
@@ -69,11 +79,12 @@ def generate_launch_description():
     )
 
     ld = LaunchDescription([
-        run_rviz, run_bag,
+        run_rviz, run_bag, spawn_origin,
         state_estimator,
         rviz,
         tf2static,
-        spawner_process,
+        spawn_origin_process,
+        spawn_offcenter_process,
         rosbag_process
     ])
 

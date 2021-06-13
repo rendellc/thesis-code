@@ -21,6 +21,7 @@ setup(
     entry_points={
         'console_scripts': [
             "spawn_vehicle = simulator.spawn_vehicle:main",
+            "spawn_vehicle_offcenter = simulator.spawn_vehicle_offcenter:main",
         ],
     },
 )

@@ -14,7 +14,7 @@ def generate_launch_description():
     guidance_parameters = GUIDANCE_PARAMETERS
 
     guidance_parameters = update_parameter(
-        guidance_parameters, "speed_desired", 1.0)
+        guidance_parameters, "speed_desired", 5.0/3.6)
 
     vehicle_namespace = "vehicle"
 

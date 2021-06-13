@@ -125,8 +125,8 @@ ignition::math::Vector2d PathSpiral::closest_direction(
   return sign * spiral_u_derivative(u).Normalized();
 }
 
-double PathSpiral::closest_courserate(const ignition::math::Vector2d& pos,
-                                      const ignition::math::Vector2d& vel) {
+double PathSpiral::closest_curvature(const ignition::math::Vector2d& pos,
+                                     const ignition::math::Vector2d& vel) {
   const auto sign = theta_end > theta_begin ? 1 : -1;
   const double theta = find_closest_theta(pos);
   const double u = theta_to_u(theta);
@@ -148,8 +148,8 @@ double PathSpiral::closest_courserate(const ignition::math::Vector2d& pos,
   const Vector3d vdot(vdot2.X(), vdot2.Y(), 0);
   const Vector3d z_axis(0, 0, 1);
 
-  const double courserate = z_axis.Cross(v).Dot(vdot) / v.SquaredLength();
-  return courserate;
+  const double curvature = z_axis.Cross(v).Dot(vdot) / pow(v.Length(), 3);
+  return curvature;
 }
 
 ignition::math::Vector2d PathSpiral::getBegin() const {

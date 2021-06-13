@@ -2,7 +2,9 @@ std_msgs/Header header
 
 float64 course
 float64 course_reference
+float64 course_command
 float64 course_error
+float64 courserate_reference
 
 float64 sideslip_reference
 float64 sideslip

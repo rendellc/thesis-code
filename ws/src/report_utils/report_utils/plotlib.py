@@ -59,11 +59,11 @@ def plot_timeseries(t, x, label, ax=None):
     return ax
 
 
-def plot_xy(x, y, label, ax=None):
+def plot_xy(x, y, label, ax=None, alpha=1.0):
     if ax is None:
         _, ax = plt.subplots()
 
-    ax.plot(x, y, label=label)
+    ax.plot(x, y, alpha=alpha, label=label)
     ax.set_aspect("equal")
     return ax
 

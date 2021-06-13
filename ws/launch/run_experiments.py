@@ -89,6 +89,20 @@ class TimeLimit20SecMonitor(ExperimentMonitor):
             self._set_done()
 
 
+class TimeLimit60SecMonitor(ExperimentMonitor):
+    def __init__(self):
+        super().__init__()
+        self._start_time = self.get_clock().now()
+        self._timer = self.create_timer(1.0, self._timer_callback)
+
+    def _timer_callback(self):
+        t = self.get_clock().now()
+        d = t - self._start_time
+
+        if d.nanoseconds > 60*10**9:
+            self._set_done()
+
+
 def _start_processes(commands):
     processes = []
     for cmd in commands:
@@ -125,7 +139,7 @@ def finalabs(data, options):
 def peak(data, options):
     xs = _get_masked_metric_data(data, options)
     i = np.argmax(np.abs(xs))
-    return xs[i]
+    return np.abs(xs[i])
 
 
 def chatter(data, options):
@@ -309,9 +323,10 @@ def make_path_plots(name, options):
         map(lambda s: _point_to_numpy(s, ','), options["waypoints"])))
 
     if labels:
-        ax.legend()
+        legend_loc = options.get("legend_loc", "best")
+        ax.legend(loc=legend_loc)
 
-    ax.grid(False)
+    # ax.grid(False)
 
     plotlib.savefig(fig)
 
@@ -392,14 +407,16 @@ def make_bag_plots(name, options):
 
                 plotlib.plot_timeseries(t, x, d["label"], ax=ax)
         if plotoptions["type"] == "xy":
-            x = data[plotoptions["xdata"]["topic"]
-                     ][plotoptions["xdata"]["attribute"]]
-            y = data[plotoptions["ydata"]["topic"]
-                     ][plotoptions["ydata"]["attribute"]]
-            plotlib.plot_xy(x, y, plotoptions.get("label", ""), ax=ax)
+            ds = plotoptions["datas"]
+            for d in ds:
+                x = data[d["topic"]][d["xattribute"]]
+                y = data[d["topic"]][d["yattribute"]]
+                label = d.get("label", "")
+                alpha = d.get("alpha", 1.0)
+                plotlib.plot_xy(x, y, label, ax=ax, alpha=alpha)
 
         if plotoptions.get("legend", False):
-            ax.legend()
+            ax.legend(loc="upper right")
 
         ylim = plotoptions.get("ylim", None)
         if not ylim is None:
@@ -421,6 +438,8 @@ def make_bag_plots(name, options):
         method = globals()[metricoptions["method"]]
         metric = method(data, metricoptions)
         scale = metricoptions.get("scale", None)
+        if scale == "abs":
+            metric = np.abs(metric)
         if scale == "rad2deg":
             metric = np.rad2deg(metric)
         if type(scale) == float or type(scale) == int:
