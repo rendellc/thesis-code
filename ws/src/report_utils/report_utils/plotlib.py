@@ -48,11 +48,11 @@ def set_save_directories(rawdir: str, pdfdir: str):
     create_save_directories()
 
 
-def plot_timeseries(t, x, label, ax=None):
+def plot_timeseries(t, x, label, ax=None, alpha=1.0):
     if ax is None:
         _, ax = plt.subplots()
 
-    ax.plot(t, x, label=label)
+    ax.plot(t, x, label=label, alpha=alpha)
 
     ax.set_xlim(t[0], t[~0])
 

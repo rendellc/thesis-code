@@ -13,8 +13,9 @@ def generate_launch_description():
     wheel_controller_parameters = WHEEL_CONTROLLER_PARAMETERS
 
     vehicle_controller_parameters = update_parameter(vehicle_controller_parameters,
-                                                     "yaw_source", "yawrate"
-                                                     )
+                                                     "yaw_source", "yawrate")
+    vehicle_controller_parameters = update_parameter(vehicle_controller_parameters,
+                                                     "I_speed", 0.0)
 
     vehicle_namespace = "vehicle"
 

@@ -85,6 +85,8 @@ def hav2(phi1, lam1, phi2, lam2):
 def archav(h):
     return 2*np.arcsin(np.sqrt(h))
 
+def ssa(x):
+    return np.arctan2(np.sin(x),np.cos(x))
 
 def latlon_to_cartesian(lat, lon, lat_home, lon_home):
     R_earth = 6371*1000
@@ -94,12 +96,19 @@ def latlon_to_cartesian(lat, lon, lat_home, lon_home):
     phi0, lam0 = np.deg2rad(lat_home), np.deg2rad(lon_home)
 
     h_phi = hav2(phi0, lam0, phi, lam0)
-    distance_lat = R_earth*archav(h_phi)
+    # distance_lat = R_earth*archav(h_phi)
+    # distance_lat = R_earth*archav(h_phi)
+    c_phi = 2*np.arctan2(np.sqrt(h_phi), np.sqrt(1 - h_phi))
+    distance_lat = R_earth*c_phi
     h_lam = hav2(phi0, lam0, phi0, lam)
-    distance_lon = R_earth*archav(h_lam)
+    # distance_lon = R_earth*archav(h_lam)
+    c_lam = 2*np.arctan2(np.sqrt(h_lam), np.sqrt(1 - h_lam))
+    distance_lon = R_earth*c_lam
 
-    dx = distance_lat*np.sign(phi-phi0)
-    dy = distance_lon*np.sign(lam-lam0)
+    dx = distance_lat*np.sign(ssa(phi-phi0))
+    # dx = distance_lat*np.sign(lam-lam0)
+    dy = distance_lon*np.sign(ssa(lam-lam0))
+    # dy = distance_lon*np.sign(phi-phi0)
 
     # https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system
     #     # Constants
@@ -170,7 +179,8 @@ def plan_file_to_cartesian(path_file):
     xys = np.empty((len(waypoints), 2))
     for i, wp in enumerate(waypoints):
         xy = latlon_to_cartesian(wp.lat, wp.lon, home.lat, home.lon)
-        xys[i] = xy[1], xy[0]
+        xys[i] = xy[0], xy[1]
+        print(xys[i])
 
     return xys
 
@@ -182,4 +192,5 @@ if __name__ == "__main__":
 
     import matplotlib.pyplot as plt
     plt.plot(xys[:, 1], xys[:, 0])
+    plt.axis("equal")
     plt.show()

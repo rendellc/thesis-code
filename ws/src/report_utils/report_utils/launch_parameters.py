@@ -26,7 +26,7 @@ WP_SIMPLE_LAP = np.array([[0, 0],
                          dtype=float)
 
 WP_SURVEY = plan_file_to_cartesian(
-    "/home/cale/thesis-code/ws/launch/survey_dragvoll_manual.plan")
+    "/home/cale/thesis-code/ws/launch/survey_dragvoll_2.plan")
 
 VEHICLE_CONTROLLER_PARAMETERS = [
     {"update_rate": 50.0},

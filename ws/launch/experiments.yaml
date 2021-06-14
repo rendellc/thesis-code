@@ -17,9 +17,14 @@ settings:
     # - straight_line_convergence_spinning
     # - simple_lap_no_braking
     # - simple_lap_low_curvature
-    - simple_lap_low_speed
+    # - simple_lap_low_speed
     # - simple_lap_circular
     # - simple_lap_low_curvature_high_speed
+    # - simple_lap_low_curvature_high_speed_faster
+    # - simple_lap_curvature_ff
+    # - simple_lap_curvature_ff_slow
+    # - simple_lap_curvature_ff_more
+    # - simple_lap_curvature_ff_more_high_speed
     # - simple_lap_low_curvature_high_speed_circular
     # - noslip_yawrate
     # - noslip_yaw
@@ -28,7 +33,7 @@ settings:
     # - smc_turn
     # - rr_step
     # - rr_turn
-    # - angvel_step
+    - angvel_step
     # - noslip_yawrate
     # - noslip_yaw
     # - straight_line_convergence
@@ -38,9 +43,14 @@ settings:
     # - simple_lap_better_reference
     # - simple_lap_no_braking
     # - simple_lap_low_curvature
-    - simple_lap_low_speed
+    # - simple_lap_low_speed
     # - simple_lap_circular
     # - simple_lap_low_curvature_high_speed
+    # - simple_lap_low_curvature_high_speed_faster
+    # - simple_lap_curvature_ff
+    # - simple_lap_curvature_ff_slow
+    # - simple_lap_curvature_ff_more
+    # - simple_lap_curvature_ff_more_high_speed
     # - simple_lap_low_curvature_high_speed_circular
     # - simple_lap_path
     # - simple_lap_path_low_curvature
@@ -50,6 +60,7 @@ settings:
     # - fermat_smoothing_curvature
     # - fermat_smoothing_curvatures
     # - fermat_smoothing_invalid
+    # - chattering_signal
 experiments:
   # ---- WHEEL SMC AND RR CASE STUDIES ----
   smc_step:
@@ -1278,12 +1289,12 @@ experiments:
               scale: abs
         speed_error:
           type: timeseries
-          ylabel: "[m/s]"
+          ylabel: "[km/h]"
           datas:
             - topic: /vehicle/controller_info
               attribute: speed_error
               label: ""
-              scale: abs
+              scale: 3.6
         speed_reference:
           type: timeseries
           ylabel: "[m/s]"
@@ -1367,12 +1378,12 @@ experiments:
               scale: abs
         speed_error:
           type: timeseries
-          ylabel: "[m/s]"
+          ylabel: "[km/h]"
           datas:
             - topic: /vehicle/controller_info
               attribute: speed_error
               label: "$\\e_c$"
-              scale: abs
+              scale: 3.6
         trajectory:
           type: xy
           legend: true
@@ -1438,12 +1449,12 @@ experiments:
               scale: abs
         speed_error:
           type: timeseries
-          ylabel: "[m/s]"
+          ylabel: "[km/h]"
           datas:
             - topic: /vehicle/controller_info
               attribute: speed_error
               label: "$\\e_c$"
-              scale: abs
+              scale: 3.6
         trajectory:
           type: xy
           legend: true
@@ -1527,12 +1538,12 @@ experiments:
               scale: abs
         speed_error:
           type: timeseries
-          ylabel: "[m/s]"
+          ylabel: "[km/h]"
           datas:
             - topic: /vehicle/controller_info
               attribute: speed_error
               label: "$\\e_c$"
-              scale: abs
+              scale: 3.6
         trajectory:
           type: xy
           legend: true
@@ -1594,12 +1605,12 @@ experiments:
               scale: abs
         speed_error:
           type: timeseries
-          ylabel: "[m/s]"
+          ylabel: "[km/h]"
           datas:
             - topic: /vehicle/controller_info
               attribute: speed_error
               label: "$\\e_c$"
-              scale: abs
+              scale: 3.6
         trajectory:
           type: xy
           legend: true
@@ -1629,12 +1640,614 @@ experiments:
           data:
             topic: /vehicle/guidance_info
             attribute: cross_track_error
+        peak_abs_cross_track_error:
+          method: peak
+          data:
+            topic: /vehicle/guidance_info
+            attribute: cross_track_error
+          scale: abs
+        peak_cross_track_error:
+          method: peak
+          data:
+            topic: /vehicle/guidance_info
+            attribute: cross_track_error
         peak_torque:
           method: peak
           data:
             topic: /vehicle/wheel_fl/controller_info
             attribute: cmd.steer_torque
           scale: 0.001
+        chatter:
+          method: chatter
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: cmd.steer_torque
+        peak_steer_rate:
+          method: peak
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: state.steering_angle
+          scale: rad2deg
+  simple_lap_low_curvature_high_speed_faster:
+    experimenter: run_commands
+    plotter: make_bag_plots
+    options:
+      commands:
+        - "ros2 launch launch/base.launch.py bag:=true rviz:=false"
+        - "ros2 launch control controllers_lowcurvature_highspeed_faster.launch.py"
+        - "ros2 launch simulator simulator.launch.py gui:=false"
+        - "ros2 launch operation report_waypoints_simple_lap.launch.py"
+      monitor: SimpleLapMonitor
+      bagsaver_config: launch/bagsaver.yaml
+      bag:
+        file: ../bags/simple_lap_low_curvature_high_speed_faster.db3
+        force: true
+        rate: 10
+      plots:
+        cross_track_error:
+          type: timeseries
+          ylabel: "[m]"
+          datas:
+            - topic: /vehicle/guidance_info
+              attribute: cross_track_error
+              label: "$\\e_c$"
+              scale: abs
+        speed_error:
+          type: timeseries
+          ylabel: "[km/h]"
+          datas:
+            - topic: /vehicle/controller_info
+              attribute: speed_error
+              label: "$\\e_c$"
+              scale: 3.6
+        trajectory:
+          type: xy
+          legend: true
+          xlabel: "E [m]"
+          ylabel: "N [m]"
+          datas:
+            - topic: /vehicle/guidance_info
+              label: path
+              xattribute: path_position.x
+              yattribute: path_position.y
+              alpha: 0.7
+            - topic: /vehicle/pose
+              label: vehicle
+              xattribute: pose.position.x
+              yattribute: pose.position.y
+        curvature:
+          type: timeseries
+          ylabel: "[m]"
+          datas:
+            - topic: /vehicle/controller_info
+              attribute: curvature
+              label: "$\\e_c$"
+              scale: abs
+      metrics:
+        mean_abs_cross_track_error:
+          method: meanabs
+          data:
+            topic: /vehicle/guidance_info
+            attribute: cross_track_error
+        peak_abs_cross_track_error:
+          method: peak
+          data:
+            topic: /vehicle/guidance_info
+            attribute: cross_track_error
+          scale: abs
+        peak_cross_track_error:
+          method: peak
+          data:
+            topic: /vehicle/guidance_info
+            attribute: cross_track_error
+        peak_torque:
+          method: peak
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: cmd.steer_torque
+          scale: 0.001
+        chatter:
+          method: chatter
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: cmd.steer_torque
+        peak_steer_rate:
+          method: peak
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: state.steering_angle
+          scale: rad2deg
+
+  simple_lap_curvature_ff:
+    experimenter: run_commands
+    plotter: make_bag_plots
+    options:
+      commands:
+        - "ros2 launch launch/base.launch.py bag:=true rviz:=false"
+        - "ros2 launch control controllers_curvature_ff.launch.py"
+        - "ros2 launch simulator simulator.launch.py gui:=false"
+        - "ros2 launch operation report_waypoints_simple_lap.launch.py"
+      monitor: SimpleLapMonitor
+      bagsaver_config: launch/bagsaver.yaml
+      bag:
+        file: ../bags/simple_lap_curvature_ff.db3
+        force: true
+        rate: 10
+      plots:
+        cross_track_error:
+          type: timeseries
+          ylabel: "[m]"
+          datas:
+            - topic: /vehicle/guidance_info
+              attribute: cross_track_error
+              label: ""
+              scale: abs
+        speed_error:
+          type: timeseries
+          ylabel: "[km/h]"
+          datas:
+            - topic: /vehicle/controller_info
+              attribute: speed_error
+              label: ""
+              scale: 3.6
+        speed_reference:
+          type: timeseries
+          ylabel: "[km/h]"
+          datas:
+            - topic: /vehicle/controller_info
+              attribute: speed_reference
+              label: ""
+              scale: 3.6
+        trajectory:
+          type: xy
+          legend: true
+          xlabel: "E [m]"
+          ylabel: "N [m]"
+          datas:
+            - topic: /vehicle/guidance_info
+              label: path
+              xattribute: path_position.x
+              yattribute: path_position.y
+              alpha: 0.7
+            - topic: /vehicle/pose
+              label: vehicle
+              xattribute: pose.position.x
+              yattribute: pose.position.y
+        path_trajectory:
+          type: xy
+          legend: false
+          xlabel: "E [m]"
+          ylabel: "N [m]"
+          datas:
+            - topic: /vehicle/guidance_info
+              label: path
+              xattribute: path_position.x
+              yattribute: path_position.y
+        path_course:
+          type: timeseries
+          ylabel: "[m]"
+          datas:
+            - topic: /vehicle/guidance_info
+              attribute: path_course
+              label: "$\\chi_p$"
+        path_curvature:
+          type: timeseries
+          ylabel: "[m]"
+          datas:
+            - topic: /vehicle/guidance_info
+              attribute: path_curvature
+              label: "$\\dot{\\chi}_p$"
+        fl_steer_torque:
+          type: timeseries
+          ylabel: "[kNm]"
+          datas:
+            - topic: /vehicle/wheel_fl/controller_info
+              attribute: cmd.steer_torque
+              label: ""
+              scale: 0.001
+
+      metrics:
+        mean_abs_cross_track_error:
+          method: meanabs
+          data:
+            topic: /vehicle/guidance_info
+            attribute: cross_track_error
+        peak_abs_cross_track_error:
+          method: peak
+          data:
+            topic: /vehicle/guidance_info
+            attribute: cross_track_error
+          scale: abs
+        peak_cross_track_error:
+          method: peak
+          data:
+            topic: /vehicle/guidance_info
+            attribute: cross_track_error
+        peak_torque:
+          method: peak
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: cmd.steer_torque
+          scale: 0.001
+        chatter:
+          method: chatter
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: cmd.steer_torque
+        peak_steer_rate:
+          method: peak
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: state.steering_angle
+          scale: rad2deg
+  simple_lap_curvature_ff_slow:
+    experimenter: run_commands
+    plotter: make_bag_plots
+    options:
+      commands:
+        - "ros2 launch launch/base.launch.py bag:=true rviz:=false"
+        - "ros2 launch control controllers_curvature_ff_slow.launch.py"
+        - "ros2 launch simulator simulator.launch.py gui:=false"
+        - "ros2 launch operation report_waypoints_simple_lap.launch.py"
+      monitor: SimpleLapMonitor
+      bagsaver_config: launch/bagsaver.yaml
+      bag:
+        file: ../bags/simple_lap_curvature_ff_slow.db3
+        force: true
+        rate: 10
+      plots:
+        cross_track_error:
+          type: timeseries
+          ylabel: "[m]"
+          datas:
+            - topic: /vehicle/guidance_info
+              attribute: cross_track_error
+              label: ""
+              scale: abs
+        speed_error:
+          type: timeseries
+          ylabel: "[km/h]"
+          datas:
+            - topic: /vehicle/controller_info
+              attribute: speed_error
+              label: ""
+              scale: 3.6
+        speed_reference:
+          type: timeseries
+          ylabel: "[km/h]"
+          datas:
+            - topic: /vehicle/controller_info
+              attribute: speed_reference
+              label: ""
+              scale: 3.6
+        trajectory:
+          type: xy
+          legend: true
+          xlabel: "E [m]"
+          ylabel: "N [m]"
+          datas:
+            - topic: /vehicle/guidance_info
+              label: path
+              xattribute: path_position.x
+              yattribute: path_position.y
+              alpha: 0.7
+            - topic: /vehicle/pose
+              label: vehicle
+              xattribute: pose.position.x
+              yattribute: pose.position.y
+        path_trajectory:
+          type: xy
+          legend: false
+          xlabel: "E [m]"
+          ylabel: "N [m]"
+          datas:
+            - topic: /vehicle/guidance_info
+              label: path
+              xattribute: path_position.x
+              yattribute: path_position.y
+        path_course:
+          type: timeseries
+          ylabel: "[m]"
+          datas:
+            - topic: /vehicle/guidance_info
+              attribute: path_course
+              label: "$\\chi_p$"
+        path_curvature:
+          type: timeseries
+          ylabel: "[m]"
+          datas:
+            - topic: /vehicle/guidance_info
+              attribute: path_curvature
+              label: "$\\dot{\\chi}_p$"
+        fl_steer_torque:
+          type: timeseries
+          ylabel: "[kNm]"
+          datas:
+            - topic: /vehicle/wheel_fl/controller_info
+              attribute: cmd.steer_torque
+              label: ""
+              scale: 0.001
+
+      metrics:
+        mean_abs_cross_track_error:
+          method: meanabs
+          data:
+            topic: /vehicle/guidance_info
+            attribute: cross_track_error
+        peak_abs_cross_track_error:
+          method: peak
+          data:
+            topic: /vehicle/guidance_info
+            attribute: cross_track_error
+          scale: abs
+        peak_cross_track_error:
+          method: peak
+          data:
+            topic: /vehicle/guidance_info
+            attribute: cross_track_error
+        peak_torque:
+          method: peak
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: cmd.steer_torque
+          scale: 0.001
+        chatter:
+          method: chatter
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: cmd.steer_torque
+        peak_steer_rate:
+          method: peak
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: state.steering_angle
+          scale: rad2deg
+
+  simple_lap_curvature_ff_more:
+    experimenter: run_commands
+    plotter: make_bag_plots
+    options:
+      commands:
+        - "ros2 launch launch/base.launch.py bag:=true rviz:=false"
+        - "ros2 launch control controllers_curvature_ff_more.launch.py"
+        - "ros2 launch simulator simulator.launch.py gui:=false"
+        - "ros2 launch operation report_waypoints_simple_lap.launch.py"
+      monitor: SimpleLapMonitor
+      bagsaver_config: launch/bagsaver.yaml
+      bag:
+        file: ../bags/simple_lap_curvature_ff_more.db3
+        force: true
+        rate: 10
+      plots:
+        cross_track_error:
+          type: timeseries
+          ylabel: "[m]"
+          datas:
+            - topic: /vehicle/guidance_info
+              attribute: cross_track_error
+              label: ""
+              scale: abs
+        speed_error:
+          type: timeseries
+          ylabel: "[km/h]"
+          datas:
+            - topic: /vehicle/controller_info
+              attribute: speed_error
+              label: ""
+              scale: 3.6
+        speed_reference:
+          type: timeseries
+          ylabel: "[km/h]"
+          datas:
+            - topic: /vehicle/controller_info
+              attribute: speed_reference
+              label: ""
+              scale: 3.6
+        trajectory:
+          type: xy
+          legend: true
+          xlabel: "E [m]"
+          ylabel: "N [m]"
+          datas:
+            - topic: /vehicle/guidance_info
+              label: path
+              xattribute: path_position.x
+              yattribute: path_position.y
+              alpha: 0.7
+            - topic: /vehicle/pose
+              label: vehicle
+              xattribute: pose.position.x
+              yattribute: pose.position.y
+        path_trajectory:
+          type: xy
+          legend: false
+          xlabel: "E [m]"
+          ylabel: "N [m]"
+          datas:
+            - topic: /vehicle/guidance_info
+              label: path
+              xattribute: path_position.x
+              yattribute: path_position.y
+        path_course:
+          type: timeseries
+          ylabel: "[m]"
+          datas:
+            - topic: /vehicle/guidance_info
+              attribute: path_course
+              label: "$\\chi_p$"
+        path_curvature:
+          type: timeseries
+          ylabel: "[m]"
+          datas:
+            - topic: /vehicle/guidance_info
+              attribute: path_curvature
+              label: "$\\dot{\\chi}_p$"
+        fl_steer_torque:
+          type: timeseries
+          ylabel: "[kNm]"
+          datas:
+            - topic: /vehicle/wheel_fl/controller_info
+              attribute: cmd.steer_torque
+              label: ""
+              scale: 0.001
+
+      metrics:
+        mean_abs_cross_track_error:
+          method: meanabs
+          data:
+            topic: /vehicle/guidance_info
+            attribute: cross_track_error
+        peak_abs_cross_track_error:
+          method: peak
+          data:
+            topic: /vehicle/guidance_info
+            attribute: cross_track_error
+          scale: abs
+        peak_cross_track_error:
+          method: peak
+          data:
+            topic: /vehicle/guidance_info
+            attribute: cross_track_error
+        peak_torque:
+          method: peak
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: cmd.steer_torque
+          scale: 0.001
+        chatter:
+          method: chatter
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: cmd.steer_torque
+        peak_steer_rate:
+          method: peak
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: state.steering_angle
+          scale: rad2deg
+  simple_lap_curvature_ff_more_high_speed:
+    experimenter: run_commands
+    plotter: make_bag_plots
+    options:
+      commands:
+        - "ros2 launch launch/base.launch.py bag:=true rviz:=false"
+        - "ros2 launch control controllers_curvature_ff_more_highspeed.launch.py"
+        - "ros2 launch simulator simulator.launch.py gui:=false"
+        - "ros2 launch operation report_waypoints_simple_lap.launch.py"
+      monitor: SimpleLapMonitor
+      bagsaver_config: launch/bagsaver.yaml
+      bag:
+        file: ../bags/simple_lap_curvature_ff_more_highspeed.db3
+        force: true
+        rate: 10
+      plots:
+        cross_track_error:
+          type: timeseries
+          ylabel: "[m]"
+          datas:
+            - topic: /vehicle/guidance_info
+              attribute: cross_track_error
+              label: ""
+              scale: abs
+        speed_error:
+          type: timeseries
+          ylabel: "[km/h]"
+          datas:
+            - topic: /vehicle/controller_info
+              attribute: speed_error
+              label: ""
+              scale: 3.6
+        speed_reference:
+          type: timeseries
+          ylabel: "[km/h]"
+          datas:
+            - topic: /vehicle/controller_info
+              attribute: speed_reference
+              label: ""
+              scale: 3.6
+        trajectory:
+          type: xy
+          legend: true
+          xlabel: "E [m]"
+          ylabel: "N [m]"
+          datas:
+            - topic: /vehicle/guidance_info
+              label: path
+              xattribute: path_position.x
+              yattribute: path_position.y
+              alpha: 0.7
+            - topic: /vehicle/pose
+              label: vehicle
+              xattribute: pose.position.x
+              yattribute: pose.position.y
+        path_trajectory:
+          type: xy
+          legend: false
+          xlabel: "E [m]"
+          ylabel: "N [m]"
+          datas:
+            - topic: /vehicle/guidance_info
+              label: path
+              xattribute: path_position.x
+              yattribute: path_position.y
+        path_course:
+          type: timeseries
+          ylabel: "[m]"
+          datas:
+            - topic: /vehicle/guidance_info
+              attribute: path_course
+              label: "$\\chi_p$"
+        path_curvature:
+          type: timeseries
+          ylabel: "[m]"
+          datas:
+            - topic: /vehicle/guidance_info
+              attribute: path_curvature
+              label: "$\\dot{\\chi}_p$"
+        fl_steer_torque:
+          type: timeseries
+          ylabel: "[kNm]"
+          datas:
+            - topic: /vehicle/wheel_fl/controller_info
+              attribute: cmd.steer_torque
+              label: ""
+              scale: 0.001
+
+      metrics:
+        mean_abs_cross_track_error:
+          method: meanabs
+          data:
+            topic: /vehicle/guidance_info
+            attribute: cross_track_error
+        peak_abs_cross_track_error:
+          method: peak
+          data:
+            topic: /vehicle/guidance_info
+            attribute: cross_track_error
+          scale: abs
+        peak_cross_track_error:
+          method: peak
+          data:
+            topic: /vehicle/guidance_info
+            attribute: cross_track_error
+        peak_torque:
+          method: peak
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: cmd.steer_torque
+          scale: 0.001
+        chatter:
+          method: chatter
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: cmd.steer_torque
+        peak_steer_rate:
+          method: peak
+          data:
+            topic: /vehicle/wheel_fl/controller_info
+            attribute: state.steering_angle
+          scale: rad2deg
+
   simple_lap_low_curvature_high_speed_circular:
     experimenter: run_commands
     plotter: make_bag_plots
@@ -1661,12 +2274,12 @@ experiments:
               scale: abs
         speed_error:
           type: timeseries
-          ylabel: "[m/s]"
+          ylabel: "[km/h]"
           datas:
             - topic: /vehicle/controller_info
               attribute: speed_error
               label: "$\\e_c$"
-              scale: abs
+              scale: 3.6
         trajectory:
           type: xy
           legend: true
@@ -1923,6 +2536,14 @@ experiments:
         - 0.25
       # labels:
       #   - "$\\kappa_{max} = 0.25$"
+
+  chattering_signal:
+    plotter: chattering_signal_plotter
+    options:
+      fig: "../figs/raw/simple_lap/fl_steer_torque.fig"
+      tlim:
+        - 20
+        - 22
 
   chattering_smc_vs_rr:
     plotter: chattering_comparison

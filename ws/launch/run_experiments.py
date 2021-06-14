@@ -20,7 +20,6 @@ import signal
 
 from report_utils.launch_parameters import WP_SIMPLE_LAP, WP_SINGLE_TURN
 from report_utils.chattering_analysis import chatter_metric, chatter_signal
-from report_utils.chattering_analysis import chatter_signal
 
 
 class CommandExperimentRunner(ExperimentRunnerBase):
@@ -152,6 +151,26 @@ def chatter(data, options):
 def std(data, options):
     xs = _get_masked_metric_data(data, options)
     return np.std(xs)
+
+
+def chattering_signal_plotter(name, options):
+    print("Making", name)
+    fig = options["fig"]
+    tlim = options["tlim"]
+
+    f = plotlib.open_figure(fig)
+    t = f.get_axes()[0].lines[0].get_xdata()
+    torque = f.get_axes()[0].lines[0].get_ydata()
+    torque_smoothened = chatter_signal(torque)
+
+    fig, ax = plotlib.subplots(num=name)
+    plotlib.plot_timeseries(t, torque, label=r"$\tau_i$", ax=ax)
+    # plotlib.plot_timeseries(t, torque_smoothened,
+    #                         label=r"$\tau_i^s$", alpha=0.4, ax=ax)
+
+    ax.set_xlim(*tlim)
+
+    plotlib.savefig(fig)
 
 
 def _stop_processes(processes):

@@ -188,7 +188,7 @@ class ManualOperationJoyNode : public rclcpp::Node {
 
       guide.course = guide.course + sideslip_rate / update_rate;
 
-      yaw_reference.yawrate = joy_p->axes[RIGHT_LR];
+      yaw_reference.yawrate = sideslip_rate + 0.2 * joy_p->axes[RIGHT_LR];
 
       guide_pub_p->publish(guide);
       yaw_reference_pub_p->publish(yaw_reference);
